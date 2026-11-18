@@ -1,0 +1,31 @@
+# PhotoSweep .gitignore — no secrets, ever.
+# Signing values live only in GitHub repo settings as Actions secrets.
+
+# Xcode / macOS
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+.DS_Store
+
+# Signing — never commit these
+*.p8
+*.pem
+*.mobileprovision
+*.provisionprofile
+*.cer
+*.p12
+.env
+.env.*
+fastlane/.env*
+
+# SwiftPM
+.build/
+.swiftpm/
+
+# Screenshots / local artifacts
+/tmp/
+build/

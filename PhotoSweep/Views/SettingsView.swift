@@ -1,0 +1,110 @@
+import SwiftData
+import SwiftUI
+
+/// Settings: Pro status, privacy, how the app works, and scan history.
+/// No account anywhere in this app — there is nothing to sign into,
+/// and therefore nothing to delete an account for.
+struct SettingsView: View {
+    @EnvironmentObject private var store: StoreManager
+    @EnvironmentObject private var appState: AppState
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \ScanRecord.scannedAt, order: .reverse) private var history: [ScanRecord]
+    @State private var showingPaywall = false
+    @State private var showingPrivacy = false
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    HStack {
+                        Text("PhotoSweep Pro")
+                        Spacer()
+                        Text(store.isPro ? "Active" : "Free")
+                            .foregroundStyle(store.isPro ? .green : .secondary)
+                    }
+                    if !store.isPro {
+                        Text("Free: \(appState.remainingFreeDeletes(isPro: false)) of \(AppState.freeDeleteLimit) deletes left.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Button("Get Pro") { showingPaywall = true }
+                            .accessibilityIdentifier("settings-get-pro-button")
+                    }
+                    Button("Restore Purchases") {
+                        Task { await store.restore() }
+                    }
+                }
+                Section("Scan history") {
+                    if history.isEmpty {
+                        Text("No scans yet. Scan your photos from the Scan tab.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        ForEach(history) { record in
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(record.scannedAt, style: .date)
+                                    .font(.headline)
+                                Text("\(record.totalScanned) scanned · \(record.totalDeletableCount) photos in \(record.groupsCount) groups · ~\(StorageEstimator.formatted(record.totalReclaimableBytes)) reclaimable (estimate)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        Button("Clear scan history", role: .destructive) {
+                            for record in history {
+                                modelContext.delete(record)
+                            }
+                            try? modelContext.save()
+                        }
+                    }
+                }
+                Section("Privacy") {
+                    Button("Privacy Policy") { showingPrivacy = true }
+                    Text("On-device only. No photos leave this phone, no account, no analytics, no ads. Deleted photos go to Recently Deleted for 30 days.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Section("About") {
+                    Text("PhotoSweep 1.0 — Free up iPhone storage, honestly. No weekly plan, no auto-delete, no cloud.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text("Apple Photos already finds exact duplicates free. PhotoSweep finds what it doesn't: similar and burst shots, blurry photos, screenshots, and large videos.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .navigationTitle("Settings")
+            .sheet(isPresented: $showingPaywall) {
+                PaywallView()
+            }
+            .sheet(isPresented: $showingPrivacy) {
+                NavigationStack {
+                    ScrollView {
+                        Text(privacyText)
+                            .font(.body)
+                            .padding()
+                    }
+                    .navigationTitle("Privacy Policy")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Close") { showingPrivacy = false }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private var privacyText: String {
+        """
+        PhotoSweep Privacy Policy (short version)
+
+        PhotoSweep scans your photo library on your phone. Your photos, thumbnails, and scan results never leave this device. There is no account, no analytics, no advertising, and no third-party service that receives your data.
+
+        Deletion: nothing is deleted without you reviewing it first and confirming. Deleted photos move to Recently Deleted in Photos, where you can recover them for 30 days.
+
+        Storage estimates are estimates. Photos may report slightly different sizes, and space is only actually freed once Recently Deleted is emptied.
+
+        Questions: support@photosweep.singhsec.com (once live — see the App Store listing for the current support link).
+        """
+    }
+}

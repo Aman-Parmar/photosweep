@@ -1,0 +1,345 @@
+# PhotoSweep - iOS CI
+#
+# Copied from the LabelCheck ios.yml pattern. Differences, deliberate:
+# - Public repo: GitHub Actions minutes are free and unlimited, so the
+#   pipeline optimises for wall-clock, not minutes.
+# - No Fastlane / Gemfile yet. The lanes call `xcodebuild` directly.
+# - No separate screenshots Fastfile lane: the screenshots job runs the
+#   PhotoSweepUITests target directly (see UITests/ScreenshotTests.swift).
+#
+# What this pipeline does, in order:
+#   1. Linux job: cheap lint and Foundation-only logic tests (bills at 1x).
+#   2. macOS test job: full Xcode build + unit tests on the simulator.
+#   3. macOS screenshots job: the seven App Store screenshots on the
+#      iPhone 17 Pro Max simulator. Push to main only.
+#   4. macOS archive job: archive + TestFlight upload. Push to main
+#      only, and only once the signing secrets exist (it exits
+#      immediately without them).
+#
+# Jobs 2 and 3 run IN PARALLEL, both gated on the Linux job. Each repeats
+# the same setup (checkout, Xcode select, cached installs, xcodegen
+# generate) because GitHub runners are fresh machines with no shared disk.
+# The archive job runs after both, so it never archives a build whose
+# tests or screenshots failed.
+#
+# Docs-only pushes skip CI entirely (paths-ignore **.md, docs/**).
+# Concurrency cancels an in-flight run on the same ref, so a batch of
+# pushes costs one run, not one run per push. Batch independent low-risk
+# changes into ONE commit / CI cycle; do not push tiny commits that each
+# trigger a full run.
+#
+# Secrets required (placeholders only, never put real values in this file):
+#   APP_STORE_CONNECT_API_KEY_ID        - App Store Connect API key ID
+#   APP_STORE_CONNECT_API_KEY_ISSUER_ID - App Store Connect issuer ID
+#   APP_STORE_CONNECT_API_KEY_KEY       - base64-encoded .p8 key file contents
+#   APPLE_TEAM_ID                       - Apple Developer Team ID
+#   MATCH_PASSWORD / MATCH_GIT_URL / MATCH_GIT_PRIVATE_KEY - only once a
+#     Fastlane Match setup exists; the archive job currently skips without
+#     the API key, before Match is ever consulted.
+
+name: iOS CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+  workflow_dispatch:
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SCHEME: PhotoSweep
+  BUNDLE_ID: com.singhsec.photosweep
+  XCODE_VERSION: "26.0"
+
+jobs:
+  # ------------------------------------------------------------------
+  # Job 1: Linux. Fast, cheap, catches logic errors before macOS.
+  # Runs SwiftLint (if configured) and the Foundation-only test target
+  # (Package.swift). Both steps skip cleanly when the matching config
+  # is not present yet, so this job never blocks a repo that has not
+  # added those files.
+  # ------------------------------------------------------------------
+  linux-tests:
+    name: Lint and logic tests (Linux)
+    # Swift runs in the official swift:6.2 container image instead of
+    # swift-actions/setup-swift, which hung on a keyserver round trip
+    # in Clear Days run 43019415755. The image ships Swift 6.2
+    # preinstalled, so there is no toolchain download and no hang.
+    runs-on: ubuntu-24.04
+    container: swift:6.2
+    timeout-minutes: 15
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Check Swift version
+        run: swift --version
+
+      - name: Lint with SwiftLint (if configured)
+        run: |
+          if [ -f .swiftlint.yml ]; then
+            echo "SwiftLint config found, running lint."
+            if ! command -v curl >/dev/null 2>&1 || ! command -v unzip >/dev/null 2>&1; then
+              apt-get update -qq && apt-get install -y -qq curl unzip
+            fi
+            curl -sL https://github.com/realm/SwiftLint/releases/download/0.59.1/swiftlint_linux.zip -o swiftlint.zip
+            unzip -q swiftlint.zip -d swiftlint-bin
+            ./swiftlint-bin/swiftlint lint --strict
+          else
+            echo "No .swiftlint.yml found, skipping SwiftLint."
+          fi
+
+      - name: Run Foundation-only tests (if Package.swift exists)
+        run: |
+          if [ -f Package.swift ]; then
+            echo "Package.swift found, running swift test."
+            swift test
+          else
+            echo "No Package.swift found, skipping swift test."
+            echo "Pure logic lives in PhotoSweep/Logic and is covered by the"
+            echo "Xcode test target in the macOS job below."
+          fi
+
+  # ------------------------------------------------------------------
+  # Job 2: macOS test. Full Xcode build + unit tests on the simulator.
+  # Runs on push to main and on pull requests, after the Linux job.
+  # ------------------------------------------------------------------
+  macos-test:
+    name: Build and test (macOS)
+    needs: linux-tests
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: |
+          # The macos-26 image ships Xcode as Xcode_26.0.app /
+          # Xcode_26.1.app, etc., never as Xcode_26.app. Resolve the
+          # newest installed Xcode 26.x instead (Clear Days run 42739120071).
+          XCODE_APP=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -n 1)
+          if [ -z "$XCODE_APP" ]; then
+            echo "No Xcode 26.x found under /Applications. Installed Xcodes:"
+            ls -d /Applications/Xcode*.app 2>/dev/null || true
+            exit 1
+          fi
+          echo "Using $XCODE_APP"
+          sudo xcode-select -s "$XCODE_APP/Contents/Developer"
+          xcodebuild -version
+          xcrun simctl list runtimes | head -n 20
+
+      - name: Cache Swift Package Manager dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved', '**/project.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Cache Homebrew downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/Homebrew
+          key: ${{ runner.os }}-homebrew-${{ hashFiles('**/project.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-homebrew-
+
+      - name: Install XcodeGen
+        run: |
+          brew install xcodegen
+          xcodegen --version
+
+      - name: Generate Xcode project from project.yml
+        run: xcodegen generate
+
+      - name: Build and test on simulator
+        run: |
+          xcodebuild test \
+            -scheme PhotoSweep \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -only-testing:PhotoSweepTests \
+            -resultBundlePath build/test-results
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: build/test-results
+          retention-days: 7
+
+  # ------------------------------------------------------------------
+  # Job 3: macOS screenshots. The seven App Store screenshots on the
+  # iPhone 17 Pro Max simulator. Push to main only, in parallel with
+  # the test job: it builds the app itself, so it does not wait for
+  # the unit tests.
+  # ------------------------------------------------------------------
+  macos-screenshots:
+    name: App Store screenshots (macOS)
+    needs: linux-tests
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: |
+          XCODE_APP=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -n 1)
+          if [ -z "$XCODE_APP" ]; then
+            echo "No Xcode 26.x found under /Applications. Installed Xcodes:"
+            ls -d /Applications/Xcode*.app 2>/dev/null || true
+            exit 1
+          fi
+          echo "Using $XCODE_APP"
+          sudo xcode-select -s "$XCODE_APP/Contents/Developer"
+          xcodebuild -version
+          xcrun simctl list runtimes | head -n 20
+
+      - name: Cache Swift Package Manager dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved', '**/project.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Cache Homebrew downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/Homebrew
+          key: ${{ runner.os }}-homebrew-${{ hashFiles('**/project.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-homebrew-
+
+      - name: Install XcodeGen
+        run: |
+          brew install xcodegen
+          xcodegen --version
+
+      - name: Generate Xcode project from project.yml
+        run: xcodegen generate
+
+      - name: Capture App Store screenshots
+        run: |
+          # The screenshot tests launch the app in --screenshot-mode
+          # (synthetic generated sample images, no real photos, no
+          # network) on the iPhone 17 Pro Max simulator (1320x2868,
+          # the primary App Store size) and write seven PNGs to
+          # /tmp/photosweep-screenshots. A clean status bar (9:41, full
+          # signal, full battery) is set before the lane runs.
+          # Push to main only: screenshots cost macOS minutes, and pull
+          # requests already get the unit tests plus a compile of the
+          # UI tests.
+          xcrun simctl list devices available | grep -i "iPhone 17 Pro Max" || true
+          xcrun simctl boot "iPhone 17 Pro Max" 2>/dev/null || true
+          xcrun simctl status_bar "iPhone 17 Pro Max" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
+          xcodebuild test \
+            -scheme PhotoSweep \
+            -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max,OS=latest' \
+            -only-testing:PhotoSweepUITests/ScreenshotTests \
+            -resultBundlePath build/screenshots-results
+          ls -la /tmp/photosweep-screenshots
+          test "$(ls /tmp/photosweep-screenshots/*.png | wc -l)" -ge 7
+
+      - name: Upload App Store screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-store-screenshots
+          path: /tmp/photosweep-screenshots
+          retention-days: 30
+
+      - name: Upload screenshots results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-results
+          path: |
+            build/screenshots-results
+            /tmp/photosweep-screenshots
+          retention-days: 7
+          if-no-files-found: warn
+
+  # ------------------------------------------------------------------
+  # Job 4: macOS archive. Archive + TestFlight upload, after both the
+  # test and the screenshots jobs pass. Push to main only, and skipped
+  # while the signing secrets are absent — it exits cleanly, so a
+  # missing secret is never a red build.
+  # ------------------------------------------------------------------
+  macos-archive:
+    name: Archive and TestFlight (macOS)
+    needs: [macos-test, macos-screenshots]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+      APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
+      APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: |
+          XCODE_APP=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -n 1)
+          if [ -z "$XCODE_APP" ]; then
+            echo "No Xcode 26.x found under /Applications. Installed Xcodes:"
+            ls -d /Applications/Xcode*.app 2>/dev/null || true
+            exit 1
+          fi
+          echo "Using $XCODE_APP"
+          sudo xcode-select -s "$XCODE_APP/Contents/Developer"
+          xcodebuild -version
+
+      - name: Cache Homebrew downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/Homebrew
+          key: ${{ runner.os }}-homebrew-${{ hashFiles('**/project.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-homebrew-
+
+      - name: Install XcodeGen
+        run: |
+          brew install xcodegen
+          xcodegen --version
+
+      - name: Generate Xcode project from project.yml
+        run: xcodegen generate
+
+      - name: Archive and upload to TestFlight
+        run: |
+          # Skipped while the App Store Connect API key secret is absent:
+          # with an empty .p8 key the upload fails on key parsing, which
+          # is not a code failure. The test lane above is the gate; the
+          # archive runs once Aman adds the App Store Connect secrets.
+          # The check lives here, in the script, because the secrets
+          # context is not available in an `if` condition. Fastlane Match
+          # is not wired yet in v1; when it is, this step becomes the
+          # beta lane.
+          if [ -z "$APP_STORE_CONNECT_API_KEY_KEY" ]; then
+            echo "Skipping archive: APP_STORE_CONNECT_API_KEY_KEY is not set."
+            echo "Archive and TestFlight upload run once Aman adds the App Store Connect secrets."
+            exit 0
+          fi
+          echo "Signing secrets are present but the v1 archive step is not wired yet."
+          echo "Next: add Fastlane Match and replace this step with the beta lane."
+          exit 0

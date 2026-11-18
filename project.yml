@@ -1,0 +1,114 @@
+# PhotoSweep — Free up iPhone storage, honestly.
+# Generated with XcodeGen. Never commit a .xcodeproj.
+# Generate: xcodegen generate
+# Then open PhotoSweep.xcodeproj in Xcode 26 and build for iOS 17 or later.
+name: PhotoSweep
+options:
+  bundleIdPrefix: com.singhsec
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "26.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+    TARGETED_DEVICE_FAMILY: "1"
+    SUPPORTS_MACCATALYST: NO
+    SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: ""
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    ASSETCATALOG_COMPILER_GLOBAL_ACCENT_NAME: AccentColor
+  debug:
+    SWIFT_OPTIMIZATION_LEVEL: "-Onone"
+  release:
+    SWIFT_OPTIMIZATION_LEVEL: "-O"
+targets:
+  PhotoSweep:
+    type: application
+    platform: iOS
+    sources:
+      - path: PhotoSweep
+        excludes:
+          - "**/Info.plist"
+      - path: Resources/Assets.xcassets
+      # The .storekit file is a bundle resource in v1 so the screenshot-mode
+      # paywall can read the same prices from it. It contains public pricing
+      # only — no secrets. The scheme also references it as the StoreKit
+      # configuration for Run.
+      - path: Resources/PhotoSweep.storekit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.singhsec.photosweep
+        INFOPLIST_FILE: PhotoSweep/Info.plist
+        PRIVACY_MANIFEST_FILE: Resources/PrivacyInfo.xcprivacy
+        SWIFT_DATA_ENABLED: YES
+    info:
+      path: PhotoSweep/Info.plist
+      properties:
+        CFBundleDisplayName: PhotoSweep
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        # Rule (from Clear Days): XcodeGen REWRITES the plist on every
+        # `xcodegen generate` from the keys listed here. Any key that
+        # lives only in the checked-in plist is silently dropped from
+        # the built app. So every key the app needs must be listed here.
+        CFBundleName: PhotoSweep
+        ITSAppUsesNonExemptEncryption: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSPhotoLibraryUsageDescription: "PhotoSweep scans your photo library on-device to find duplicates, similar photos, blurry shots, screenshots and large videos for you to review. Your photos never leave this phone."
+  PhotoSweepTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests
+    dependencies:
+      - target: PhotoSweep
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.singhsec.photosweep.tests
+        SWIFT_VERSION: "5.9"
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        # The test target has no Info.plist file of its own. Without
+        # this, Xcode 26 fails the test lane in CI: "Cannot code sign
+        # because the target does not have an Info.plist file and one
+        # is not being generated automatically."
+        GENERATE_INFOPLIST_FILE: YES
+  # App Store screenshots. A UI test target, not a unit test target: it
+  # launches the real app in screenshot mode (bundled synthetic sample
+  # data, no real photos, no network) and captures the seven screens.
+  # Runs only in the screenshots lane, never in the everyday test lane,
+  # because simulator screenshots cost macOS minutes.
+  PhotoSweepUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: UITests
+    dependencies:
+      - target: PhotoSweep
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.singhsec.photosweep.uitests
+        SWIFT_VERSION: "5.9"
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  PhotoSweep:
+    build:
+      targets:
+        PhotoSweep: all
+    run:
+      config: Debug
+      storeKitConfiguration: "Resources/PhotoSweep.storekit"
+    test:
+      config: Debug
+      targets:
+        - PhotoSweepTests
+        - PhotoSweepUITests
+    archive:
+      config: Release
