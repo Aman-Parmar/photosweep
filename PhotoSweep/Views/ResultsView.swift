@@ -368,8 +368,14 @@ private struct CompareColumn: View {
             Text(title)
                 .font(.headline)
                 .foregroundStyle(isKeeper ? Color.accentColor : Color.primary)
+            // The thumbnail must compress below the image's ideal
+            // width: two 240pt-wide sample images plus spacing exceed
+            // the sheet width, which pushed the whole sheet off screen
+            // on both sides (verified in the 08-compare capture from
+            // CI run 44315313305). minWidth 0 lets each column shrink
+            // to half the sheet; the resizable image fills its column.
             PhotoThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
-                .frame(height: 220)
+                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 220, maxHeight: 220)
                 .cornerRadius(10)
             Text(StorageEstimator.formatted(item.fileSize))
                 .font(.subheadline)
