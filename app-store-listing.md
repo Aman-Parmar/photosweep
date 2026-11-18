@@ -28,7 +28,7 @@ Note: Apple Photos already finds exact duplicates free (Duplicates album). Photo
 
 ## Keywords
 
-photo cleaner, duplicate photos, free up space, storage cleaner, delete duplicates, similar photos, burst photos, screenshots, large videos, clean photos
+photo cleaner, duplicate photos, similar photos, burst photos, screenshots, large videos
 
 ## Privacy
 
