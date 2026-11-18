@@ -21,12 +21,12 @@ struct ScreenshotsView: View {
                     ContentUnavailableView(
                         "No screenshots",
                         systemImage: "camera.viewfinder",
-                        description: Text("Scan your photos first. Screenshots will appear here for bulk review — check each one, some may be receipts or confirmations worth keeping.")
+                        description: Text("Scan your photos first. Screenshots will appear here for bulk review. Check each one: some may be receipts or confirmations worth keeping.")
                     )
                 } else {
                     List {
                         Section {
-                            Text("Check each one — some screenshots are receipts, tickets, or confirmations worth keeping.")
+                            Text("Check each one: some screenshots are receipts, tickets, or confirmations worth keeping.")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -126,7 +126,7 @@ struct LargeVideosView: View {
                 } else {
                     List {
                         Section {
-                            Text("\(videos.count) large videos — ~\(StorageEstimator.formatted(totalBytes)) total (estimate). Video cleanup is a Pro feature.")
+                            Text("\(videos.count) large videos, ~\(StorageEstimator.formatted(totalBytes)) total (estimate). Video cleanup is a Pro feature.")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }

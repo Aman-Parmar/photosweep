@@ -53,7 +53,7 @@ public enum GroupingEngine {
                 id: "screenshots",
                 kind: .screenshots,
                 items: screenshots,
-                reason: "Screenshots, grouped for bulk review. Check each one — some may be receipts or confirmations worth keeping."
+                reason: "Screenshots, grouped for bulk review. Check each one: some may be receipts or confirmations worth keeping."
             ))
             groupedIDs.formUnion(screenshots.map(\.id))
         } else {
@@ -71,7 +71,7 @@ public enum GroupingEngine {
                 id: "exact-\(hash.prefix(8))",
                 kind: .exactDuplicate,
                 items: members,
-                reason: "Same file contents — exact duplicates."
+                reason: "Same file contents: exact duplicates."
             ))
             groupedIDs.formUnion(members.map(\.id))
         }
@@ -97,8 +97,8 @@ public enum GroupingEngine {
             // A similar group is anchored on its first item; members are
             // marked visited so no item lands in two groups.
             let reason = members.contains { $0.isBurst }
-                ? "Burst photos taken seconds apart — pick the best frame, delete the rest."
-                : "Visually similar photos — pick the best one, delete the rest."
+                ? "Burst photos taken seconds apart. Pick the best frame, delete the rest."
+                : "Visually similar photos. Pick the best one, delete the rest."
             groups.append(makeGroup(
                 id: "similar-\(item.id)",
                 kind: .similar,
@@ -118,7 +118,7 @@ public enum GroupingEngine {
                 id: "blurry",
                 kind: .blurry,
                 items: blurry,
-                reason: "Blurry or very dark photos. Review each one — a blurry photo can still be the only copy of a moment."
+                reason: "Blurry or very dark photos. Review each one: a blurry photo can still be the only copy of a moment."
             ))
         } else if blurry.count == 1 {
             // A single blurry photo is not a group. It stays ungrouped —

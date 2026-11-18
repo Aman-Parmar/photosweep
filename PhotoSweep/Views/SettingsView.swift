@@ -63,7 +63,7 @@ struct SettingsView: View {
                         .foregroundStyle(.secondary)
                 }
                 Section("About") {
-                    Text("PhotoSweep 1.0 — Free up iPhone storage, honestly. No weekly plan, no auto-delete, no cloud.")
+                    Text("PhotoSweep 1.0: Free up iPhone storage, honestly. No weekly plan, no auto-delete, no cloud.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Text("Apple Photos already finds exact duplicates free. PhotoSweep finds what it doesn't: similar and burst shots, blurry photos, screenshots, and large videos.")
@@ -104,7 +104,7 @@ struct SettingsView: View {
 
         Storage estimates are estimates. Photos may report slightly different sizes, and space is only actually freed once Recently Deleted is emptied.
 
-        Questions: support@photosweep.singhsec.com (once live — see the App Store listing for the current support link).
+        Questions: support@photosweep.singhsec.com (once live; see the App Store listing for the current support link).
         """
     }
 }

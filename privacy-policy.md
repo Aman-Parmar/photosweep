@@ -1,4 +1,4 @@
-# PhotoSweep — Privacy Policy
+# PhotoSweep: Privacy Policy
 
 Last updated: 2026-11-18
 
@@ -8,7 +8,7 @@ PhotoSweep scans your photo library on your phone. Your photos, thumbnails, and 
 
 ## What the app accesses
 
-- **Your photo library** (with your permission). PhotoSweep reads photo and video metadata — and a downscaled copy of each image, only to compare it with your other photos on-device — to find duplicates, similar photos, blurry photos, screenshots, and large videos. It supports limited photo access: it only sees the photos you choose to share.
+- **Your photo library** (with your permission). PhotoSweep reads photo and video metadata and a downscaled copy of each image, only to compare it with your other photos on-device, to find duplicates, similar photos, blurry photos, screenshots, and large videos. It supports limited photo access: it only sees the photos you choose to share.
 - **Nothing else.** No location, no contacts, no microphone, no health data, no advertising identifier.
 
 ## What leaves your device

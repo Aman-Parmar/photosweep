@@ -11,7 +11,7 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 12) {
                     header
                     if let result = appState.result {
                         summaryCard(result)
@@ -25,6 +25,11 @@ struct HomeView: View {
                     howItWorks
                 }
                 .padding()
+                // The iOS 26 tab bar floats over the scroll content, so
+                // the last section needs clearance: without this the
+                // "How it works" lines sit half-hidden behind the bar
+                // in the 01 screenshot.
+                .padding(.bottom, 96)
             }
             .navigationTitle("PhotoSweep")
             .toolbar {
@@ -47,7 +52,7 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Free up storage, honestly.")
                 .font(.title2.bold())
-            Text("Finds duplicates, similar shots, blurry photos, screenshots and large videos — on your phone, nothing uploaded. You review everything before anything is deleted.")
+            Text("Finds duplicates, similar shots, blurry photos, screenshots and large videos, on your phone, nothing uploaded. You review everything before anything is deleted.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -104,7 +109,7 @@ struct HomeView: View {
                     Text("~\(StorageEstimator.formatted(result.totalReclaimableBytes))")
                         .font(.title.bold())
                         .accessibilityIdentifier("reclaimable-total")
-                    Text("estimate — \(result.totalDeletableCount) photos across \(result.groups.count) groups")
+                    Text("estimate: \(result.totalDeletableCount) photos across \(result.groups.count) groups")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -138,7 +143,7 @@ struct HomeView: View {
 
     private func partialScanNotice(_ result: ScanResult) -> some View {
         Label(
-            "Scanned \(result.totalScanned) of \(result.totalLibraryCount) photos — limited photo access. Grant full access in Settings to scan the rest.",
+            "Scanned \(result.totalScanned) of \(result.totalLibraryCount) photos with limited photo access. Grant full access in Settings to scan the rest.",
             systemImage: "exclamationmark.triangle"
         )
         .font(.caption)
@@ -148,19 +153,19 @@ struct HomeView: View {
     }
 
     private var howItWorks: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 6) {
             Text("How it works")
                 .font(.headline)
             ForEach([
-                "1. Scan — your photos are compared on-device. Nothing is uploaded.",
-                "2. Review — every group shows its photos. Pick the keeper; the rest are proposed for deletion.",
-                "3. Delete — only when you confirm. Deleted photos go to Recently Deleted for 30 days, so you can undo.",
+                "1. Scan: your photos are compared on-device. Nothing is uploaded.",
+                "2. Review: every group shows its photos. Pick the keeper; the rest are proposed for deletion.",
+                "3. Delete: only when you confirm. Deleted photos go to Recently Deleted for 30 days, so you can undo.",
             ], id: \.self) { line in
                 Text(line)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
-            Text("Apple Photos already finds exact duplicates free (Duplicates album). PhotoSweep finds what it doesn't: similar and burst shots, blurry photos, screenshots, and large videos.")
+            Text("Apple Photos already finds exact duplicates free. PhotoSweep finds the rest.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -218,7 +223,7 @@ struct CategoryCardRow: View {
                     .font(.subheadline.bold())
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 2)
     }
 
     private var icon: String {

@@ -24,7 +24,7 @@ struct PaywallView: View {
                             "Unlimited deletes (free: 20 photos)",
                             "Large-video cleanup",
                             "Export a cleanup report",
-                            "No ads, no account — now or ever",
+                            "No ads, no account, now or ever",
                         ], id: \.self) { feature in
                             Label(feature, systemImage: "checkmark.circle.fill")
                                 .foregroundStyle(.primary)
@@ -34,9 +34,9 @@ struct PaywallView: View {
                     // Plain-text prices: always visible, even before
                     // StoreKit products load (e.g. in screenshots).
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Yearly — $29.99/year, 7-day free trial")
+                        Text("Yearly: $29.99/year, 7-day free trial")
                             .font(.headline)
-                        Text("Lifetime — $39.99 once, yours forever")
+                        Text("Lifetime: $39.99 once, yours forever")
                             .font(.headline)
                         Text("No weekly plan. No monthly plan. Ever.")
                             .font(.subheadline.bold())
@@ -84,7 +84,7 @@ struct PaywallView: View {
                         Task { await store.restore() }
                     }
                     .buttonStyle(.bordered)
-                    Text("Payment is handled by Apple. Cancel anytime in Settings — the trial ends automatically if you cancel before day 7. Deleting photos is always your choice; Pro never auto-deletes anything.")
+                    Text("Payment is handled by Apple. Cancel anytime in Settings. The trial ends automatically if you cancel before day 7. Deleting photos is always your choice; Pro never auto-deletes anything.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

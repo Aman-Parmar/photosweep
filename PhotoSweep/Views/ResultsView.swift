@@ -373,9 +373,13 @@ private struct CompareColumn: View {
             // the sheet width, which pushed the whole sheet off screen
             // on both sides (verified in the 08-compare capture from
             // CI run 44315313305). minWidth 0 lets each column shrink
-            // to half the sheet; the resizable image fills its column.
+            // to half the sheet. The image keeps its square aspect
+            // (contentMode .fit): a fixed 220pt-tall fill frame used
+            // to crop the square image left and right, slicing the
+            // "SAMPLE" tag in the 08 capture from run 44330202685.
             PhotoThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
-                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 220, maxHeight: 220)
+                .aspectRatio(1, contentMode: .fit)
+                .frame(minWidth: 0, maxWidth: .infinity)
                 .cornerRadius(10)
             Text(StorageEstimator.formatted(item.fileSize))
                 .font(.subheadline)
