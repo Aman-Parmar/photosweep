@@ -9,6 +9,7 @@ struct SettingsView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \ScanRecord.scannedAt, order: .reverse) private var history: [ScanRecord]
+    @Query(sort: \CleanupEventRecord.date, order: .reverse) private var cleanups: [CleanupEventRecord]
     @State private var showingPaywall = false
     @State private var showingPrivacy = false
 
@@ -31,6 +32,18 @@ struct SettingsView: View {
                     }
                     Button("Restore Purchases") {
                         Task { await store.restore() }
+                    }
+                }
+                Section("Freed this month") {
+                    let total = CleanupHistory.freedThisMonth(events: cleanups.map(\.event))
+                    if total.photos == 0 {
+                        Text("Nothing freed yet this month.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("~\(StorageEstimator.formatted(total.bytes)) freed from \(total.photos) \(total.photos == 1 ? "photo" : "photos") (estimate). Space is only actually freed once Recently Deleted is emptied.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                 }
                 Section("Scan history") {
@@ -104,7 +117,7 @@ struct SettingsView: View {
 
         Storage estimates are estimates. Photos may report slightly different sizes, and space is only actually freed once Recently Deleted is emptied.
 
-        Questions: support@photosweep.singhsec.com (once live; see the App Store listing for the current support link).
+        Questions: support@photosweep.singhsec.com.
         """
     }
 }

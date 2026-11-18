@@ -24,3 +24,25 @@ final class ScanRecord {
         self.groupsCount = result.groups.count
     }
 }
+
+/// Persisted record of one confirmed cleanup. Only counts and bytes,
+/// never photo data. Feeds the "freed this month" figure in Settings
+/// and, later, the widget.
+@Model
+final class CleanupEventRecord {
+    var id: UUID
+    var date: Date
+    var photosDeleted: Int
+    var bytesFreed: Int64
+
+    init(event: CleanupEvent) {
+        self.id = UUID()
+        self.date = event.date
+        self.photosDeleted = event.photosDeleted
+        self.bytesFreed = event.bytesFreed
+    }
+
+    var event: CleanupEvent {
+        CleanupEvent(date: date, photosDeleted: photosDeleted, bytesFreed: bytesFreed)
+    }
+}

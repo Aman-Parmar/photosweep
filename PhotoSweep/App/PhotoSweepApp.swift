@@ -17,13 +17,14 @@ struct PhotoSweepApp: App {
                 .environmentObject(store)
                 .environmentObject(appState)
         }
-        .modelContainer(for: [ScanRecord.self])
+        .modelContainer(for: [ScanRecord.self, CleanupEventRecord.self])
     }
 }
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var store: StoreManager
+    @EnvironmentObject private var appState: AppState
 
     var body: some View {
         TabView {
@@ -49,6 +50,12 @@ struct ContentView: View {
                 }
         }
         .task {
+            // Persist confirmed cleanups so Settings can show what
+            // was freed this month (and the widget can, later).
+            appState.recordCleanup = { event in
+                modelContext.insert(CleanupEventRecord(event: event))
+                try? modelContext.save()
+            }
             // Screenshot mode only: seed one sample scan record so the
             // history list is never empty in the screenshot lane.
             ScreenshotSeeder.seedIfNeeded(modelContext: modelContext)

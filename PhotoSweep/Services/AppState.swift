@@ -28,6 +28,13 @@ final class AppState: ObservableObject {
         }
     }
 
+    /// Called with one event per confirmed deletion. Set by the app
+    /// (which owns the SwiftData context) so AppState stays free of
+    /// persistence details. Nil means "do not record", which is how
+    /// unit tests run. Screenshot mode records too: it is test-only
+    /// sample data, never a real library.
+    var recordCleanup: ((CleanupEvent) -> Void)?
+
     private let scanner = PhotoScanner()
 
     init() {
@@ -82,6 +89,7 @@ final class AppState: ObservableObject {
         if ScreenshotMode.isEnabled {
             removeGroup(group)
             deletedCount += items.count
+            noteCleanup(items: items)
             return true
         }
         let request = DeletionRequest(groupID: group.id, itemIDs: items.map(\.id), confirmedByUser: true)
@@ -94,6 +102,7 @@ final class AppState: ObservableObject {
         }
         removeGroup(group)
         deletedCount += items.count
+        noteCleanup(items: items)
         return true
     }
 
@@ -108,6 +117,7 @@ final class AppState: ObservableObject {
         if ScreenshotMode.isEnabled {
             removeItems(items)
             deletedCount += items.count
+            noteCleanup(items: items)
             return true
         }
         let request = DeletionRequest(groupID: "manual", itemIDs: items.map(\.id), confirmedByUser: true)
@@ -120,7 +130,19 @@ final class AppState: ObservableObject {
         }
         removeItems(items)
         deletedCount += items.count
+        noteCleanup(items: items)
         return true
+    }
+
+    /// Records one confirmed cleanup for the "freed this month"
+    /// figure. Only called after a deletion actually succeeded, so
+    /// a failed or refused delete never counts as freed space.
+    private func noteCleanup(items: [PhotoItem]) {
+        recordCleanup?(CleanupEvent(
+            date: Date(),
+            photosDeleted: items.count,
+            bytesFreed: StorageEstimator.reclaimableBytes(for: items)
+        ))
     }
 
     // MARK: - Private
