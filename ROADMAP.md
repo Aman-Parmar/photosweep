@@ -7,6 +7,7 @@
 - PhotoKit scanner: on-device only, limited-access aware, average-hash similarity + gradient-energy sharpness, deletion via PHAssetChangeRequest to Recently Deleted
 - Views: Home scan, Results grouped by category, Group review with keeper pick, Screenshots bulk review, Large videos, Paywall, Settings
 - StoreKit 2: Pro $29.99/yr (7-day trial, App Store Connect) / $39.99 lifetime, no weekly plan, no monthly tier
+- Cleanup report export (CSV, Pro): one row per group plus large videos, with scan totals — the benefit the paywall, README and listing already promised
 - CI: Linux first, then macOS test + 7-shot screenshot lanes in parallel; docs-only skips CI; cancel in-flight
 - Docs: README, VALIDATION, ROADMAP, SUBSCRIPTION_PLAN, app-store-listing, privacy-policy
 
@@ -21,7 +22,6 @@
 
 - Video thumbnails and duration in group review (currently the Videos tab only).
 - "Similar" explanation: show the two photos side by side when the user taps a group member.
-- Export a cleanup report (PDF/CSV, Pro).
 - Widgets: "storage freed this month" glance (only if it earns its place — no widget for its own sake).
 
 ## v2 — Only if v1 earns it

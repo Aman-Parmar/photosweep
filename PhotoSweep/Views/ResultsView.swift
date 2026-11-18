@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// Results tab: every group, in sections by kind, largest reclaim
 /// first. Tapping a group opens GroupReviewView. The row identifiers
@@ -6,6 +7,17 @@ import SwiftUI
 /// `results-group-duplicates-0`, `results-group-similar-0`, etc.
 struct ResultsView: View {
     @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var store: StoreManager
+    @State private var showingPaywall = false
+    @State private var showingExporter = false
+    @State private var reportDocument = CleanupReportDocument(csv: "")
+
+    /// False when there is nothing to report: no scan yet, or a scan
+    /// with no groups and no large videos.
+    private var canExport: Bool {
+        guard let result = appState.result else { return false }
+        return !result.groups.isEmpty || !result.largeVideos.isEmpty
+    }
 
     var body: some View {
         NavigationStack {
@@ -37,6 +49,33 @@ struct ResultsView: View {
                 }
             }
             .navigationTitle("Results")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        if store.isPro {
+                            if let result = appState.result {
+                                reportDocument = CleanupReportDocument(csv: CleanupReport.csv(for: result))
+                                showingExporter = true
+                            }
+                        } else {
+                            showingPaywall = true
+                        }
+                    } label: {
+                        Label("Export report", systemImage: "square.and.arrow.up")
+                    }
+                    .accessibilityIdentifier("results-export-button")
+                    .disabled(!canExport)
+                }
+            }
+            .sheet(isPresented: $showingPaywall) {
+                PaywallView()
+            }
+            .fileExporter(
+                isPresented: $showingExporter,
+                document: reportDocument,
+                contentType: .commaSeparatedText,
+                defaultFilename: CleanupReport.fileName()
+            ) { _ in }
         }
     }
 
