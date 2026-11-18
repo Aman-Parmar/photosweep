@@ -189,30 +189,43 @@ struct GroupReviewView: View {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
                     ForEach(group.items) { item in
                         ZStack(alignment: .topLeading) {
-                            PhotoThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
-                                .frame(height: 110)
-                                .cornerRadius(10)
-                            if item.id == keeperID {
-                                Text("KEEP")
-                                    .font(.caption2.bold())
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 3)
-                                    .background(Color.accentColor, in: Capsule())
-                                    .foregroundStyle(.white)
-                                    .padding(6)
-                            } else {
-                                Image(systemName: "trash")
-                                    .font(.caption)
-                                    .padding(6)
-                                    .background(Color.black.opacity(0.55), in: Circle())
-                                    .foregroundStyle(.white)
-                                    .padding(6)
+                            Button {
+                                keeperID = item.id
+                            } label: {
+                                ZStack(alignment: .topLeading) {
+                                    PhotoThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
+                                        .frame(height: 110)
+                                        .cornerRadius(10)
+                                    if item.id == keeperID {
+                                        Text("KEEP")
+                                            .font(.caption2.bold())
+                                            .padding(.horizontal, 6)
+                                            .padding(.vertical, 3)
+                                            .background(Color.accentColor, in: Capsule())
+                                            .foregroundStyle(.white)
+                                            .padding(6)
+                                    } else {
+                                        Image(systemName: "trash")
+                                            .font(.caption)
+                                            .padding(6)
+                                            .background(Color.black.opacity(0.55), in: Circle())
+                                            .foregroundStyle(.white)
+                                            .padding(6)
+                                    }
+                                }
                             }
+                            .buttonStyle(.plain)
+                            .accessibilityIdentifier("group-item-\(item.id)")
+                            .accessibilityLabel(item.id == keeperID ? "Keep this photo" : "Delete this photo")
                         }
+                        // Compare: side by side with the keeper, so the
+                        // user can judge whether the two really are the
+                        // same shot before deleting. A sibling overlay,
+                        // not nested in the tile button: a Button inside
+                        // a Button is invisible to the accessibility
+                        // tree, which broke test08Compare (CI run
+                        // 44310359566).
                         .overlay(alignment: .bottomTrailing) {
-                            // Compare: side by side with the keeper, so
-                            // the user can judge whether the two really
-                            // are the same shot before deleting.
                             if item.id != keeperID {
                                 Button {
                                     compareItem = item
@@ -229,13 +242,6 @@ struct GroupReviewView: View {
                                 .padding(6)
                             }
                         }
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            keeperID = item.id
-                        }
-                        .accessibilityIdentifier("group-item-\(item.id)")
-                        .accessibilityAddTraits(.isButton)
-                        .accessibilityLabel(item.id == keeperID ? "Keep this photo" : "Delete this photo")
                     }
                 }
                 if deleted {
