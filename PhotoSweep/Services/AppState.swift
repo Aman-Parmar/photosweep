@@ -134,6 +134,72 @@ final class AppState: ObservableObject {
         return true
     }
 
+    /// Result of a completed compression: the real bytes saved and
+    /// the compressed file's real size.
+    struct CompressionOutcome {
+        let bytesSaved: Int64
+        let compressedBytes: Int64
+    }
+
+    /// Compresses one large video at the chosen preset. The flow is:
+    /// export an HEVC copy on-device, save the copy to Photos, then
+    /// move the original to Recently Deleted (undoable for 30 days).
+    /// The compressed copy is a new Photos asset; the original
+    /// leaves the large-videos list. Pro feature: video cleanup is
+    /// Pro depth, so a free user never reaches this (the sheet shows
+    /// the paywall instead). Returns nil when the compression could
+    /// not run, with `scanError` set.
+    ///
+    /// In screenshot mode there is no real library, so the export is
+    /// simulated from the size estimate: progress animates, then the
+    /// sample video leaves the list and the estimated saving is
+    /// recorded, exactly as the real flow records the real saving.
+    func compressVideo(
+        item: PhotoItem,
+        preset: CompressionPreset,
+        isPro: Bool,
+        progress: @escaping (Double) -> Void
+    ) async -> CompressionOutcome? {
+        guard isPro || ScreenshotMode.isEnabled else { return nil }
+        if ScreenshotMode.isEnabled {
+            let estimate = VideoCompression.estimate(
+                originalBytes: item.fileSize, duration: item.duration, preset: preset)
+            for step in 1...6 {
+                try? await Task.sleep(nanoseconds: 200_000_000)
+                progress(Double(step) / 6.0)
+            }
+            removeItems([item])
+            recordCleanup?(CleanupEvent(
+                date: Date(), photosDeleted: 0, videosCompressed: 1, bytesFreed: estimate.bytesSaved))
+            return CompressionOutcome(bytesSaved: estimate.bytesSaved, compressedBytes: estimate.estimatedBytes)
+        }
+        guard let asset = fetchAssets(ids: [item.id]).first else {
+            scanError = "Could not find that video in Photos."
+            return nil
+        }
+        do {
+            guard let avAsset = await requestAVAsset(for: asset) else {
+                scanError = "Could not read that video."
+                return nil
+            }
+            let exported = try await VideoCompressor.export(asset: avAsset, preset: preset, progress: progress)
+            defer { try? FileManager.default.removeItem(at: exported.fileURL) }
+            try await PHPhotoLibrary.shared().performChanges {
+                _ = PHAssetCreationRequest.creationRequestForAssetFromVideo(atFileURL: exported.fileURL)
+            }
+            let request = DeletionRequest(groupID: "compress", itemIDs: [item.id], confirmedByUser: true)
+            try await scanner.delete(request, assets: [asset])
+            let bytesSaved = max(0, item.fileSize - exported.fileSize)
+            removeItems([item])
+            recordCleanup?(CleanupEvent(
+                date: Date(), photosDeleted: 0, videosCompressed: 1, bytesFreed: bytesSaved))
+            return CompressionOutcome(bytesSaved: bytesSaved, compressedBytes: exported.fileSize)
+        } catch {
+            scanError = error.localizedDescription
+            return nil
+        }
+    }
+
     /// Records one confirmed cleanup for the "freed this month"
     /// figure. Only called after a deletion actually succeeded, so
     /// a failed or refused delete never counts as freed space.
@@ -146,6 +212,19 @@ final class AppState: ObservableObject {
     }
 
     // MARK: - Private
+
+    private func requestAVAsset(for asset: PHAsset) async -> AVAsset? {
+        let options = PHVideoRequestOptions()
+        options.deliveryMode = .highQualityFormat
+        // An iCloud-only video downloads first; the sheet says
+        // compression may take a while for such clips.
+        options.isNetworkAccessAllowed = true
+        return await withCheckedContinuation { continuation in
+            PHImageManager.default().requestAVAsset(forVideo: asset, options: options) { avAsset, _, _ in
+                continuation.resume(returning: avAsset)
+            }
+        }
+    }
 
     private func fetchAssets(ids: [String]) -> [PHAsset] {
         let fetched = PHAsset.fetchAssets(withLocalIdentifiers: ids, options: nil)

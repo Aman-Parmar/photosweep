@@ -17,7 +17,7 @@ Agile model since 2026-11-18 (Aman: adopt agile, not waterfall). One-week sprint
 
 Sprint goal: close the biggest market gaps that cost conversion, without touching the trust wedge.
 
-- **PS-1 Video compression (HEVC, on-device)** — medium. Evidence: in every top-5 cleaner; Cleanup's compressor called "genuinely its best tool". Acceptance: 3 presets, size preview before/after, progress UI, original goes to Recently Deleted. Converts without deleting memories.
+- **PS-1 Video compression (HEVC, on-device)** — medium. BUILT 2026-11-18, awaiting QA. Evidence: in every top-5 cleaner; Cleanup's compressor called "genuinely its best tool". Acceptance: 3 presets, size preview before/after, progress UI, original goes to Recently Deleted. Converts without deleting memories.
 - **PS-2 Free-tier generosity + trust positioning** — small. DECISION NEEDED from Aman: first full cleanup free, or raise free deletes from 20 to 100. Evidence: 20 deletes is the stingiest honest free tier (Clever Cleaner gives a daily allowance plus unlimited Swipe free); "free" claims that aren't are exactly what 1-star reviews punish. Acceptance: config + paywall copy "No weekly plan. Ever." No weekly plan anywhere, ever.
 - **PS-3 Live Photo to still conversion** — small-medium. Evidence: listed by Clever Cleaner, CleanMyPhone, Cleanup; Live Photos run 1.5-3x a still. Acceptance: convert keeps the still, original to Recently Deleted, GB saved shown.
 - **PS-4 (stretch, pending Aman's call) Vision feature prints** — medium. Replaces the average hash with `VNFeaturePrintObservation.computeDistance`. Evidence: competitors market "AI grouping"; Cleanup mislabels ~3% of flagged duplicates. Offered to Aman 2026-11-18, awaiting his call.

@@ -10,7 +10,7 @@
 # What this pipeline does, in order:
 #   1. Linux job: cheap lint and Foundation-only logic tests (bills at 1x).
 #   2. macOS test job: full Xcode build + unit tests on the simulator.
-#   3. macOS screenshots job: the seven App Store screenshots on the
+#   3. macOS screenshots job: the nine App Store screenshots on the
 #      iPhone 17 Pro Max simulator. Push to main only.
 #   4. macOS archive job: archive + TestFlight upload. Push to main
 #      only, and only once the signing secrets exist (it exits
@@ -182,7 +182,7 @@ jobs:
           retention-days: 7
 
   # ------------------------------------------------------------------
-  # Job 3: macOS screenshots. The seven App Store screenshots on the
+  # Job 3: macOS screenshots. The nine App Store screenshots on the
   # iPhone 17 Pro Max simulator. Push to main only, in parallel with
   # the test job: it builds the app itself, so it does not wait for
   # the unit tests.
@@ -241,7 +241,7 @@ jobs:
           # The screenshot tests launch the app in --screenshot-mode
           # (synthetic generated sample images, no real photos, no
           # network) on the iPhone 17 Pro Max simulator (1320x2868,
-          # the primary App Store size) and write seven PNGs to
+          # the primary App Store size) and write nine PNGs to
           # /tmp/photosweep-screenshots. A clean status bar (9:41, full
           # signal, full battery) is set before the lane runs.
           # Push to main only: screenshots cost macOS minutes, and pull
@@ -256,7 +256,7 @@ jobs:
             -only-testing:PhotoSweepUITests/ScreenshotTests \
             -resultBundlePath build/screenshots-results
           ls -la /tmp/photosweep-screenshots
-          test "$(ls /tmp/photosweep-screenshots/*.png | wc -l)" -ge 7
+          test "$(ls /tmp/photosweep-screenshots/*.png | wc -l)" -ge 9
 
       - name: Upload App Store screenshots
         uses: actions/upload-artifact@v4

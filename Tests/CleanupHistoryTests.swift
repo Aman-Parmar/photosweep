@@ -25,7 +25,20 @@ final class CleanupHistoryTests: XCTestCase {
         let total = CleanupHistory.freedThisMonth(
             events: events, now: date(year: 2026, month: 11, day: 18), calendar: calendar)
         XCTAssertEqual(total.photos, 5)
+        XCTAssertEqual(total.videos, 0)
         XCTAssertEqual(total.bytes, 12_000_000)
+    }
+
+    func testSumsCompressedVideosSeparatelyFromPhotos() {
+        let events = [
+            CleanupEvent(date: date(year: 2026, month: 11, day: 5), photosDeleted: 0, videosCompressed: 1, bytesFreed: 1_159_000_000),
+            CleanupEvent(date: date(year: 2026, month: 11, day: 6), photosDeleted: 2, bytesFreed: 8_000_000),
+        ]
+        let total = CleanupHistory.freedThisMonth(
+            events: events, now: date(year: 2026, month: 11, day: 18), calendar: calendar)
+        XCTAssertEqual(total.photos, 2)
+        XCTAssertEqual(total.videos, 1)
+        XCTAssertEqual(total.bytes, 1_167_000_000)
     }
 
     func testIgnoresOtherMonthsAndYears() {
@@ -49,11 +62,12 @@ final class CleanupHistoryTests: XCTestCase {
 
     func testNegativeValuesClampToZero() {
         let events = [
-            CleanupEvent(date: date(year: 2026, month: 11, day: 5), photosDeleted: -2, bytesFreed: -500),
+            CleanupEvent(date: date(year: 2026, month: 11, day: 5), photosDeleted: -2, videosCompressed: -1, bytesFreed: -500),
         ]
         let total = CleanupHistory.freedThisMonth(
             events: events, now: date(year: 2026, month: 11, day: 18), calendar: calendar)
         XCTAssertEqual(total.photos, 0)
+        XCTAssertEqual(total.videos, 0)
         XCTAssertEqual(total.bytes, 0)
     }
 }

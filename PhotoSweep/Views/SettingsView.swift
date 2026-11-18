@@ -36,12 +36,19 @@ struct SettingsView: View {
                 }
                 Section("Freed this month") {
                     let total = CleanupHistory.freedThisMonth(events: cleanups.map(\.event))
-                    if total.photos == 0 {
+                    if total.photos == 0 && total.videos == 0 {
                         Text("Nothing freed yet this month.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     } else {
-                        Text("~\(StorageEstimator.formatted(total.bytes)) freed from \(total.photos) \(total.photos == 1 ? "photo" : "photos") (estimate). Space is only actually freed once Recently Deleted is emptied.")
+                        var parts: [String] = []
+                        if total.photos > 0 {
+                            parts.append("\(total.photos) \(total.photos == 1 ? "photo" : "photos")")
+                        }
+                        if total.videos > 0 {
+                            parts.append("\(total.videos) \(total.videos == 1 ? "compressed video" : "compressed videos")")
+                        }
+                        Text("~\(StorageEstimator.formatted(total.bytes)) freed from \(parts.joined(separator: " and ")) (estimate). Space is only actually freed once Recently Deleted is emptied.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }

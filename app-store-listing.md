@@ -19,10 +19,11 @@ PhotoSweep finds them on your phone, nothing uploaded, and lets you review every
 - Blurry or dark photos, for review
 - Screenshots, grouped for bulk review
 - Large videos, largest first
+- Video compression: shrink a large video to HEVC instead of deleting it, with a before/after size estimate
 
 You pick the keeper. You confirm the delete. Deleted photos go to Recently Deleted, where you can recover them for 30 days.
 
-No weekly plan. No auto-delete. No account, no ads, nothing uploaded. Free scans and reviews forever. Pro ($29.99/year or $39.99 once) adds unlimited deletes, large-video cleanup, and export.
+No weekly plan. No auto-delete. No account, no ads, nothing uploaded. Free scans and reviews forever. Pro ($29.99/year or $39.99 once) adds unlimited deletes, large-video cleanup, video compression, and export.
 
 Note: Apple Photos already finds exact duplicates free (Duplicates album). PhotoSweep finds what it doesn't: similar and burst shots, blurry photos, screenshots, and large videos. Storage figures are estimates. Photos may report slightly different sizes, and space is only freed once Recently Deleted is emptied.
 

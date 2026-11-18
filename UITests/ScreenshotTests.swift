@@ -1,6 +1,6 @@
 import XCTest
 
-/// App Store screenshot lane — 7 shots on the iPhone 17 Pro Max simulator.
+/// App Store screenshot lane — 9 shots on the iPhone 17 Pro Max simulator.
 /// Real simulator screenshots of the real app, never mockups. The app runs
 /// in `--screenshot-mode`: the scan result is the fixed synthetic sample
 /// (no real photos, no network) and thumbnails are programmatically
@@ -90,6 +90,27 @@ final class ScreenshotTests: XCTestCase {
         compareButton.tap()
         XCTAssertTrue(app.buttons["compare-keep-button"].waitForExistence(timeout: 10))
         saveScreenshot(named: "08-compare")
+    }
+
+    // MARK: - 09 Video compression
+
+    /// The compress sheet for the largest sample video: three presets
+    /// with before/after estimates, then the simulated run to its done
+    /// state. Screenshot mode simulates the export (no real library),
+    /// so this captures the real sheet UI end to end. Not one of the
+    /// 7 listing shots — an extra capture that proves the PS-1 video
+    /// compression feature renders.
+    func test09VideoCompress() {
+        app.tabBars.buttons["Videos"].tap()
+        let compressButton = app.buttons["video-compress-button-sample-video-0"]
+        XCTAssertTrue(compressButton.waitForExistence(timeout: 10))
+        compressButton.tap()
+        XCTAssertTrue(app.staticTexts["Compress video"].waitForExistence(timeout: 10))
+        let startButton = app.buttons["compress-start-button"]
+        XCTAssertTrue(startButton.waitForExistence(timeout: 10))
+        startButton.tap()
+        XCTAssertTrue(app.staticTexts["compress-done-label"].waitForExistence(timeout: 15))
+        saveScreenshot(named: "09-video-compress")
     }
 
     // MARK: - Helper

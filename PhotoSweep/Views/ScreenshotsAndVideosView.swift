@@ -105,6 +105,7 @@ struct LargeVideosView: View {
     @State private var selected: Set<String> = []
     @State private var showingConfirm = false
     @State private var showingPaywall = false
+    @State private var compressItem: PhotoItem?
 
     private var videos: [PhotoItem] {
         appState.largeVideos
@@ -126,7 +127,7 @@ struct LargeVideosView: View {
                 } else {
                     List {
                         Section {
-                            Text("\(videos.count) large videos, ~\(StorageEstimator.formatted(totalBytes)) total (estimate). Video cleanup is a Pro feature.")
+                            Text("\(videos.count) large videos, ~\(StorageEstimator.formatted(totalBytes)) total (estimate). Video cleanup is a Pro feature. Compress shrinks a video instead of deleting it: the smaller copy stays, the original goes to Recently Deleted.")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -143,6 +144,12 @@ struct LargeVideosView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 Spacer()
+                                Button("Compress") {
+                                    compressItem = item
+                                }
+                                .buttonStyle(.bordered)
+                                .controlSize(.small)
+                                .accessibilityIdentifier("video-compress-button-\(item.id)")
                                 if store.isPro {
                                     Image(systemName: selected.contains(item.id) ? "checkmark.circle.fill" : "circle")
                                         .foregroundStyle(selected.contains(item.id) ? Color.accentColor : Color.secondary)
@@ -179,6 +186,9 @@ struct LargeVideosView: View {
                 }
             }
             .navigationTitle("Large Videos")
+            .sheet(item: $compressItem) { item in
+                VideoCompressView(item: item)
+            }
             .alert("Move to Recently Deleted?", isPresented: $showingConfirm) {
                 Button("Cancel", role: .cancel) {}
                 Button("Delete \(selected.count)", role: .destructive) {
