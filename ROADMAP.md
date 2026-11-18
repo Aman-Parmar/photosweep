@@ -15,7 +15,7 @@
 
 - Scan a real 10,000-photo library: wall-clock, memory, grouping quality. Tune the ~0.35 threshold and the neighbour window from real results.
 - Verify the keeper picker on real bursts (sharpest frame vs. best moment are not always the same photo).
-- Real 1024x1024 App Icon.
+- Real 1024x1024 App Icon. Done 2026-11-18: blue gradient, three photo cards with a broom sweeping duplicates away; all sizes in `AppIcon.appiconset`, verified at 120px.
 - photosweep.singhsec.com support + privacy pages live.
 
 ## v1.2 — Polish

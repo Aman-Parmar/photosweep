@@ -94,7 +94,6 @@ xcodebuild test -scheme PhotoSweep \
 
 - Apple Developer enrolment ($99) + App Store Connect setup, Paid Apps Agreement + bank/tax, Small Business Program — before TestFlight or submission.
 - Signing: App Store Connect API key (.p8), Team ID, and (later) Fastlane Match secrets, stored as GitHub Actions secrets — never in this repo.
-- Real 1024x1024 App Icon (the repo only has the `Contents.json` sizes file).
 - Support + privacy pages live before submission: `https://photosweep.singhsec.com/photosweep-support` and `https://photosweep.singhsec.com/photosweep-privacy` (same pattern as Clear Days).
 - Real-device verification of a large library: scan wall-clock and grouping quality on a 10,000-photo library cannot be verified in the simulator.
 
