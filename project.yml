@@ -62,6 +62,13 @@ targets:
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         NSPhotoLibraryUsageDescription: "PhotoSweep scans your photo library on-device to find duplicates, similar photos, blurry shots, screenshots and large videos for you to review. Your photos never leave this phone."
+        # Launch screen (Clear Days pattern). Without UILaunchStoryboardName
+        # iOS runs the app letterboxed at the iPhone 4S size (320x480pt,
+        # scaled to screen width) — run 44240431584 screenshots proved
+        # it: 1320x2868 captures with the app in a 1320x1980 band and
+        # 444px black bars top and bottom. The storyboard also fixes the
+        # letterbox on real devices.
+        UILaunchStoryboardName: "LaunchScreen"
   PhotoSweepTests:
     type: bundle.unit-test
     platform: iOS

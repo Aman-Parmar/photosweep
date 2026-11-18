@@ -32,10 +32,7 @@ final class ScreenshotTests: XCTestCase {
 
     func test02DuplicatesGroupReview() {
         app.tabBars.buttons["Results"].tap()
-        let row = app.buttons["results-group-duplicates-0"]
-        XCTAssertTrue(row.waitForExistence(timeout: 10))
-        row.tap()
-        XCTAssertTrue(app.buttons["group-delete-button"].waitForExistence(timeout: 10))
+        openGroup(rowID: "results-group-duplicates-0")
         saveScreenshot(named: "02-duplicates-review")
     }
 
@@ -43,10 +40,7 @@ final class ScreenshotTests: XCTestCase {
 
     func test03SimilarGroupReview() {
         app.tabBars.buttons["Results"].tap()
-        let row = app.buttons["results-group-similar-0"]
-        XCTAssertTrue(row.waitForExistence(timeout: 10))
-        row.tap()
-        XCTAssertTrue(app.buttons["group-delete-button"].waitForExistence(timeout: 10))
+        openGroup(rowID: "results-group-similar-0")
         saveScreenshot(named: "03-similar-review")
     }
 
@@ -54,10 +48,7 @@ final class ScreenshotTests: XCTestCase {
 
     func test04BlurryGroupReview() {
         app.tabBars.buttons["Results"].tap()
-        let row = app.buttons["results-group-blurry-0"]
-        XCTAssertTrue(row.waitForExistence(timeout: 10))
-        row.tap()
-        XCTAssertTrue(app.buttons["group-delete-button"].waitForExistence(timeout: 10))
+        openGroup(rowID: "results-group-blurry-0")
         saveScreenshot(named: "04-blurry-review")
     }
 
@@ -87,6 +78,25 @@ final class ScreenshotTests: XCTestCase {
     }
 
     // MARK: - Helper
+
+    /// Opens a group from the Results list and waits for the review
+    /// screen's delete button. The row tap is retried once: on the
+    /// slow CI simulator the first tap can land while the list is
+    /// still settling (run 44240431584: test04's row took ~9s to
+    /// appear and the tap missed navigation, so the delete button
+    /// never appeared). A missed tap leaves the row on screen, so a
+    /// second tap is safe; a successful tap removes the row, so the
+    /// retry is skipped.
+    private func openGroup(rowID: String) {
+        let row = app.buttons[rowID]
+        XCTAssertTrue(row.waitForExistence(timeout: 15))
+        row.tap()
+        if !app.buttons["group-delete-button"].waitForExistence(timeout: 5),
+           row.waitForExistence(timeout: 2) {
+            row.tap()
+        }
+        XCTAssertTrue(app.buttons["group-delete-button"].waitForExistence(timeout: 10))
+    }
 
     /// Saves the screenshot both as an XCTAttachment (in the xcresult) and
     /// as a PNG in /tmp/photosweep-screenshots, which CI uploads as an
