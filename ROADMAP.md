@@ -16,7 +16,7 @@
 - Scan a real 10,000-photo library: wall-clock, memory, grouping quality. Tune the ~0.35 threshold and the neighbour window from real results.
 - Verify the keeper picker on real bursts (sharpest frame vs. best moment are not always the same photo).
 - Real 1024x1024 App Icon. Done 2026-11-18: blue gradient, three photo cards with a broom sweeping duplicates away; all sizes in `AppIcon.appiconset`, verified at 120px.
-- photosweep.singhsec.com support + privacy pages live.
+- photosweep.singhsec.com support + privacy pages live. Done 2026-11-18: subdomain created on Hostinger with Lifetime SSL; static HTML in `website/` uploaded as `photosweep-support/index.html` and `photosweep-privacy/index.html` (clean URLs needed the folder form); verified live at https://photosweep.singhsec.com/photosweep-support and https://photosweep.singhsec.com/photosweep-privacy, exact text matches the repo files.
 
 ## v1.2 — Polish
 
