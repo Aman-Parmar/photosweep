@@ -20,8 +20,8 @@
 
 ## v1.2 — Polish
 
-- Video thumbnails and duration in group review (currently the Videos tab only).
-- "Similar" explanation: show the two photos side by side when the user taps a group member.
+- Video thumbnails and duration in group review: NOT APPLICABLE — videos are never grouped (GroupingEngine pulls them out first, by design); they already show thumbnails and duration in the Large Videos tab, which is the only place videos appear.
+- "Similar" explanation: show the two photos side by side when the user taps a group member. Done 2026-11-18: every non-keeper tile has a compare button (bottom-right) opening a sheet with the keeper and the tapped photo side by side, file size and dimensions, and a "Keep this photo instead" button. Covered by screenshot test 08-compare (extra capture, not one of the 7 listing shots).
 - Widgets: "storage freed this month" glance (only if it earns its place — no widget for its own sake).
 
 ## v2 — Only if v1 earns it

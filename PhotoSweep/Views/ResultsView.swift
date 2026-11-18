@@ -162,6 +162,7 @@ struct GroupReviewView: View {
     @State private var showingPaywall = false
     @State private var deleted = false
     @State private var deleteFailed = false
+    @State private var compareItem: PhotoItem?
 
     init(group: PhotoGroup) {
         self.group = group
@@ -187,33 +188,53 @@ struct GroupReviewView: View {
                     .foregroundStyle(.secondary)
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
                     ForEach(group.items) { item in
-                        Button {
-                            keeperID = item.id
-                        } label: {
-                            ZStack(alignment: .topLeading) {
-                                PhotoThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
-                                    .frame(height: 110)
-                                    .cornerRadius(10)
-                                if item.id == keeperID {
-                                    Text("KEEP")
-                                        .font(.caption2.bold())
-                                        .padding(.horizontal, 6)
-                                        .padding(.vertical, 3)
-                                        .background(Color.accentColor, in: Capsule())
-                                        .foregroundStyle(.white)
-                                        .padding(6)
-                                } else {
-                                    Image(systemName: "trash")
+                        ZStack(alignment: .topLeading) {
+                            PhotoThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
+                                .frame(height: 110)
+                                .cornerRadius(10)
+                            if item.id == keeperID {
+                                Text("KEEP")
+                                    .font(.caption2.bold())
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 3)
+                                    .background(Color.accentColor, in: Capsule())
+                                    .foregroundStyle(.white)
+                                    .padding(6)
+                            } else {
+                                Image(systemName: "trash")
+                                    .font(.caption)
+                                    .padding(6)
+                                    .background(Color.black.opacity(0.55), in: Circle())
+                                    .foregroundStyle(.white)
+                                    .padding(6)
+                            }
+                        }
+                        .overlay(alignment: .bottomTrailing) {
+                            // Compare: side by side with the keeper, so
+                            // the user can judge whether the two really
+                            // are the same shot before deleting.
+                            if item.id != keeperID {
+                                Button {
+                                    compareItem = item
+                                } label: {
+                                    Image(systemName: "rectangle.on.rectangle")
                                         .font(.caption)
                                         .padding(6)
                                         .background(Color.black.opacity(0.55), in: Circle())
                                         .foregroundStyle(.white)
-                                        .padding(6)
                                 }
+                                .buttonStyle(.plain)
+                                .accessibilityIdentifier("group-compare-\(item.id)")
+                                .accessibilityLabel("Compare this photo with the keeper")
+                                .padding(6)
                             }
                         }
-                        .buttonStyle(.plain)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            keeperID = item.id
+                        }
                         .accessibilityIdentifier("group-item-\(item.id)")
+                        .accessibilityAddTraits(.isButton)
                         .accessibilityLabel(item.id == keeperID ? "Keep this photo" : "Delete this photo")
                     }
                 }
@@ -229,7 +250,7 @@ struct GroupReviewView: View {
                         showingPaywall = true
                     }
                 } label: {
-                    Text("Delete \(deletable.count) photo\(deletable.count == 1 ? "" : "s") — \(StorageEstimator.freesLabel(reclaimable))")
+                    Text("Delete \(deletable.count) photo\(deletable.count == 1 ? "" : "s") - \(StorageEstimator.freesLabel(reclaimable))")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
@@ -242,7 +263,7 @@ struct GroupReviewView: View {
                         .foregroundStyle(.secondary)
                 }
                 if deleteFailed {
-                    Text("Delete failed. Nothing was removed — try again.")
+                    Text("Delete failed. Nothing was removed - try again.")
                         .font(.caption)
                         .foregroundStyle(.red)
                 }
@@ -270,5 +291,86 @@ struct GroupReviewView: View {
         .sheet(isPresented: $showingPaywall) {
             PaywallView()
         }
+        .sheet(item: $compareItem) { item in
+            if let keeper = group.items.first(where: { $0.id == keeperID }) {
+                CompareView(
+                    item: item,
+                    keeper: keeper,
+                    matchReason: group.matchReason
+                ) {
+                    keeperID = item.id
+                    compareItem = nil
+                }
+            }
+        }
+    }
+}
+
+/// Side-by-side comparison of one group member with the keeper, so the
+/// user can judge whether the two really are the same shot before
+/// deleting one of them. The keeper stays on the left; the photo being
+/// compared is on the right.
+struct CompareView: View {
+    let item: PhotoItem
+    let keeper: PhotoItem
+    let matchReason: String
+    let onKeepItem: () -> Void
+
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text(matchReason)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    HStack(alignment: .top, spacing: 12) {
+                        CompareColumn(title: "Keeper", item: keeper, isKeeper: true)
+                        CompareColumn(title: "This photo", item: item, isKeeper: false)
+                    }
+                    Button("Keep this photo instead") {
+                        onKeepItem()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .frame(maxWidth: .infinity)
+                    .accessibilityIdentifier("compare-keep-button")
+                    Button("Close") {
+                        dismiss()
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .frame(maxWidth: .infinity)
+                }
+                .padding()
+            }
+            .navigationTitle("Compare")
+            .navigationBarTitleDisplayMode(.inline)
+            .accessibilityIdentifier("compare-sheet")
+        }
+    }
+}
+
+private struct CompareColumn: View {
+    let title: String
+    let item: PhotoItem
+    let isKeeper: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(isKeeper ? Color.accentColor : Color.primary)
+            PhotoThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
+                .frame(height: 220)
+                .cornerRadius(10)
+            Text(StorageEstimator.formatted(item.fileSize))
+                .font(.subheadline)
+            Text("\(item.width) x \(item.height) px")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }

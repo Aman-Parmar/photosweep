@@ -77,6 +77,21 @@ final class ScreenshotTests: XCTestCase {
         saveScreenshot(named: "07-paywall")
     }
 
+    // MARK: - 08 Compare with keeper
+
+    /// The compare sheet: a non-keeper burst frame side by side with
+    /// the keeper. Not one of the 7 listing shots — an extra capture
+    /// that proves the v1.2 compare feature renders.
+    func test08Compare() {
+        app.tabBars.buttons["Results"].tap()
+        openGroup(rowID: "results-group-similar-0")
+        let compareButton = app.buttons["group-compare-sample-burst-1"]
+        XCTAssertTrue(compareButton.waitForExistence(timeout: 10))
+        compareButton.tap()
+        XCTAssertTrue(app.buttons["compare-keep-button"].waitForExistence(timeout: 10))
+        saveScreenshot(named: "08-compare")
+    }
+
     // MARK: - Helper
 
     /// Opens a group from the Results list and waits for the review
