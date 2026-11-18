@@ -54,13 +54,18 @@ enum SampleImageGenerator {
                 cg.fillPath()
             }
             // "SAMPLE" tag, bottom-left, so no one mistakes this for a
-            // real photo.
+            // real photo. Drawn well inside the image, not at the very
+            // bottom edge: tiles show the image with scaledToFill, and
+            // the wider tiles (video thumbs ~1.35 aspect) crop ~13% off
+            // the bottom, which used to slice the tag in half in the
+            // group-review shots. A 66pt bottom margin keeps it whole
+            // in every tile shape.
             let label = "SAMPLE"
             let attributes: [NSAttributedString.Key: Any] = [
                 .font: UIFont.boldSystemFont(ofSize: 13),
                 .foregroundColor: UIColor.white,
             ]
-            label.draw(at: CGPoint(x: 10, y: size.height - 26), withAttributes: attributes)
+            label.draw(at: CGPoint(x: 10, y: size.height - 82), withAttributes: attributes)
         }
     }
 
