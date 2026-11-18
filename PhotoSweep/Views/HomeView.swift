@@ -162,16 +162,21 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("How it works")
                 .font(.headline)
+            // One line per step, on purpose: the whole section has to
+            // fit above the floating tab bar at rest in shot 01 (a
+            // scroll to reveal it ghosts the header under the nav bar).
+            // test01 asserts step 3 is hittable, so a future wrap fails
+            // loudly in CI instead of silently cutting the shot.
             ForEach(Array([
-                "1. Scan: your photos are compared on-device. Nothing is uploaded.",
-                "2. Review: every group shows its photos. Pick the keeper; the rest are proposed for deletion.",
-                "3. Delete: only when you confirm. Deleted photos go to Recently Deleted for 30 days, so you can undo.",
+                "1. Scan on-device. Nothing is uploaded.",
+                "2. Review: pick the keeper, the rest are proposed.",
+                "3. Delete only when you confirm. Undo for 30 days.",
             ].enumerated()), id: \.offset) { index, line in
                 Text(line)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                    // Identifier for the screenshot lane: test01 drags
-                    // until step 3 is hittable above the tab bar.
+                    // Identifier for the screenshot lane: test01 asserts
+                    // step 3 is hittable above the tab bar.
                     .accessibilityIdentifier("how-it-works-step-\(index + 1)")
             }
             // No footer caption here: the Apple Photos note lives in

@@ -25,29 +25,15 @@ final class ScreenshotTests: XCTestCase {
     func test01HomeScan() {
         app.tabBars.buttons["Scan"].tap()
         XCTAssertTrue(app.staticTexts["reclaimable-total"].waitForExistence(timeout: 10))
-        // The Home content is taller than the viewport, so at rest the
-        // "How it works" steps sit partly behind the floating tab bar
-        // (the 96pt bottom padding only clears them at max scroll).
-        // Drag up just enough to bring step 3 fully above the bar; the
-        // summary card stays in frame. Retried once if the drag
-        // under-scrolls on the slow CI simulator.
-        scrollHowItWorksIntoView()
-        saveScreenshot(named: "01-home-scan")
-    }
-
-    /// Drags the Home scroll view up until "How it works" step 3 is
-    /// hittable, i.e. no longer covered by the floating tab bar.
-    private func scrollHowItWorksIntoView() {
+        // The "How it works" steps are one line each so the whole
+        // section fits above the floating tab bar at rest: no scroll,
+        // because scrolling ghosts the header under the translucent
+        // nav bar (QA FAIL on b3f66d2). Fail loudly if a step is ever
+        // covered again instead of silently capturing a cut shot.
         let step3 = app.staticTexts["how-it-works-step-3"]
         XCTAssertTrue(step3.waitForExistence(timeout: 10))
-        for _ in 0..<2 {
-            if step3.isHittable { return }
-            let start = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.7))
-            let end = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55))
-            start.press(forDuration: 0.2, thenDragTo: end)
-            _ = step3.waitForExistence(timeout: 2)
-        }
         XCTAssertTrue(step3.isHittable, "How it works step 3 should clear the tab bar")
+        saveScreenshot(named: "01-home-scan")
     }
 
     // MARK: - 02 Duplicates group review
@@ -102,8 +88,8 @@ final class ScreenshotTests: XCTestCase {
     // MARK: - 08 Compare with keeper
 
     /// The compare sheet: a non-keeper burst frame side by side with
-    /// the keeper. Not one of the 7 listing shots — an extra capture
-    /// that proves the v1.2 compare feature renders.
+    /// the keeper. Listing shot 8; it proves the v1.2 compare feature
+    /// renders.
     func test08Compare() {
         app.tabBars.buttons["Results"].tap()
         openGroup(rowID: "results-group-similar-0")
@@ -119,9 +105,8 @@ final class ScreenshotTests: XCTestCase {
     /// The compress sheet for the largest sample video: three presets
     /// with before/after estimates, then the simulated run to its done
     /// state. Screenshot mode simulates the export (no real library),
-    /// so this captures the real sheet UI end to end. Not one of the
-    /// 7 listing shots — an extra capture that proves the PS-1 video
-    /// compression feature renders.
+    /// so this captures the real sheet UI end to end. Listing shot 9;
+    /// it proves the PS-1 video compression feature renders.
     func test09VideoCompress() {
         app.tabBars.buttons["Videos"].tap()
         let compressButton = app.buttons["video-compress-button-sample-video-0"]
@@ -141,8 +126,8 @@ final class ScreenshotTests: XCTestCase {
     /// and still sizes with the saving estimate, then the simulated
     /// run to its done state. Screenshot mode simulates the
     /// conversion (no real library), so this captures the real sheet
-    /// UI end to end. Not one of the 7 listing shots — an extra
-    /// capture that proves the PS-3 Live Photo conversion renders.
+    /// UI end to end. Listing shot 10; it proves the PS-3 Live Photo
+    /// conversion renders.
     func test10LivePhotoConvert() {
         app.tabBars.buttons["Scan"].tap()
         let card = app.buttons["home-category-livephotos"]
