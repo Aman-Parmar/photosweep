@@ -1,39 +1,49 @@
-# PhotoSweep — Roadmap
+# PhotoSweep — Roadmap (agile, living)
 
-## v1 (this scaffold — shipped)
+Agile model since 2026-11-18 (Aman: adopt agile, not waterfall). One-week sprints, Monday planning, Friday review. This file is the single source of truth for what gets built: the Researcher scores backlog items by market evidence, the PM picks the Sprint Backlog, the Developer loop builds it in order, QA verifies each item independently. Nothing moves here without evidence — pre-launch the evidence is competitor reviews, pricing, and ASO; post-launch it is real downloads, conversion, retention, and App Store reviews.
+
+## Shipped (v1, code-complete, not yet submitted)
 
 - XcodeGen project (com.singhsec.photosweep, iOS 17+, SwiftUI, iPhone-only)
-- Pure-logic layer, Linux-tested: SimilarityEngine (feature distance, exact-hash, blurry/dark, burst), GroupingEngine (neighbour-window grouping, large-video ranking), KeeperPicker (sharpest → most pixels → largest file → earliest), StorageEstimator (estimates, always labelled as such)
+- Pure-logic layer, Linux-tested: SimilarityEngine, GroupingEngine (neighbour-window grouping, large-video ranking), KeeperPicker, StorageEstimator
 - PhotoKit scanner: on-device only, limited-access aware, average-hash similarity + gradient-energy sharpness, deletion via PHAssetChangeRequest to Recently Deleted
-- Views: Home scan, Results grouped by category, Group review with keeper pick, Screenshots bulk review, Large videos, Paywall, Settings
-- StoreKit 2: Pro $29.99/yr (7-day trial, App Store Connect) / $39.99 lifetime, no weekly plan, no monthly tier
-- Cleanup report export (CSV, Pro): one row per group plus large videos, with scan totals — the benefit the paywall, README and listing already promised
-- CI: Linux first, then macOS test + 7-shot screenshot lanes in parallel; docs-only skips CI; cancel in-flight
-- Docs: README, VALIDATION, ROADMAP, SUBSCRIPTION_PLAN, app-store-listing, privacy-policy
+- Views: Home scan, Results grouped by category, Group review with keeper pick, side-by-side compare, Screenshots bulk review, Large videos, Paywall, Settings
+- StoreKit 2: Pro $29.99/yr (7-day trial) / $39.99 lifetime, no weekly plan, free 20 deletes
+- Cleanup report export (CSV, Pro)
+- Real 1024x1024 app icon; photosweep.singhsec.com support + privacy pages live
+- CI: Linux first, then macOS test + 8-shot screenshot lanes in parallel; docs-only skips CI; cancel in-flight
 
-## v1.1 — Real-device verification (needs Aman's iPhone + enrolment)
+## Sprint 1 — 2026-11-18 to 2026-11-24 (in progress)
 
-- Scan a real 10,000-photo library: wall-clock, memory, grouping quality. Tune the ~0.35 threshold and the neighbour window from real results.
-- Verify the keeper picker on real bursts (sharpest frame vs. best moment are not always the same photo).
-- Real 1024x1024 App Icon. Done 2026-11-18: blue gradient, three photo cards with a broom sweeping duplicates away; all sizes in `AppIcon.appiconset`, verified at 120px.
-- photosweep.singhsec.com support + privacy pages live. Done 2026-11-18: subdomain created on Hostinger with Lifetime SSL; static HTML in `website/` uploaded as `photosweep-support/index.html` and `photosweep-privacy/index.html` (clean URLs needed the folder form); verified live at https://photosweep.singhsec.com/photosweep-support and https://photosweep.singhsec.com/photosweep-privacy, exact text matches the repo files.
+Sprint goal: close the biggest market gaps that cost conversion, without touching the trust wedge.
 
-## v1.2 — Polish
+- **PS-1 Video compression (HEVC, on-device)** — medium. Evidence: in every top-5 cleaner; Cleanup's compressor called "genuinely its best tool". Acceptance: 3 presets, size preview before/after, progress UI, original goes to Recently Deleted. Converts without deleting memories.
+- **PS-2 Free-tier generosity + trust positioning** — small. DECISION NEEDED from Aman: first full cleanup free, or raise free deletes from 20 to 100. Evidence: 20 deletes is the stingiest honest free tier (Clever Cleaner gives a daily allowance plus unlimited Swipe free); "free" claims that aren't are exactly what 1-star reviews punish. Acceptance: config + paywall copy "No weekly plan. Ever." No weekly plan anywhere, ever.
+- **PS-3 Live Photo to still conversion** — small-medium. Evidence: listed by Clever Cleaner, CleanMyPhone, Cleanup; Live Photos run 1.5-3x a still. Acceptance: convert keeps the still, original to Recently Deleted, GB saved shown.
+- **PS-4 (stretch, pending Aman's call) Vision feature prints** — medium. Replaces the average hash with `VNFeaturePrintObservation.computeDistance`. Evidence: competitors market "AI grouping"; Cleanup mislabels ~3% of flagged duplicates. Offered to Aman 2026-11-18, awaiting his call.
 
-- Video thumbnails and duration in group review: NOT APPLICABLE — videos are never grouped (GroupingEngine pulls them out first, by design); they already show thumbnails and duration in the Large Videos tab, which is the only place videos appear.
-- "Similar" explanation: show the two photos side by side when the user taps a group member. Done 2026-11-18: every non-keeper tile has a compare button (bottom-right) opening a sheet with the keeper and the tapped photo side by side, file size and dimensions, and a "Keep this photo instead" button. Covered by screenshot test 08-compare (extra capture, not one of the 7 listing shots).
-- Widgets: "storage freed this month" glance (only if it earns its place — no widget for its own sake). Data layer done 2026-11-18: every confirmed deletion records a `CleanupEvent` (date, photos, bytes) in SwiftData, and Settings shows the freed-this-month total. The widget extension itself still needs an App Group to share the store, which needs enrolment (Team ID) — build it after enrolment.
+## Next (prioritised backlog, evidence-scored)
 
-## v2 — Only if v1 earns it
+- **Swipe mode, month-by-month, with undo + progress** — large. Needs Architect design first (new flow, deck, undo, per-month progress). Evidence: the category's dominant UX; 5-star praise is built on it ("fun", "1,000 photos a day", "use almost daily"). The habit loop. Sequence after PS-1/PS-3.
+- **Storage widget + weekly "new clutter" nudge** — small-medium. BLOCKED on enrolment (needs App Group + Team ID). Evidence: widgets shipped by Clean AI, CleanX, Smart Cleaner, Swipewipe; the only honest re-engagement surface for a utility. Build after enrolment.
+- **On This Day + streaks** — medium, only after swipe mode. Evidence: Swipewipe's retention engine, 5-star daily use. Pointless without swipe mode first.
+- **Real-device verification (v1.1)** — needs Aman's iPhone + enrolment. Scan a real 10,000-photo library: wall-clock, memory, grouping quality. Tune the ~0.35 threshold and neighbour window from real results. Verify keeper picker on real bursts.
 
-- `VNFeaturePrintObservation.computeDistance` in-memory (replaces the average hash when observations can be kept alive for a scan).
-- A dedicated blur detector (Laplacian variance) instead of the gradient-energy proxy.
-- Live Photos: treat a Live Photo and its still as one item.
+## Later / unsequenced
+
+- Dedicated blur detector (Laplacian variance) instead of the gradient-energy proxy.
+- Live Photos: treat a Live Photo and its still as one item (partly covered by PS-3).
 - iCloud-only assets: download-on-demand progress instead of skipping silently.
 
-## Deliberately not on the roadmap
+## Deliberately not building
 
+- **Weekly subscription, ever.** The category's #1 complaint (18-28% of low-star reviews; $310-623/year annualised). It would destroy the trust wedge.
 - Auto-delete, scheduled cleaning, or cleaning without review.
-- Cloud backup, sync, or any server.
-- Weekly subscription, ads, or selling a "storage booster" that is just the iOS Settings page.
-- Social sharing of "I freed X GB" (a cleaner is a utility, not a streak).
+- Cloud backup, sync, or any server. Cloud AI enhancement (breaks the on-device privacy promise).
+- Email cleanup and contact merge (low real value, highest-risk extra; Cleaner Guru over-deleted contacts).
+- Secret vault, system/cache/RAM cleaning claims (impossible on iOS; roundups penalise them).
+- Social sharing of "I freed X GB".
+
+## Kill gate
+
+90 days after launch: if weekly active cleaners are near zero and Pro conversion is zero, stop adding features to save it. Do not build swipe mode or any large item to rescue a dead app.
