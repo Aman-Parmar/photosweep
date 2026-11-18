@@ -11,7 +11,7 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 8) {
                     header
                     if let result = appState.result {
                         summaryCard(result)
@@ -153,7 +153,7 @@ struct HomeView: View {
     }
 
     private var howItWorks: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 4) {
             Text("How it works")
                 .font(.headline)
             ForEach([
