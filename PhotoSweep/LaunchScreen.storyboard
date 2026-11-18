@@ -35,7 +35,7 @@
                         <constraints>
                             <constraint firstItem="Sun-1m-aRk" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Cen-X-Sun"/>
                             <constraint firstItem="Sun-1m-aRk" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-40" id="Cen-Y-Sun"/>
-                            <constraint firstItem="Lbl-2n-bQq" firstAttribute="top" secondItem="Sun-1m-aRk" firstAttribute="bottom" constant="16" id="Top-Lbl"/>
+                            <constraint firstItem="Lbl-2n-bQq" firstAttribute="top" secondItem="Sun-1m-aRk" secondAttribute="bottom" constant="16" id="Top-Lbl"/>
                             <constraint firstItem="Lbl-2n-bQq" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Cen-X-Lbl"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
