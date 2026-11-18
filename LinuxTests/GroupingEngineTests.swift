@@ -176,9 +176,9 @@ final class GroupingEngineTests: XCTestCase {
 
     func testLargeVideosRankedLargestFirst() {
         let items = [
-            item(id: "v-small", video: true, size: 50_000_000, duration: 30),
-            item(id: "v-mid", video: true, size: 850_000_000, duration: 96),
-            item(id: "v-big", video: true, size: 1_250_000_000, duration: 182),
+            item(id: "v-small", size: 50_000_000, video: true, duration: 30),
+            item(id: "v-mid", size: 850_000_000, video: true, duration: 96),
+            item(id: "v-big", size: 1_250_000_000, video: true, duration: 182),
         ]
         let (groups, largeVideos) = GroupingEngine.group(items)
         XCTAssertTrue(groups.isEmpty, "Videos are never photo groups")
@@ -186,7 +186,7 @@ final class GroupingEngineTests: XCTestCase {
     }
 
     func testVideosUnderThresholdAreNotListed() {
-        let items = [item(id: "v-small", video: true, size: 99_000_000, duration: 30)]
+        let items = [item(id: "v-small", size: 99_000_000, video: true, duration: 30)]
         let (_, largeVideos) = GroupingEngine.group(items)
         XCTAssertTrue(largeVideos.isEmpty)
     }
