@@ -41,14 +41,7 @@ struct SettingsView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     } else {
-                        var parts: [String] = []
-                        if total.photos > 0 {
-                            parts.append("\(total.photos) \(total.photos == 1 ? "photo" : "photos")")
-                        }
-                        if total.videos > 0 {
-                            parts.append("\(total.videos) \(total.videos == 1 ? "compressed video" : "compressed videos")")
-                        }
-                        Text("~\(StorageEstimator.formatted(total.bytes)) freed from \(parts.joined(separator: " and ")) (estimate). Space is only actually freed once Recently Deleted is emptied.")
+                        Text(freedSummary(total: total))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -112,6 +105,21 @@ struct SettingsView: View {
                 }
             }
         }
+    }
+
+    /// The "freed this month" line: "~1.1 GB freed from 3 photos and
+    /// 1 compressed video (estimate)...". A plain function, not view
+    /// builder code: a bare `if` inside a ViewBuilder builds a view,
+    /// so the parts list has to be assembled here.
+    private func freedSummary(total: (photos: Int, videos: Int, bytes: Int64)) -> String {
+        var parts: [String] = []
+        if total.photos > 0 {
+            parts.append("\(total.photos) \(total.photos == 1 ? "photo" : "photos")")
+        }
+        if total.videos > 0 {
+            parts.append("\(total.videos) \(total.videos == 1 ? "compressed video" : "compressed videos")")
+        }
+        return "~\(StorageEstimator.formatted(total.bytes)) freed from \(parts.joined(separator: " and ")) (estimate). Space is only actually freed once Recently Deleted is emptied."
     }
 
     private var privacyText: String {
