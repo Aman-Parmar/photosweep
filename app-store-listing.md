@@ -39,7 +39,7 @@ photo cleaner, duplicate photos, similar photos, burst photos, screenshots, larg
 - Privacy policy: https://photosweep.singhsec.com/photosweep-privacy
 - Support: https://photosweep.singhsec.com/photosweep-support
 
-## Screenshots (7, iPhone 17 Pro Max)
+## Screenshots (10, iPhone 17 Pro Max)
 
 1. Home scan: summary and category cards
 2. Duplicates group review: keeper marked, delete proposed
@@ -48,6 +48,9 @@ photo cleaner, duplicate photos, similar photos, burst photos, screenshots, larg
 5. Screenshots: bulk review
 6. Large videos: largest first
 7. Paywall: yearly $29.99 (7-day trial) / lifetime $39.99, no weekly plan
+8. Compare with keeper: burst frames side by side, pick the best
+9. Video compression: shrink a video to HEVC, presets with before/after size estimates
+10. Live Photos: convert one to a still photo, about half the size
 
 ## Review notes for Apple
 

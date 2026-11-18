@@ -162,14 +162,17 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("How it works")
                 .font(.headline)
-            ForEach([
+            ForEach(Array([
                 "1. Scan: your photos are compared on-device. Nothing is uploaded.",
                 "2. Review: every group shows its photos. Pick the keeper; the rest are proposed for deletion.",
                 "3. Delete: only when you confirm. Deleted photos go to Recently Deleted for 30 days, so you can undo.",
-            ], id: \.self) { line in
+            ].enumerated()), id: \.offset) { index, line in
                 Text(line)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                    // Identifier for the screenshot lane: test01 drags
+                    // until step 3 is hittable above the tab bar.
+                    .accessibilityIdentifier("how-it-works-step-\(index + 1)")
             }
             // No footer caption here: the Apple Photos note lives in
             // Settings > About and in the listing. A caption under the

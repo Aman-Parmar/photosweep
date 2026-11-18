@@ -84,7 +84,7 @@ xcodebuild test -scheme PhotoSweep \
   -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
   -only-testing:PhotoSweepTests
 
-# Screenshots (7 shots, iPhone 17 Pro Max simulator)
+# Screenshots (10 shots, iPhone 17 Pro Max simulator)
 xcodebuild test -scheme PhotoSweep \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max,OS=latest' \
   -only-testing:PhotoSweepUITests/ScreenshotTests

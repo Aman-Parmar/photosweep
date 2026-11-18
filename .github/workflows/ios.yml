@@ -182,7 +182,7 @@ jobs:
           retention-days: 7
 
   # ------------------------------------------------------------------
-  # Job 3: macOS screenshots. The nine App Store screenshots on the
+  # Job 3: macOS screenshots. The ten App Store screenshots on the
   # iPhone 17 Pro Max simulator. Push to main only, in parallel with
   # the test job: it builds the app itself, so it does not wait for
   # the unit tests.

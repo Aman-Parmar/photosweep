@@ -32,8 +32,8 @@ Sprint goal: close the biggest market gaps that cost conversion, without touchin
 ## Later / unsequenced
 
 - **Video compression: use the source frame rate, not hardcoded 30 fps (QA-found 2026-11-18, minor, non-blocking)** — FIXED 2026-11-18 in the PS-3 commit: `VideoCompressor.export` now passes `videoTrack.nominalFrameRate` (falling back to 30 when 0/unknown). Real-device verification with a 60 fps clip still pending enrolment.
-- **app-store-listing.md "Screenshots" section is stale (QA-found 2026-11-18, minor, non-blocking)** — still says 7 shots and lists only 7; CI now produces 10 (08 compare, 09 video compress, 10 live-photo convert unlisted). Fix: update the count and the list to match the 10-shot lane.
-- **Home "How it works" text sits partly behind the floating tab bar (QA-found 2026-11-18, minor, non-blocking)** — shot 01-home-scan.png (run 44397430404): step 2/3 lines are cut by the tab bar; pre-existing, same in prior runs. Fix: add bottom padding / scroll inset so the section clears the tab bar.
+- **app-store-listing.md "Screenshots" section is stale (QA-found 2026-11-18, minor, non-blocking)** — FIXED 2026-11-18: listing, README, and workflow comment now say 10 shots and list all 10 (08 compare, 09 video compress, 10 live-photo convert).
+- **Home "How it works" text sits partly behind the floating tab bar (QA-found 2026-11-18, minor, non-blocking)** — FIXED 2026-11-18: the 96pt bottom padding already cleared the section at max scroll, but shot 01 is captured at rest, so test01 now drags up until step 3 is hittable above the bar (new `how-it-works-step-3` identifier, retry once). To be verified in the new shot 01 from the CI artifact.
 - Dedicated blur detector (Laplacian variance) instead of the gradient-energy proxy.
 - Live Photos: treat a Live Photo and its still as one item (partly covered by PS-3).
 - iCloud-only assets: download-on-demand progress instead of skipping silently.

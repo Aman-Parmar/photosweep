@@ -25,7 +25,29 @@ final class ScreenshotTests: XCTestCase {
     func test01HomeScan() {
         app.tabBars.buttons["Scan"].tap()
         XCTAssertTrue(app.staticTexts["reclaimable-total"].waitForExistence(timeout: 10))
+        // The Home content is taller than the viewport, so at rest the
+        // "How it works" steps sit partly behind the floating tab bar
+        // (the 96pt bottom padding only clears them at max scroll).
+        // Drag up just enough to bring step 3 fully above the bar; the
+        // summary card stays in frame. Retried once if the drag
+        // under-scrolls on the slow CI simulator.
+        scrollHowItWorksIntoView()
         saveScreenshot(named: "01-home-scan")
+    }
+
+    /// Drags the Home scroll view up until "How it works" step 3 is
+    /// hittable, i.e. no longer covered by the floating tab bar.
+    private func scrollHowItWorksIntoView() {
+        let step3 = app.staticTexts["how-it-works-step-3"]
+        XCTAssertTrue(step3.waitForExistence(timeout: 10))
+        for _ in 0..<2 {
+            if step3.isHittable { return }
+            let start = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.7))
+            let end = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55))
+            start.press(forDuration: 0.2, thenDragTo: end)
+            _ = step3.waitForExistence(timeout: 2)
+        }
+        XCTAssertTrue(step3.isHittable, "How it works step 3 should clear the tab bar")
     }
 
     // MARK: - 02 Duplicates group review
