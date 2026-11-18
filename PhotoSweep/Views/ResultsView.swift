@@ -12,7 +12,7 @@ struct ResultsView: View {
             Group {
                 if let result = appState.result, !result.groups.isEmpty {
                     List {
-                        ForEach(GroupKind.allCases, id: \.self) { kind in
+                        ForEach(GroupKind.allCases, id: \.rawValue) { kind in
                             let groups = result.groups(of: kind)
                             if !groups.isEmpty {
                                 Section(kind.sectionTitle) {

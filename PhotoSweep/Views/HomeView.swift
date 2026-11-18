@@ -126,37 +126,10 @@ struct HomeView: View {
     private func categoryCards(_ result: ScanResult) -> some View {
         VStack(spacing: 12) {
             ForEach(GroupKind.allCases, id: \.rawValue) { kind in
-                let groups = result.groups(of: kind)
-                let count: Int
-                let frees: Int64
-                if kind == .largeVideos {
-                    count = result.largeVideos.count
-                    frees = result.largeVideos.reduce(0) { $0 + $1.fileSize }
-                } else {
-                    count = groups.count
-                    frees = groups.reduce(0) { $0 + $1.reclaimableBytes }
-                }
                 NavigationLink {
                     CategoryGroupsView(kind: kind)
                 } label: {
-                    HStack {
-                        Image(systemName: icon(for: kind))
-                            .foregroundStyle(.tint)
-                            .frame(width: 28)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(kind.sectionTitle)
-                                .font(.headline)
-                            Text(subtitle(for: kind, groupCount: count))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                        if frees > 0 {
-                            Text(StorageEstimator.freesLabel(frees))
-                                .font(.subheadline.bold())
-                        }
-                    }
-                    .padding(.vertical, 4)
+                    CategoryCardRow(kind: kind, result: result)
                 }
                 .accessibilityIdentifier("home-category-\(kindID(kind))")
             }
@@ -195,16 +168,6 @@ struct HomeView: View {
 
     // MARK: - Helpers
 
-    private func icon(for kind: GroupKind) -> String {
-        switch kind {
-        case .exactDuplicate: return "doc.on.doc"
-        case .similar: return "square.stack.3d.up"
-        case .blurry: return "eye.slash"
-        case .screenshots: return "camera.viewfinder"
-        case .largeVideos: return "video"
-        }
-    }
-
     private func kindID(_ kind: GroupKind) -> String {
         switch kind {
         case .exactDuplicate: return "duplicates"
@@ -214,8 +177,61 @@ struct HomeView: View {
         case .largeVideos: return "videos"
         }
     }
+}
 
-    private func subtitle(for kind: GroupKind, groupCount: Int) -> String {
+/// One category card on the Home screen. A separate View (not a
+/// closure in `categoryCards`) because the counts need plain Swift
+/// `if` statements — assignments inside a @ViewBuilder closure break
+/// ForEach overload resolution (the compiler falls back to the Binding
+/// overload and fails). Computing the counts as properties here keeps
+/// the ForEach closure a pure view.
+struct CategoryCardRow: View {
+    let kind: GroupKind
+    let result: ScanResult
+
+    private var groupCount: Int {
+        kind == .largeVideos ? result.largeVideos.count : result.groups(of: kind).count
+    }
+
+    private var frees: Int64 {
+        if kind == .largeVideos {
+            return result.largeVideos.reduce(0) { $0 + $1.fileSize }
+        }
+        return result.groups(of: kind).reduce(0) { $0 + $1.reclaimableBytes }
+    }
+
+    var body: some View {
+        HStack {
+            Image(systemName: icon)
+                .foregroundStyle(.tint)
+                .frame(width: 28)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(kind.sectionTitle)
+                    .font(.headline)
+                Text(subtitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            if frees > 0 {
+                Text(StorageEstimator.freesLabel(frees))
+                    .font(.subheadline.bold())
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    private var icon: String {
+        switch kind {
+        case .exactDuplicate: return "doc.on.doc"
+        case .similar: return "square.stack.3d.up"
+        case .blurry: return "eye.slash"
+        case .screenshots: return "camera.viewfinder"
+        case .largeVideos: return "video"
+        }
+    }
+
+    private var subtitle: String {
         switch kind {
         case .largeVideos:
             return groupCount == 0 ? "No large videos found" : "\(groupCount) large videos"
