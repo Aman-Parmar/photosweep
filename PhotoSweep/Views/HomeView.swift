@@ -165,9 +165,10 @@ struct HomeView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
-            Text("Apple Photos already finds exact duplicates free. PhotoSweep finds the rest.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            // No footer caption here: the Apple Photos note lives in
+            // Settings > About and in the listing. A caption under the
+            // steps wrapped to two lines and the second line sat
+            // half-hidden behind the floating tab bar in the 01 shot.
         }
     }
 
