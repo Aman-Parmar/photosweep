@@ -2,12 +2,12 @@ import Foundation
 
 /// Similarity signals for photo grouping — pure math, no Vision import.
 ///
-/// The on-device Vision work (`VNGenerateImageFeaturePrintRequest`,
-/// `VNGenerateImageAestheticsScoresRequest`) happens in
-/// `Services/PhotoScanner`, which converts each asset into the compact
-/// signals on `PhotoItem` (feature print, sharpness, brightness). This
-/// file only decides, from those signals, whether two items are the
-/// same, similar, blurry, or unrelated — so it runs on Linux CI.
+/// The on-device image work (average hash, gradient-energy sharpness,
+/// mean brightness) happens in `Services/PhotoScanner`, which converts
+/// each asset into the compact signals on `PhotoItem` (feature print,
+/// sharpness, brightness). This file only decides, from those signals,
+/// whether two items are the same, similar, blurry, or unrelated — so
+/// it runs on Linux CI.
 ///
 /// Apple Photos Duplicates (iOS 16+) already merges exact and
 /// near-exact duplicates for free. PhotoSweep's job is what Apple does

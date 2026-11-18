@@ -1,6 +1,6 @@
 import Foundation
 import Photos
-import Vision
+import UIKit
 
 /// The real on-device scanner. Reads the user's Photos library,
 /// converts each asset into a compact `PhotoItem` (metadata + signals),
@@ -120,8 +120,9 @@ final class PhotoScanner: ObservableObject {
 
     // MARK: - Private
 
-    /// Converts one PHAsset into a PhotoItem, computing the Vision
-    /// signals (feature print, aesthetics) from a downscaled thumbnail.
+    /// Converts one PHAsset into a PhotoItem, computing the image
+    /// signals (average hash, gradient sharpness, brightness) from a
+    /// downscaled thumbnail.
     /// Returns nil when the asset cannot be read.
     private func item(for asset: PHAsset) async -> PhotoItem? {
         let resources = PHAssetResource.assetResources(for: asset)
@@ -129,8 +130,8 @@ final class PhotoScanner: ObservableObject {
         let isScreenshot = asset.mediaSubtypes.contains(.photoScreenshot)
         let isBurst = asset.representsBurst
 
-        // Downscaled image for Vision: 512 px is enough for a feature
-        // print and aesthetics, and keeps the scan fast.
+        // Downscaled image: 512 px is enough for an average hash and
+        // gradient sharpness, and keeps the scan fast.
         let options = PHImageRequestOptions()
         options.isSynchronous = false
         options.deliveryMode = .fastFormat
@@ -163,7 +164,7 @@ final class PhotoScanner: ObservableObject {
             )
         }
 
-        let (print, sharpness, brightness) = await visionSignals(for: cgImage)
+        let (print, sharpness, brightness) = visionSignals(for: cgImage)
         return PhotoItem(
             id: asset.localIdentifier,
             fileSize: fileSize,
@@ -180,38 +181,58 @@ final class PhotoScanner: ObservableObject {
         )
     }
 
-    /// Runs Vision on one image: aesthetics scores for blurry/dark
-    /// detection, plus an average-hash vector for similarity. All
-    /// on-device.
+    /// Computes the on-device image signals: an average-hash vector
+    /// for similarity, a gradient-energy sharpness score, and mean
+    /// brightness. All CoreGraphics, all on-device, no Vision call.
     ///
-    /// Why an average hash and not `VNGenerateImageFeaturePrintRequest`:
-    /// `VNFeaturePrintObservation` does not expose its vector as
-    /// [Float] on iOS 17, so the observation cannot be cached or
-    /// compared by the pure-logic engine. The 8x8 average hash below
-    /// is a 64-float vector with the same shape — two near-identical
-    /// images produce near-identical hashes — so
-    /// `SimilarityEngine.featureDistance` works unchanged. A future
-    /// version can keep observations in memory and use
-    /// `VNFeaturePrintObservation.computeDistance` directly.
-    private func visionSignals(for cgImage: CGImage) async -> ([Float]?, Double, Double) {
-        await withCheckedContinuation { continuation in
-            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-            var sharpness = 0.5
-            let aestheticsRequest = VNGenerateImageAestheticsScoresRequest { request, _ in
-                guard let observation = request.results?.first as? VNImageAestheticsScoresObservation else { return }
-                // Overall aesthetic score is a usable sharpness proxy in
-                // v1; a dedicated blur detector is a Phase 1+ refinement.
-                sharpness = Double(observation.overallScore)
+    /// Why no Vision aesthetics request: `VNGenerateImageAestheticsScoresRequest`
+    /// does not exist in the iOS 17 SDK this app targets, so v1
+    /// measures sharpness as gradient energy instead — the mean
+    /// absolute difference between neighbouring pixels in a 64x64
+    /// greyscale downscale, normalised so a mean difference of ~25
+    /// grey levels scores 1.0 and ~7.5 scores 0.30 (the blurry
+    /// threshold in `SimilarityEngine`). Blurry photos have little
+    /// high-frequency energy; sharp photos have a lot. The calibration
+    /// is approximate — tune it against real libraries in v1.1 (see
+    /// ROADMAP). A dedicated blur detector (Laplacian variance) is a
+    /// Phase 1+ refinement.
+    private func visionSignals(for cgImage: CGImage) -> ([Float]?, Double, Double) {
+        let (hash, brightness) = averageHashAndBrightness(for: cgImage)
+        let sharpness = gradientSharpness(for: cgImage)
+        return (hash, sharpness, brightness)
+    }
+
+    /// Gradient energy: mean absolute difference between horizontally
+    /// and vertically adjacent pixels in a 64x64 greyscale downscale,
+    /// divided by 25 (see `visionSignals` for the calibration).
+    private func gradientSharpness(for cgImage: CGImage) -> Double {
+        let width = 64, height = 64
+        guard let context = CGContext(
+            data: nil, width: width, height: height,
+            bitsPerComponent: 8, bytesPerRow: width,
+            space: CGColorSpaceCreateDeviceGray(),
+            bitmapInfo: CGImageAlphaInfo.none.rawValue
+        ) else { return 0.5 }
+        context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+        guard let data = context.data else { return 0.5 }
+        let pixels = data.bindMemory(to: UInt8.self, capacity: width * height)
+        var total = 0
+        var count = 0
+        for y in 0..<height {
+            for x in 0..<width {
+                let current = Int(pixels[y * width + x])
+                if x + 1 < width {
+                    total += abs(current - Int(pixels[y * width + x + 1]))
+                    count += 1
+                }
+                if y + 1 < height {
+                    total += abs(current - Int(pixels[(y + 1) * width + x]))
+                    count += 1
+                }
             }
-            do {
-                try handler.perform([aestheticsRequest])
-            } catch {
-                // Vision failed on this image: keep the default score
-                // and no print. The item is still scannable by hash/time.
-            }
-            let (hash, brightness) = averageHashAndBrightness(for: cgImage)
-            continuation.resume(returning: (hash, sharpness, brightness))
         }
+        guard count > 0 else { return 0.5 }
+        return min(1.0, (Double(total) / Double(count)) / 25.0)
     }
 
     /// Average hash (aHash) + mean brightness from one 8x8 greyscale

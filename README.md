@@ -5,7 +5,7 @@ A native iOS photo cleaner. It finds duplicates, similar/burst shots, blurry pho
 - Platform: iOS 17 and later, iPhone
 - Language and UI: Swift 5.9 (per `project.yml`), SwiftUI
 - Data: PhotoKit on-device only, SwiftData for scan history (metadata only — no image data is ever stored)
-- Local ML: Vision aesthetics scores + average-hash similarity, on-device
+- Local ML: average-hash similarity + gradient-energy sharpness (CoreGraphics, on-device)
 - Payments: StoreKit 2, serverless (no backend, no receipt server)
 - Project generation: XcodeGen (`project.yml` at the repo root)
 - CI: GitHub Actions (`.github/workflows/ios.yml`)
@@ -44,7 +44,7 @@ Notes on pricing (see `SUBSCRIPTION_PLAN.md` and `VALIDATION.md`):
 
 ## Data and honesty
 
-- All scanning is on-device (PhotoKit + Vision). No photo, thumbnail, hash, or scan result ever leaves the phone. There is no network call anywhere in the app.
+- All scanning is on-device (PhotoKit + CoreGraphics). No photo, thumbnail, hash, or scan result ever leaves the phone. There is no network call anywhere in the app.
 - Limited photo access is supported: the scan only sees what the user granted, and the Home screen says so plainly ("Scanned 214 of 12,400 photos").
 - The similarity threshold (~0.35 feature distance) and the neighbour window (20) are named constants in `Logic/` with tests pinning the boundary behaviour. Similar grouping is a proposal, never a fact — the user reviews every group.
 - Screenshots are grouped for bulk review with a warning: some screenshots are receipts, tickets, or confirmations worth keeping.

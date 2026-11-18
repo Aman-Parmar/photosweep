@@ -22,7 +22,7 @@ Sources: https://www.airbridge.io/en/app-revenue/cleanup, https://getappniche.co
 ## 2. Public APIs / on-device ML
 
 - **No backend, no secrets, no paid keyed API** — if scoped honestly. All 8 concepts in the other-styles set work local-only; the traps are built-in iOS free features, not servers.
-- **PhotoKit** (`PHPhotoLibrary`, `PHAsset`, `PHCachingImageManager`) for library access; **Vision** `VNGenerateImageAestheticsScoresRequest` for blurry/dark; similarity via a compact perceptual hash (see below). `VNDetectBarcodesRequest` etc. are not needed here.
+- **PhotoKit** (`PHPhotoLibrary`, `PHAsset`, `PHCachingImageManager`) for library access; sharpness via gradient energy and brightness via mean luminance (CoreGraphics, see below); similarity via a compact perceptual hash (see below). No Vision call is needed in v1.
 - **Why an average hash, not `VNGenerateImageFeaturePrintRequest`:** `VNFeaturePrintObservation` does not expose its vector as `[Float]` on iOS 17, so the observation cannot be cached or compared by the pure-logic engine. The v1 scanner computes an 8×8 average hash (64 floats) instead — same shape, same distance function. A future version can keep observations in memory and use `VNFeaturePrintObservation.computeDistance` directly.
 - **Neighbour window, not pairwise:** comparing every pair in a 35k-photo library is ~600M pairs. Grouping compares only within a time-sorted neighbour window (±20), which covers bursts and re-takes while keeping the work linear. The threshold (~0.35) and window are named constants with tests pinning the boundary.
 - **The built-in threat:** Photos Duplicates kills exact-dup. The wedge is only similar/burst/screenshots/blurry/large videos, which Apple documents no equivalent for.

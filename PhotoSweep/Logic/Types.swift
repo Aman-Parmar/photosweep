@@ -31,11 +31,11 @@ public struct PhotoItem: Equatable, Hashable, Identifiable {
     /// When the asset was created. Grouping compares only items close
     /// in time — see `GroupingEngine.neighbourWindow`.
     public let creationDate: Date
-    /// 0...1, higher is sharper. From Vision aesthetics scores on-device.
+    /// 0...1, higher is sharper. From gradient-energy sharpness on-device.
     public let sharpness: Double
-    /// 0...1, higher is brighter. From Vision aesthetics scores.
+    /// 0...1, higher is brighter. Mean luminance of a downscale.
     public let brightness: Double
-    /// Vision feature-print vector, when computed. Two prints with a
+    /// Feature vector (average hash in v1), when computed. Two prints with a
     /// small Euclidean distance are visually similar. Nil means the
     /// print has not been computed (yet) — grouping treats the item as
     /// ungroupable by similarity, never as a match.
@@ -82,7 +82,7 @@ public struct PhotoItem: Equatable, Hashable, Identifiable {
 
 /// Why a group of items was put together. Shown in the UI so the user
 /// can judge whether the grouping is right before deleting anything.
-public enum GroupKind: String, Equatable, CaseIterable {
+public enum GroupKind: String, Equatable, Hashable, CaseIterable {
     /// Same file bytes (equal content hash).
     case exactDuplicate = "Exact duplicates"
     /// Visually similar (feature-print distance under threshold) or burst.

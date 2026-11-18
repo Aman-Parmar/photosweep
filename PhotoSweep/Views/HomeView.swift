@@ -125,7 +125,7 @@ struct HomeView: View {
 
     private func categoryCards(_ result: ScanResult) -> some View {
         VStack(spacing: 12) {
-            ForEach(GroupKind.allCases, id: \.self) { kind in
+            ForEach(GroupKind.allCases, id: \.rawValue) { kind in
                 let groups = result.groups(of: kind)
                 let count: Int
                 let frees: Int64

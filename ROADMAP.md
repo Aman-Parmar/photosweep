@@ -4,7 +4,7 @@
 
 - XcodeGen project (com.singhsec.photosweep, iOS 17+, SwiftUI, iPhone-only)
 - Pure-logic layer, Linux-tested: SimilarityEngine (feature distance, exact-hash, blurry/dark, burst), GroupingEngine (neighbour-window grouping, large-video ranking), KeeperPicker (sharpest → most pixels → largest file → earliest), StorageEstimator (estimates, always labelled as such)
-- PhotoKit scanner: on-device only, limited-access aware, average-hash similarity + Vision aesthetics, deletion via PHAssetChangeRequest to Recently Deleted
+- PhotoKit scanner: on-device only, limited-access aware, average-hash similarity + gradient-energy sharpness, deletion via PHAssetChangeRequest to Recently Deleted
 - Views: Home scan, Results grouped by category, Group review with keeper pick, Screenshots bulk review, Large videos, Paywall, Settings
 - StoreKit 2: Pro $29.99/yr (7-day trial, App Store Connect) / $39.99 lifetime, no weekly plan, no monthly tier
 - CI: Linux first, then macOS test + 7-shot screenshot lanes in parallel; docs-only skips CI; cancel in-flight
@@ -27,7 +27,7 @@
 ## v2 — Only if v1 earns it
 
 - `VNFeaturePrintObservation.computeDistance` in-memory (replaces the average hash when observations can be kept alive for a scan).
-- A dedicated blur detector (Laplacian variance) instead of the aesthetics-score proxy.
+- A dedicated blur detector (Laplacian variance) instead of the gradient-energy proxy.
 - Live Photos: treat a Live Photo and its still as one item.
 - iCloud-only assets: download-on-demand progress instead of skipping silently.
 
