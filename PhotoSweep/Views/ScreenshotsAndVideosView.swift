@@ -167,7 +167,6 @@ struct LargeVideosView: View {
                                     showingPaywall = true
                                 }
                             }
-                            .accessibilityIdentifier("video-item-\(item.id)")
                         }
                     }
                     .safeAreaInset(edge: .bottom) {

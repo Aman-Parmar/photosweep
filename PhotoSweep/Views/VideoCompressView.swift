@@ -163,7 +163,6 @@ struct VideoCompressView: View {
                 PaywallView()
             }
         }
-        .accessibilityIdentifier("compress-sheet")
     }
 
     private func startCompression() {
