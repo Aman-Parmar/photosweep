@@ -22,10 +22,10 @@ enum SampleScan {
 
     static let result: ScanResult = {
         let (groups, largeVideos) = GroupingEngine.group(allItems)
-        let livePhotos = allItems
+        let live = allItems
             .filter { $0.isLivePhoto }
             .sorted { $0.fileSize > $1.fileSize }
-        return ScanResult(groups: groups, totalScanned: allItems.count, totalLibraryCount: allItems.count, largeVideos: largeVideos, livePhotos: livePhotos, scannedAt: base)
+        return ScanResult(groups: groups, totalScanned: allItems.count, totalLibraryCount: allItems.count, largeVideos: largeVideos, livePhotos: live, scannedAt: base)
     }()
 
     /// Large videos, largest first — the Videos tab shows this list.
@@ -47,7 +47,7 @@ enum SampleScan {
         items.append(contentsOf: blurry)
         items.append(contentsOf: screenshots)
         items.append(contentsOf: videos)
-        items.append(contentsOf: livePhotos)
+        items.append(contentsOf: livePhotoItems)
         items.append(contentsOf: singles)
         return items
     }()
@@ -143,7 +143,7 @@ enum SampleScan {
     /// Three Live Photos: distinct flat prints far apart, good
     /// sharpness, no shared hash — they group with nothing, so the
     /// sample still has exactly 4 groups.
-    private static var livePhotos: [PhotoItem] {
+    private static var livePhotoItems: [PhotoItem] {
         [
             PhotoItem(id: "sample-live-0", fileSize: 6_400_000, width: 4032, height: 3024, isLivePhoto: true, creationDate: day(-4), sharpness: 0.75, brightness: 0.7, featurePrint: flatPrint(0.15)),
             PhotoItem(id: "sample-live-1", fileSize: 5_600_000, width: 4032, height: 3024, isLivePhoto: true, creationDate: day(-2), sharpness: 0.75, brightness: 0.7, featurePrint: flatPrint(0.55)),
