@@ -26,6 +26,11 @@ public struct PhotoItem: Equatable, Hashable, Identifiable {
     /// True for videos. Videos are never grouped as photos; they are
     /// ranked by size in the Large Videos section.
     public let isVideo: Bool
+    /// True for Live Photos (PHAsset mediaSubtype photoLive). A Live
+    /// Photo is a still plus a short video clip, so it runs about
+    /// twice the size of its still; converting it to a still is a
+    /// separate list, not a deletion group.
+    public let isLivePhoto: Bool
     /// Video duration in seconds (0 for photos).
     public let duration: TimeInterval
     /// When the asset was created. Grouping compares only items close
@@ -50,6 +55,7 @@ public struct PhotoItem: Equatable, Hashable, Identifiable {
         isScreenshot: Bool = false,
         isBurst: Bool = false,
         isVideo: Bool = false,
+        isLivePhoto: Bool = false,
         duration: TimeInterval = 0,
         creationDate: Date,
         sharpness: Double = 0.5,
@@ -64,6 +70,7 @@ public struct PhotoItem: Equatable, Hashable, Identifiable {
         self.isScreenshot = isScreenshot
         self.isBurst = isBurst
         self.isVideo = isVideo
+        self.isLivePhoto = isLivePhoto
         self.duration = duration
         self.creationDate = creationDate
         self.sharpness = sharpness
@@ -142,15 +149,20 @@ public struct ScanResult: Equatable {
     /// Large videos, largest first. Videos are a list, not a group —
     /// they are never auto-grouped for deletion.
     public let largeVideos: [PhotoItem]
+    /// Live Photos, largest first. Like large videos, a list, not a
+    /// group — converting one to a still is a separate action from
+    /// deleting it.
+    public let livePhotos: [PhotoItem]
     public let totalScanned: Int
     public let totalLibraryCount: Int
     public let scannedAt: Date
 
-    public init(groups: [PhotoGroup], totalScanned: Int, totalLibraryCount: Int, largeVideos: [PhotoItem] = [], scannedAt: Date = Date()) {
+    public init(groups: [PhotoGroup], totalScanned: Int, totalLibraryCount: Int, largeVideos: [PhotoItem] = [], livePhotos: [PhotoItem] = [], scannedAt: Date = Date()) {
         self.groups = groups
         self.totalScanned = totalScanned
         self.totalLibraryCount = totalLibraryCount
         self.largeVideos = largeVideos
+        self.livePhotos = livePhotos
         self.scannedAt = scannedAt
     }
 

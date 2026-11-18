@@ -52,7 +52,7 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Free up storage, honestly.")
                 .font(.title2.bold())
-            Text("Finds duplicates, similar shots, blurry photos, screenshots and large videos, on your phone, nothing uploaded. You review everything before anything is deleted.")
+            Text("Finds duplicates, similar shots, blurry photos, screenshots, large videos and Live Photos, on your phone, nothing uploaded. You review everything before anything is deleted.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -138,6 +138,12 @@ struct HomeView: View {
                 }
                 .accessibilityIdentifier("home-category-\(kindID(kind))")
             }
+            NavigationLink {
+                LivePhotosView()
+            } label: {
+                LivePhotosCardRow(result: result)
+            }
+            .accessibilityIdentifier("home-category-livephotos")
         }
     }
 
@@ -244,5 +250,40 @@ struct CategoryCardRow: View {
         default:
             return groupCount == 0 ? "Nothing found" : "\(groupCount) group\(groupCount == 1 ? "" : "s") to review"
         }
+    }
+}
+
+/// The Live Photos card on the Home screen. A separate row, not a
+/// GroupKind: Live Photos are a list to convert, not a deletion group.
+struct LivePhotosCardRow: View {
+    let result: ScanResult
+
+    private var count: Int {
+        result.livePhotos.count
+    }
+
+    private var frees: Int64 {
+        result.livePhotos.reduce(0) { $0 + LivePhotoConversion.estimate(originalBytes: $1.fileSize).bytesSaved }
+    }
+
+    var body: some View {
+        HStack {
+            Image(systemName: "livephoto")
+                .foregroundStyle(.tint)
+                .frame(width: 28)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Live Photos")
+                    .font(.headline)
+                Text(count == 0 ? "No Live Photos found" : "\(count) Live Photos to convert")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            if frees > 0 {
+                Text(StorageEstimator.freesLabel(frees))
+                    .font(.subheadline.bold())
+            }
+        }
+        .padding(.vertical, 2)
     }
 }

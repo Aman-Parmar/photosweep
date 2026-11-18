@@ -36,7 +36,7 @@ struct SettingsView: View {
                 }
                 Section("Freed this month") {
                     let total = CleanupHistory.freedThisMonth(events: cleanups.map(\.event))
-                    if total.photos == 0 && total.videos == 0 {
+                    if total.photos == 0 && total.videos == 0 && total.livePhotos == 0 {
                         Text("Nothing freed yet this month.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
@@ -79,7 +79,7 @@ struct SettingsView: View {
                     Text("PhotoSweep 1.0: Free up iPhone storage, honestly. No weekly plan, no auto-delete, no cloud.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text("Apple Photos already finds exact duplicates free. PhotoSweep finds what it doesn't: similar and burst shots, blurry photos, screenshots, and large videos.")
+                    Text("Apple Photos already finds exact duplicates free. PhotoSweep finds what it doesn't: similar and burst shots, blurry photos, screenshots, large videos, and Live Photos to convert to stills.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -111,13 +111,16 @@ struct SettingsView: View {
     /// 1 compressed video (estimate)...". A plain function, not view
     /// builder code: a bare `if` inside a ViewBuilder builds a view,
     /// so the parts list has to be assembled here.
-    private func freedSummary(total: (photos: Int, videos: Int, bytes: Int64)) -> String {
+    private func freedSummary(total: (photos: Int, videos: Int, livePhotos: Int, bytes: Int64)) -> String {
         var parts: [String] = []
         if total.photos > 0 {
             parts.append("\(total.photos) \(total.photos == 1 ? "photo" : "photos")")
         }
         if total.videos > 0 {
             parts.append("\(total.videos) \(total.videos == 1 ? "compressed video" : "compressed videos")")
+        }
+        if total.livePhotos > 0 {
+            parts.append("\(total.livePhotos) \(total.livePhotos == 1 ? "Live Photo converted to still" : "Live Photos converted to still")")
         }
         return "~\(StorageEstimator.formatted(total.bytes)) freed from \(parts.joined(separator: " and ")) (estimate). Space is only actually freed once Recently Deleted is emptied."
     }

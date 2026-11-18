@@ -19,7 +19,7 @@ Sprint goal: close the biggest market gaps that cost conversion, without touchin
 
 - **PS-1 Video compression (HEVC, on-device)** — medium. DONE 2026-11-18 (QA-passed, CI run 44384013048 green, 9 shots). Evidence: in every top-5 cleaner; Cleanup's compressor called "genuinely its best tool". Acceptance: 3 presets, size preview before/after, progress UI, original goes to Recently Deleted. Converts without deleting memories.
 - **PS-2 Free-tier generosity + trust positioning** — small. DECISION NEEDED from Aman: first full cleanup free, or raise free deletes from 20 to 100. Evidence: 20 deletes is the stingiest honest free tier (Clever Cleaner gives a daily allowance plus unlimited Swipe free); "free" claims that aren't are exactly what 1-star reviews punish. Acceptance: config + paywall copy "No weekly plan. Ever." No weekly plan anywhere, ever.
-- **PS-3 Live Photo to still conversion** — small-medium. Evidence: listed by Clever Cleaner, CleanMyPhone, Cleanup; Live Photos run 1.5-3x a still. Acceptance: convert keeps the still, original to Recently Deleted, GB saved shown.
+- **PS-3 Live Photo to still conversion** — small-medium. BUILT 2026-11-18, awaiting CI + QA. Evidence: listed by Clever Cleaner, CleanMyPhone, Cleanup; Live Photos run 1.5-3x a still. Acceptance: convert keeps the still, original to Recently Deleted, GB saved shown. Build: estimate model (still ~half, midpoint of the 1.5-3x range), on-device still extraction (original file bytes, date/location kept), Live Photos list + convert sheet (test10), one conversion costs one free delete, Pro unlimited. Sample: 3 Live Photos, 27 items total.
 - **PS-4 (stretch, pending Aman's call) Vision feature prints** — medium. Replaces the average hash with `VNFeaturePrintObservation.computeDistance`. Evidence: competitors market "AI grouping"; Cleanup mislabels ~3% of flagged duplicates. Offered to Aman 2026-11-18, awaiting his call.
 
 ## Next (prioritised backlog, evidence-scored)
@@ -31,7 +31,7 @@ Sprint goal: close the biggest market gaps that cost conversion, without touchin
 
 ## Later / unsequenced
 
-- **Video compression: use the source frame rate, not hardcoded 30 fps (QA-found 2026-11-18, minor, non-blocking)** — `PhotoSweep/Services/VideoCompressor.swift` passes `AVVideoExpectedSourceFrameRateKey: 30` in the encoder properties. That key sets the bitrate-per-frame budget, so a 60 fps clip (common on iPhone, e.g. 4K60) gets about half the per-frame budget the nominal bitrate promises and encodes softer than the preset implies. Fix: pass `videoTrack.nominalFrameRate` (fall back to 30 when it is 0/unknown). Evidence: encoder properties dict in `VideoCompressor.export`; no test covers it (simulator lane has no real 60 fps encode). Verify on a real device with a 60 fps clip after enrolment.
+- **Video compression: use the source frame rate, not hardcoded 30 fps (QA-found 2026-11-18, minor, non-blocking)** — FIXED 2026-11-18 in the PS-3 commit: `VideoCompressor.export` now passes `videoTrack.nominalFrameRate` (falling back to 30 when 0/unknown). Real-device verification with a 60 fps clip still pending enrolment.
 - Dedicated blur detector (Laplacian variance) instead of the gradient-energy proxy.
 - Live Photos: treat a Live Photo and its still as one item (partly covered by PS-3).
 - iCloud-only assets: download-on-demand progress instead of skipping silently.

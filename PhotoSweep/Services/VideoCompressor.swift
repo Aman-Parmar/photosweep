@@ -82,6 +82,12 @@ enum VideoCompressor {
         }
 
         let writer = try AVAssetWriter(outputURL: outputURL, fileType: .mp4)
+        // The expected frame rate sets the bitrate-per-frame budget:
+        // a hardcoded 30 gives a 60 fps clip (common on iPhone, e.g.
+        // 4K60) about half the per-frame budget the nominal bitrate
+        // promises, so it encodes softer than the preset implies. Use
+        // the track's real rate, falling back to 30 when unknown.
+        let frameRate = videoTrack.nominalFrameRate > 0 ? videoTrack.nominalFrameRate : 30
         let videoInput = AVAssetWriterInput(
             mediaType: .video,
             outputSettings: [
@@ -90,7 +96,7 @@ enum VideoCompressor {
                 AVVideoHeightKey: target.height,
                 AVVideoCompressionPropertiesKey: [
                     AVVideoAverageBitRateKey: preset.nominalBitRateForEncoding,
-                    AVVideoExpectedSourceFrameRateKey: 30,
+                    AVVideoExpectedSourceFrameRateKey: NSNumber(value: frameRate),
                     AVVideoMaxKeyFrameIntervalKey: 60,
                 ],
             ]

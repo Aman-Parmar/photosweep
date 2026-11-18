@@ -32,10 +32,18 @@ final class SampleScanTests: XCTestCase {
         XCTAssertEqual(videos[0].fileSize, 1_250_000_000)
     }
 
+    func testSampleScanLivePhotosLargestFirst() {
+        let livePhotos = SampleScan.livePhotos
+        XCTAssertEqual(livePhotos.count, 3)
+        XCTAssertEqual(livePhotos.map(\.id), ["sample-live-0", "sample-live-1", "sample-live-2"])
+        XCTAssertEqual(livePhotos[0].fileSize, 6_400_000)
+        XCTAssertTrue(livePhotos.allSatisfy { $0.isLivePhoto })
+    }
+
     func testSampleScanCounts() {
         let result = SampleScan.result
-        XCTAssertEqual(result.totalScanned, 24)
-        XCTAssertEqual(result.totalLibraryCount, 24)
+        XCTAssertEqual(result.totalScanned, 27)
+        XCTAssertEqual(result.totalLibraryCount, 27)
         XCTAssertFalse(result.isPartialScan)
         XCTAssertGreaterThan(result.totalReclaimableBytes, 0)
         XCTAssertEqual(result.totalDeletableCount, 2 + 2 + 1 + 3)

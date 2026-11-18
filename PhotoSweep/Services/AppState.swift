@@ -54,6 +54,11 @@ final class AppState: ObservableObject {
         result?.largeVideos ?? []
     }
 
+    /// Live Photos, largest first.
+    var livePhotos: [PhotoItem] {
+        result?.livePhotos ?? []
+    }
+
     /// Runs a real scan (PhotoKit). In screenshot mode this is a no-op:
     /// the sample result is already loaded.
     func runScan() async {
@@ -200,6 +205,64 @@ final class AppState: ObservableObject {
         }
     }
 
+    /// Result of a completed Live Photo conversion: the real bytes
+    /// saved and the still photo's real size.
+    struct ConversionOutcome {
+        let bytesSaved: Int64
+        let stillBytes: Int64
+    }
+
+    /// Converts one Live Photo to a still. The flow is: save the still
+    /// as a new photo (keeping its date), then move the original Live
+    /// Photo to Recently Deleted (undoable for 30 days). The converted
+    /// photo leaves the Live Photos list. One conversion deletes one
+    /// asset, so it costs one free delete; Pro is unlimited. Returns
+    /// nil when the conversion could not run, with `scanError` set.
+    ///
+    /// In screenshot mode there is no real library, so the conversion
+    /// is simulated from the size estimate: progress animates, then
+    /// the sample Live Photo leaves the list and the estimated saving
+    /// is recorded, exactly as the real flow records the real saving.
+    func convertLivePhoto(
+        item: PhotoItem,
+        isPro: Bool,
+        progress: @escaping (Double) -> Void
+    ) async -> ConversionOutcome? {
+        guard isPro || ScreenshotMode.isEnabled || remainingFreeDeletes(isPro: false) >= 1 else {
+            return nil
+        }
+        if ScreenshotMode.isEnabled {
+            let estimate = LivePhotoConversion.estimate(originalBytes: item.fileSize)
+            for step in 1...6 {
+                try? await Task.sleep(nanoseconds: 200_000_000)
+                progress(Double(step) / 6.0)
+            }
+            removeItems([item])
+            deletedCount += 1
+            recordCleanup?(CleanupEvent(
+                date: Date(), photosDeleted: 0, videosCompressed: 0, livePhotosConverted: 1, bytesFreed: estimate.bytesSaved))
+            return ConversionOutcome(bytesSaved: estimate.bytesSaved, stillBytes: estimate.estimatedStillBytes)
+        }
+        guard let asset = fetchAssets(ids: [item.id]).first else {
+            scanError = "Could not find that Live Photo in Photos."
+            return nil
+        }
+        do {
+            let converted = try await LivePhotoConverter.convert(asset: asset, progress: progress)
+            let request = DeletionRequest(groupID: "livephoto", itemIDs: [item.id], confirmedByUser: true)
+            try await scanner.delete(request, assets: [asset])
+            let bytesSaved = max(0, item.fileSize - converted.stillFileSize)
+            removeItems([item])
+            deletedCount += 1
+            recordCleanup?(CleanupEvent(
+                date: Date(), photosDeleted: 0, videosCompressed: 0, livePhotosConverted: 1, bytesFreed: bytesSaved))
+            return ConversionOutcome(bytesSaved: bytesSaved, stillBytes: converted.stillFileSize)
+        } catch {
+            scanError = error.localizedDescription
+            return nil
+        }
+    }
+
     /// Records one confirmed cleanup for the "freed this month"
     /// figure. Only called after a deletion actually succeeded, so
     /// a failed or refused delete never counts as freed space.
@@ -240,6 +303,7 @@ final class AppState: ObservableObject {
             totalScanned: current.totalScanned,
             totalLibraryCount: current.totalLibraryCount,
             largeVideos: current.largeVideos,
+            livePhotos: current.livePhotos,
             scannedAt: current.scannedAt
         )
     }
@@ -263,6 +327,7 @@ final class AppState: ObservableObject {
             totalScanned: current.totalScanned,
             totalLibraryCount: current.totalLibraryCount,
             largeVideos: current.largeVideos.filter { !ids.contains($0.id) },
+            livePhotos: current.livePhotos.filter { !ids.contains($0.id) },
             scannedAt: current.scannedAt
         )
     }

@@ -61,7 +61,7 @@ targets:
         ITSAppUsesNonExemptEncryption: false
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
-        NSPhotoLibraryUsageDescription: "PhotoSweep scans your photo library on-device to find duplicates, similar photos, blurry shots, screenshots and large videos for you to review. Your photos never leave this phone."
+        NSPhotoLibraryUsageDescription: "PhotoSweep scans your photo library on-device to find duplicates, similar photos, blurry shots, screenshots, large videos and Live Photos for you to review. Your photos never leave this phone."
         # Launch screen (Clear Days pattern). Without UILaunchStoryboardName
         # iOS runs the app letterboxed at the iPhone 4S size (320x480pt,
         # scaled to screen width) — run 44240431584 screenshots proved

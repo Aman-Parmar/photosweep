@@ -11,6 +11,7 @@ import Foundation
 /// - Blurry: 2 low-sharpness photos.
 /// - Screenshots: 4 screenshots for bulk review.
 /// - Large videos: 3 clips (1.2 GB, 850 MB, 640 MB), listed separately.
+/// - Live Photos: 3 Live Photos (6.4 MB, 5.6 MB, 4.8 MB), listed separately.
 /// - 9 ordinary singles that group with nothing.
 enum SampleScan {
 
@@ -21,12 +22,20 @@ enum SampleScan {
 
     static let result: ScanResult = {
         let (groups, largeVideos) = GroupingEngine.group(allItems)
-        return ScanResult(groups: groups, totalScanned: allItems.count, totalLibraryCount: allItems.count, largeVideos: largeVideos, scannedAt: base)
+        let livePhotos = allItems
+            .filter { $0.isLivePhoto }
+            .sorted { $0.fileSize > $1.fileSize }
+        return ScanResult(groups: groups, totalScanned: allItems.count, totalLibraryCount: allItems.count, largeVideos: largeVideos, livePhotos: livePhotos, scannedAt: base)
     }()
 
     /// Large videos, largest first — the Videos tab shows this list.
     static var largeVideos: [PhotoItem] {
         result.largeVideos
+    }
+
+    /// Live Photos, largest first — the Live Photos list shows this.
+    static var livePhotos: [PhotoItem] {
+        result.livePhotos
     }
 
     // MARK: - Items
@@ -38,6 +47,7 @@ enum SampleScan {
         items.append(contentsOf: blurry)
         items.append(contentsOf: screenshots)
         items.append(contentsOf: videos)
+        items.append(contentsOf: livePhotos)
         items.append(contentsOf: singles)
         return items
     }()
@@ -127,6 +137,17 @@ enum SampleScan {
             PhotoItem(id: "sample-video-0", fileSize: 1_250_000_000, width: 3840, height: 2160, isVideo: true, duration: 182, creationDate: day(-20), sharpness: 0.8, brightness: 0.6),
             PhotoItem(id: "sample-video-1", fileSize: 850_000_000, width: 3840, height: 2160, isVideo: true, duration: 96, creationDate: day(-15), sharpness: 0.8, brightness: 0.6),
             PhotoItem(id: "sample-video-2", fileSize: 640_000_000, width: 1920, height: 1080, isVideo: true, duration: 61, creationDate: day(-3), sharpness: 0.8, brightness: 0.6),
+        ]
+    }
+
+    /// Three Live Photos: distinct flat prints far apart, good
+    /// sharpness, no shared hash — they group with nothing, so the
+    /// sample still has exactly 4 groups.
+    private static var livePhotos: [PhotoItem] {
+        [
+            PhotoItem(id: "sample-live-0", fileSize: 6_400_000, width: 4032, height: 3024, isLivePhoto: true, creationDate: day(-4), sharpness: 0.75, brightness: 0.7, featurePrint: flatPrint(0.15)),
+            PhotoItem(id: "sample-live-1", fileSize: 5_600_000, width: 4032, height: 3024, isLivePhoto: true, creationDate: day(-2), sharpness: 0.75, brightness: 0.7, featurePrint: flatPrint(0.55)),
+            PhotoItem(id: "sample-live-2", fileSize: 4_800_000, width: 4032, height: 3024, isLivePhoto: true, creationDate: day(-1), sharpness: 0.75, brightness: 0.7, featurePrint: flatPrint(0.95)),
         ]
     }
 

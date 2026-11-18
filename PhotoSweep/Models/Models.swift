@@ -34,6 +34,7 @@ final class CleanupEventRecord {
     var date: Date
     var photosDeleted: Int
     var videosCompressed: Int
+    var livePhotosConverted: Int
     var bytesFreed: Int64
 
     init(event: CleanupEvent) {
@@ -41,10 +42,11 @@ final class CleanupEventRecord {
         self.date = event.date
         self.photosDeleted = event.photosDeleted
         self.videosCompressed = event.videosCompressed
+        self.livePhotosConverted = event.livePhotosConverted
         self.bytesFreed = event.bytesFreed
     }
 
     var event: CleanupEvent {
-        CleanupEvent(date: date, photosDeleted: photosDeleted, videosCompressed: videosCompressed, bytesFreed: bytesFreed)
+        CleanupEvent(date: date, photosDeleted: photosDeleted, videosCompressed: videosCompressed, livePhotosConverted: livePhotosConverted, bytesFreed: bytesFreed)
     }
 }

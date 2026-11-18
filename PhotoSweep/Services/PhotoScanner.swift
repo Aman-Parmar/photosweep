@@ -97,11 +97,15 @@ final class PhotoScanner: ObservableObject {
         }
 
         let (groups, largeVideos) = GroupingEngine.group(items)
+        let livePhotos = items
+            .filter { $0.isLivePhoto }
+            .sorted { $0.fileSize > $1.fileSize }
         return ScanResult(
             groups: groups,
             totalScanned: items.count,
             totalLibraryCount: totalLibrary,
-            largeVideos: largeVideos
+            largeVideos: largeVideos,
+            livePhotos: livePhotos
         )
     }
 
@@ -129,6 +133,7 @@ final class PhotoScanner: ObservableObject {
         let fileSize = resources.first?.value(forKey: "fileSize") as? Int64 ?? 0
         let isScreenshot = asset.mediaSubtypes.contains(.photoScreenshot)
         let isBurst = asset.representsBurst
+        let isLivePhoto = asset.mediaSubtypes.contains(.photoLive)
 
         // Downscaled image: 512 px is enough for an average hash and
         // gradient sharpness, and keeps the scan fast.
@@ -159,6 +164,7 @@ final class PhotoScanner: ObservableObject {
                 isScreenshot: isScreenshot,
                 isBurst: isBurst,
                 isVideo: asset.mediaType == .video,
+                isLivePhoto: isLivePhoto,
                 duration: asset.duration,
                 creationDate: asset.creationDate ?? Date()
             )
@@ -173,6 +179,7 @@ final class PhotoScanner: ObservableObject {
             isScreenshot: isScreenshot,
             isBurst: isBurst,
             isVideo: asset.mediaType == .video,
+            isLivePhoto: isLivePhoto,
             duration: asset.duration,
             creationDate: asset.creationDate ?? Date(),
             sharpness: sharpness,

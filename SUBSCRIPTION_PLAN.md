@@ -24,6 +24,7 @@ Configure these exact product IDs in App Store Connect under the PhotoSweep app.
 | Scan (unlimited) | Yes | Yes |
 | Review groups, pick keeper | Yes | Yes |
 | Deletes | 20 total | Unlimited |
+| Live Photo to still | 1 free delete each | Unlimited |
 | Large-video cleanup | List only | Yes |
 | Export cleanup report | No | Yes |
 
