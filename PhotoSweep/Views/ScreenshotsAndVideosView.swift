@@ -44,7 +44,7 @@ struct ScreenshotsView: View {
                                 }
                                 Spacer()
                                 Image(systemName: selected.contains(item.id) ? "checkmark.circle.fill" : "circle")
-                                    .foregroundStyle(selected.contains(item.id) ? .accentColor : .secondary)
+                                    .foregroundStyle(selected.contains(item.id) ? Color.accentColor : Color.secondary)
                             }
                             .contentShape(Rectangle())
                             .onTapGesture {
@@ -145,7 +145,7 @@ struct LargeVideosView: View {
                                 Spacer()
                                 if store.isPro {
                                     Image(systemName: selected.contains(item.id) ? "checkmark.circle.fill" : "circle")
-                                        .foregroundStyle(selected.contains(item.id) ? .accentColor : .secondary)
+                                        .foregroundStyle(selected.contains(item.id) ? Color.accentColor : Color.secondary)
                                 }
                             }
                             .contentShape(Rectangle())
