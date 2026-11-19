@@ -101,13 +101,7 @@ struct VideoCompressView: View {
 
                 if phase == .compressing {
                     Section {
-                        VStack(alignment: .leading, spacing: 8) {
-                            ProgressView(value: progress)
-                                .accessibilityIdentifier("compress-progress")
-                            Text("Compressing... \(Int((progress * 100).rounded()))%")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
+                        SheetProgressView(progress: progress, verb: "Compressing", accessibilityIdentifier: "compress-progress")
                     }
                     .id("compress-progress-section")
                 }

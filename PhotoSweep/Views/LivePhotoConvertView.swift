@@ -138,13 +138,7 @@ struct LivePhotoConvertView: View {
 
                 if phase == .converting {
                     Section {
-                        VStack(alignment: .leading, spacing: 8) {
-                            ProgressView(value: progress)
-                                .accessibilityIdentifier("livephoto-convert-progress")
-                            Text("Converting... \(Int((progress * 100).rounded()))%")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
+                        SheetProgressView(progress: progress, verb: "Converting", accessibilityIdentifier: "livephoto-convert-progress")
                     }
                     .id("livephoto-convert-progress-section")
                 }
