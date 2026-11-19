@@ -8,10 +8,10 @@ import XCTest
 /// screenshots are wrong too.
 final class SampleScanTests: XCTestCase {
 
-    func testSampleScanHasFourGroups() {
+    func testSampleScanHasFiveGroups() {
         let result = SampleScan.result
-        XCTAssertEqual(result.groups.count, 4)
-        XCTAssertEqual(result.groups(of: .exactDuplicate).count, 1)
+        XCTAssertEqual(result.groups.count, 5)
+        XCTAssertEqual(result.groups(of: .exactDuplicate).count, 2)
         XCTAssertEqual(result.groups(of: .similar).count, 1)
         XCTAssertEqual(result.groups(of: .blurry).count, 1)
         XCTAssertEqual(result.groups(of: .screenshots).count, 1)
@@ -42,11 +42,11 @@ final class SampleScanTests: XCTestCase {
 
     func testSampleScanCounts() {
         let result = SampleScan.result
-        XCTAssertEqual(result.totalScanned, 27)
-        XCTAssertEqual(result.totalLibraryCount, 27)
+        XCTAssertEqual(result.totalScanned, 30)
+        XCTAssertEqual(result.totalLibraryCount, 30)
         XCTAssertFalse(result.isPartialScan)
         XCTAssertGreaterThan(result.totalReclaimableBytes, 0)
-        XCTAssertEqual(result.totalDeletableCount, 2 + 2 + 1 + 3)
+        XCTAssertEqual(result.totalDeletableCount, 2 + 2 + 1 + 3 + 2)
     }
 
     func testSampleScanKeepersAreSharpest() {
@@ -55,5 +55,21 @@ final class SampleScanTests: XCTestCase {
         XCTAssertEqual(result.groups(of: .exactDuplicate).first?.keeperID, "sample-dup-0")
         // Burst keeper: the 0.90-sharpness frame.
         XCTAssertEqual(result.groups(of: .similar).first?.keeperID, "sample-burst-0")
+    }
+
+    func testSampleScanSwipeMonths() {
+        let result = SampleScan.result
+        // September: duplicates, September duplicates, burst, blurry.
+        // October: the 4 screenshots as single cards. The two months
+        // tie at 4 cards each, so there is no smaller month — the
+        // month-complete lane test uses October.
+        let months = SwipeMode.months(for: result)
+        XCTAssertEqual(months.count, 2)
+        XCTAssertEqual(months[0].year, 2025)
+        XCTAssertEqual(months[0].month, 10)
+        XCTAssertEqual(months[1].month, 9)
+        XCTAssertEqual(SwipeMode.cards(for: months[0], in: result).count, 4)
+        XCTAssertEqual(SwipeMode.cards(for: months[1], in: result).count, 4)
+        XCTAssertEqual(SwipeMode.cards(for: result).count, 8)
     }
 }

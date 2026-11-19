@@ -205,3 +205,127 @@ public struct DeletionRequest: Equatable {
     /// Only confirmed requests are executable. Anything else is a bug.
     public var isExecutable: Bool { confirmedByUser && !itemIDs.isEmpty }
 }
+
+/// One reviewable card in swipe mode: a whole group, or one screenshot.
+///
+/// A group card keeps the keeper decision front and centre — the
+/// keeper is already picked by `KeeperPicker`, and the card deletes
+/// only the group's non-keeper items. A screenshot card is a single
+/// screenshot: the screenshots group has no per-photo decision today,
+/// so each screenshot gets its own card instead of one bulk card.
+/// Nothing here deletes anything — a swipe only records a decision;
+/// deletion happens in the batch commit step (see `SwipeSession`).
+public enum SwipeCard: Equatable, Identifiable {
+    case group(PhotoGroup)
+    case screenshot(PhotoItem)
+
+    public var id: String {
+        switch self {
+        case .group(let group): return "swipe-group-\(group.id)"
+        case .screenshot(let item): return "swipe-screenshot-\(item.id)"
+        }
+    }
+
+    /// The month this card belongs to: the keeper's month for a group,
+    /// the item's own month for a screenshot.
+    public var month: SwipeMonth {
+        switch self {
+        case .group(let group):
+            return SwipeMonth(date: group.keeper?.creationDate ?? group.items[0].creationDate)
+        case .screenshot(let item):
+            return SwipeMonth(date: item.creationDate)
+        }
+    }
+
+    /// The PhotoGroup id, for group cards. Nil for screenshot cards —
+    /// a screenshot has no group to invalidate.
+    public var groupID: String? {
+        if case .group(let group) = self { return group.id }
+        return nil
+    }
+
+    /// The keeper at decision time. A keeper change after the decision
+    /// invalidates it (see `SwipeSession.discardDecision`).
+    public var decisionKeeperID: String {
+        switch self {
+        case .group(let group): return group.keeperID
+        case .screenshot(let item): return item.id
+        }
+    }
+
+    /// The label shown on the card: the group kind, or "Screenshot".
+    public var kindLabel: String {
+        switch self {
+        case .group(let group): return group.kind.sectionTitle
+        case .screenshot: return "Screenshot"
+        }
+    }
+
+    /// The photo shown large on the card: the keeper, or the
+    /// screenshot itself.
+    public var keeper: PhotoItem? {
+        switch self {
+        case .group(let group): return group.keeper
+        case .screenshot(let item): return item
+        }
+    }
+
+    /// Items that would be deleted if this card's decision is "delete"
+    /// and the batch is committed.
+    public var deletableItems: [PhotoItem] {
+        switch self {
+        case .group(let group): return group.deletableItems
+        case .screenshot(let item): return [item]
+        }
+    }
+
+    public var deletableCount: Int { deletableItems.count }
+
+    public var reclaimableBytes: Int64 {
+        StorageEstimator.reclaimableBytes(for: deletableItems)
+    }
+
+    /// Thumbnails on the card: the keeper first, then up to two more
+    /// members. Never renders all members — a 50-frame burst group
+    /// would cost 50 thumbnails for one card.
+    public var thumbnailItems: [PhotoItem] {
+        switch self {
+        case .group(let group):
+            guard let keeper = group.keeper else { return [] }
+            let others = group.items.filter { $0.id != keeper.id }.prefix(2)
+            return [keeper] + others
+        case .screenshot(let item):
+            return [item]
+        }
+    }
+
+    /// "3 photos" for a group, "1 screenshot" for a screenshot.
+    public var countLabel: String {
+        switch self {
+        case .group(let group): return "\(group.items.count) photos"
+        case .screenshot: return "1 screenshot"
+        }
+    }
+}
+
+/// One recorded swipe decision: which card, keep or delete, and the
+/// keeper at decision time. Decisions are the only thing a swipe
+/// writes — deletion waits for the batch commit, so a decision can
+/// still be undone or discarded. Codable: the session persists
+/// decisions in UserDefaults, keyed by the scan's `scannedAt`.
+public struct SwipeDecision: Equatable, Codable {
+    public enum Choice: String, Equatable, Codable {
+        case keep
+        case delete
+    }
+
+    public let cardID: String
+    public let choice: Choice
+    public let keeperID: String
+
+    public init(cardID: String, choice: Choice, keeperID: String) {
+        self.cardID = cardID
+        self.choice = choice
+        self.keeperID = keeperID
+    }
+}

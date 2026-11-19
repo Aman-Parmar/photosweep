@@ -3,16 +3,24 @@ import Foundation
 /// Fixed synthetic scan result for screenshot mode and for the
 /// screenshot lane only. Deterministic: same items, same groups, same
 /// numbers on every run. No real photos, no real library — the
-/// "library" is 24 synthetic items.
+/// "library" is 30 synthetic items.
 ///
 /// Groups (see `GroupingEngine` for why these form):
 /// - Exact duplicates: 3 identical sunset photos (same hash).
+/// - September duplicates: 3 identical photos from September (same
+///   hash), so swipe mode has two months with cards.
 /// - Similar burst: 3 frames taken seconds apart.
 /// - Blurry: 2 low-sharpness photos.
 /// - Screenshots: 4 screenshots for bulk review.
 /// - Large videos: 3 clips (1.2 GB, 850 MB, 640 MB), listed separately.
 /// - Live Photos: 3 Live Photos (6.4 MB, 5.6 MB, 4.8 MB), listed separately.
 /// - 9 ordinary singles that group with nothing.
+///
+/// Swipe months (base is 2025-10-09): September holds the duplicates,
+/// September duplicates, burst, and blurry groups (4 cards); October
+/// holds the 4 screenshots as single cards. The design note's "all
+/// four groups are October" was wrong — only the screenshots are
+/// October; the other groups' keepers fall in September.
 enum SampleScan {
 
     /// Fixed base date so grouping (which uses creation order) is
@@ -43,6 +51,7 @@ enum SampleScan {
     static let allItems: [PhotoItem] = {
         var items: [PhotoItem] = []
         items.append(contentsOf: duplicates)
+        items.append(contentsOf: septemberDuplicates)
         items.append(contentsOf: burst)
         items.append(contentsOf: blurry)
         items.append(contentsOf: screenshots)
@@ -81,6 +90,27 @@ enum SampleScan {
                 width: 4032, height: 3024,
                 creationDate: day(-12),
                 sharpness: [0.80, 0.75, 0.70][i],
+                brightness: 0.7,
+                featurePrint: print
+            )
+        }
+    }
+
+    /// A second duplicate trio, dated in September (day -28), so
+    /// swipe mode has two months with cards: September holds this
+    /// trio plus the duplicates, burst, and blurry groups; October
+    /// holds the screenshots. Same pattern as `duplicates`, with its
+    /// own hash and a print far from every other group's.
+    private static var septemberDuplicates: [PhotoItem] {
+        let print = flatPrint(0.3)
+        return (0..<3).map { i in
+            PhotoItem(
+                id: "sample-sep-dup-\(i)",
+                contentHash: "hash-september-trio",
+                fileSize: 4_100_000,
+                width: 4032, height: 3024,
+                creationDate: day(-28),
+                sharpness: [0.85, 0.80, 0.75][i],
                 brightness: 0.7,
                 featurePrint: print
             )
@@ -142,7 +172,7 @@ enum SampleScan {
 
     /// Three Live Photos: distinct flat prints far apart, good
     /// sharpness, no shared hash — they group with nothing, so the
-    /// sample still has exactly 4 groups.
+    /// sample still has exactly 5 groups.
     private static var livePhotoItems: [PhotoItem] {
         [
             PhotoItem(id: "sample-live-0", fileSize: 6_400_000, width: 4032, height: 3024, isLivePhoto: true, creationDate: day(-4), sharpness: 0.75, brightness: 0.7, featurePrint: flatPrint(0.15)),
