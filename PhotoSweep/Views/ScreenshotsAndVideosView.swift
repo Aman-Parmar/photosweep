@@ -58,19 +58,13 @@ struct ScreenshotsView: View {
                     }
                     .safeAreaInset(edge: .bottom) {
                         if !selected.isEmpty {
-                            Button(AppCopy.deleteSelectedLabel(count: selected.count)) {
+                            BulkDeleteButton(count: selected.count, accessibilityIdentifier: "screenshots-delete-button") {
                                 if store.isPro || appState.remainingFreeDeletes(isPro: false) >= selected.count {
                                     showingConfirm = true
                                 } else {
                                     showingPaywall = true
                                 }
                             }
-                            .buttonStyle(.borderedProminent)
-                            .controlSize(.large)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color(.systemBackground))
-                            .accessibilityIdentifier("screenshots-delete-button")
                         }
                     }
                 }
@@ -168,15 +162,9 @@ struct LargeVideosView: View {
                     }
                     .safeAreaInset(edge: .bottom) {
                         if store.isPro && !selected.isEmpty {
-                            Button(AppCopy.deleteSelectedLabel(count: selected.count)) {
+                            BulkDeleteButton(count: selected.count, accessibilityIdentifier: "videos-delete-button") {
                                 showingConfirm = true
                             }
-                            .buttonStyle(.borderedProminent)
-                            .controlSize(.large)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color(.systemBackground))
-                            .accessibilityIdentifier("videos-delete-button")
                         }
                     }
                 }
@@ -213,5 +201,24 @@ private struct SelectionCircle: View {
     var body: some View {
         Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
             .foregroundStyle(isSelected ? Color.accentColor : Color.secondary)
+    }
+}
+
+/// Bottom bulk-delete button for the screenshots and large-videos lists:
+/// prominent, full-width, on the system background. Each list keeps its
+/// own visibility rule and action; only the button itself is shared.
+private struct BulkDeleteButton: View {
+    let count: Int
+    let accessibilityIdentifier: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(AppCopy.deleteSelectedLabel(count: count), action: action)
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color(.systemBackground))
+            .accessibilityIdentifier(accessibilityIdentifier)
     }
 }
