@@ -61,6 +61,11 @@ struct SwipeModeView: View {
         return formatter
     }()
 
+    /// Both Done buttons dismiss the swipe flow (the deck header's
+    /// and the month-done state's), so they share one accessibility
+    /// identifier: one literal, so the two can never drift apart.
+    private static let doneButtonIdentifier = "swipe-done-button"
+
     private func monthLabel(_ month: SwipeMonth) -> String {
         Self.monthFormatter.string(from: month.startDate)
     }
@@ -170,7 +175,7 @@ struct SwipeModeView: View {
         ZStack {
             HStack {
                 Button("Done") { dismiss() }
-                    .accessibilityIdentifier("swipe-done-button")
+                    .accessibilityIdentifier(Self.doneButtonIdentifier)
                 Spacer()
             }
             if let session = appState.swipeSession {
@@ -495,7 +500,7 @@ struct SwipeModeView: View {
             Button("Done") { dismiss() }
                 .buttonStyle(.bordered)
                 .controlSize(.large)
-                .accessibilityIdentifier("swipe-done-button")
+                .accessibilityIdentifier(Self.doneButtonIdentifier)
             Spacer()
         }
         .padding()
