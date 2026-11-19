@@ -19,3 +19,29 @@ struct SheetProgressView: View {
         }
     }
 }
+
+/// Shared done section for the compress and convert sheets: the
+/// "Saved ~X" headline plus one detail line. The detail copy, the
+/// accessibility identifier, and the section id stay per-sheet so the
+/// screenshot lane keeps capturing the same elements and the
+/// half-height scroll-to still targets the same section.
+struct SheetDoneSection: View {
+    let bytesSaved: Int64
+    let detail: String
+    let accessibilityIdentifier: String
+    let sectionIdentifier: String
+
+    var body: some View {
+        Section {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(AppCopy.savedLine(bytes: bytesSaved))
+                    .font(.headline)
+                    .accessibilityIdentifier(accessibilityIdentifier)
+                Text(detail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .id(sectionIdentifier)
+    }
+}

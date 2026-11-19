@@ -106,17 +106,12 @@ struct VideoCompressView: View {
                 }
 
                 if phase == .done, let outcome {
-                    Section {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(AppCopy.savedLine(bytes: outcome.bytesSaved))
-                                .font(.headline)
-                                .accessibilityIdentifier("compress-done-label")
-                            Text("Compressed to ~\(StorageEstimator.formatted(outcome.compressedBytes)). The original is in Recently Deleted.")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    .id("compress-done-section")
+                    SheetDoneSection(
+                        bytesSaved: outcome.bytesSaved,
+                        detail: "Compressed to ~\(StorageEstimator.formatted(outcome.compressedBytes)). The original is in Recently Deleted.",
+                        accessibilityIdentifier: "compress-done-label",
+                        sectionIdentifier: "compress-done-section"
+                    )
                 }
 
                 if phase == .failed {
