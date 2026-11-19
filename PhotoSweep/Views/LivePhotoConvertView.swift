@@ -122,7 +122,7 @@ struct LivePhotoConvertView: View {
                     }
                     .font(.subheadline)
                     if !canConvert {
-                        Text("You have used your 20 free deletes. Converting a Live Photo moves the original to Recently Deleted, so it costs one delete. Upgrade to Pro for unlimited deletes.")
+                        Text("You have used your \(AppState.freeDeleteLimit) free deletes. Converting a Live Photo moves the original to Recently Deleted, so it costs one delete. Upgrade to Pro for unlimited deletes.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }

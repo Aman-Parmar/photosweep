@@ -57,12 +57,19 @@ public enum CleanupReport {
 
     // MARK: - Private
 
-    static func isoDate(_ date: Date) -> String {
+    /// Shared ISO date formatter: building one per call is wasteful
+    /// and the POSIX/UTC setup is easy to get wrong twice. Same
+    /// pattern as SwipeMode.monthTitleFormatter.
+    private static let isoDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
         formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: date)
+        return formatter
+    }()
+
+    static func isoDate(_ date: Date) -> String {
+        isoDateFormatter.string(from: date)
     }
 
     /// "3:02" for 182 seconds. Public so the tests can pin it.
