@@ -145,6 +145,11 @@ struct SwipeModeView: View {
 
     private var deckView: some View {
         VStack(spacing: 16) {
+            // A spacer above as well as below: the deck block sits
+            // vertically centred instead of pinned to the top with
+            // a wide blank band under the action buttons (QA shot
+            // 11, 2026-11-19: ~750px blank below the buttons).
+            Spacer()
             deckHeader
             if let session = appState.swipeSession {
                 ProgressView(value: Double(session.decidedCount), total: Double(max(1, session.totalCards)))
@@ -192,10 +197,16 @@ struct SwipeModeView: View {
             // identifier never surfaced). The kind text carries its
             // own identifier instead; the lane asserts on that.
             if let next = nextCard(after: session) {
-                cardView(next, kindIdentifier: "swipe-next-card-kind")
-                    .scaleEffect(0.94)
-                    .offset(y: 14)
-                    .opacity(0.5)
+                // The peek must read as a card behind, not a rim of
+                // the same colour: a bigger offset and smaller scale
+                // show more of it, and cardView gives a peek card a
+                // darker fill plus a separator outline (QA shot 11,
+                // 2026-11-19: the old 0.94 scale and 14pt offset left
+                // only a thin light-grey rim).
+                cardView(next, kindIdentifier: "swipe-next-card-kind", isPeek: true)
+                    .scaleEffect(0.90)
+                    .offset(y: 24)
+                    .opacity(0.8)
                     .disabled(true)
             }
             if let current = session.currentCard {
@@ -233,7 +244,7 @@ struct SwipeModeView: View {
         return remaining.dropFirst().first
     }
 
-    private func cardView(_ card: SwipeCard, kindIdentifier: String) -> some View {
+    private func cardView(_ card: SwipeCard, kindIdentifier: String, isPeek: Bool = false) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             if let keeper = card.keeper {
                 ZStack(alignment: .topLeading) {
@@ -277,7 +288,13 @@ struct SwipeModeView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 20))
+        .background(isPeek ? Color(.systemGray5) : Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 20))
+        .overlay {
+            if isPeek {
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color(.separator), lineWidth: 1)
+            }
+        }
     }
 
     private func totalsBar(_ session: SwipeSession) -> some View {
@@ -450,6 +467,11 @@ struct SwipeModeView: View {
 
     private func doneView(_ totals: CommittedTotals) -> some View {
         VStack(spacing: 16) {
+            // A spacer above as well as below: the done state sits
+            // vertically centred instead of pinned to the top with
+            // a wide blank band underneath (QA shot 12, 2026-11-19:
+            // ~1600px blank below the content).
+            Spacer()
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 56))
                 .foregroundStyle(.green)
