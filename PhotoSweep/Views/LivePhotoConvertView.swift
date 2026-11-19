@@ -106,6 +106,7 @@ struct LivePhotoConvertView: View {
 
     var body: some View {
         NavigationStack {
+            ScrollViewReader { proxy in
             List {
                 Section {
                     HStack {
@@ -145,6 +146,7 @@ struct LivePhotoConvertView: View {
                                 .foregroundStyle(.secondary)
                         }
                     }
+                    .id("livephoto-convert-progress-section")
                 }
 
                 if phase == .done, let outcome {
@@ -158,6 +160,7 @@ struct LivePhotoConvertView: View {
                                 .foregroundStyle(.secondary)
                         }
                     }
+                    .id("livephoto-convert-done-section")
                 }
 
                 if phase == .failed {
@@ -200,9 +203,26 @@ struct LivePhotoConvertView: View {
                 .padding()
                 .background(Color(.systemBackground))
             }
+            // At the half-height detent the progress and done sections
+            // can sit below the fold. Scroll them into view so the
+            // user sees the run and its result without hunting.
+            .onChange(of: phase) { _, newPhase in
+                let target: String?
+                switch newPhase {
+                case .converting: target = "livephoto-convert-progress-section"
+                case .done: target = "livephoto-convert-done-section"
+                default: target = nil
+                }
+                if let target {
+                    DispatchQueue.main.async {
+                        withAnimation { proxy.scrollTo(target, anchor: .top) }
+                    }
+                }
+            }
             .sheet(isPresented: $showingPaywall) {
                 PaywallView()
             }
+            } // ScrollViewReader
         }
     }
 
