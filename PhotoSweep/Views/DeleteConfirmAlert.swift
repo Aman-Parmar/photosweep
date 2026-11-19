@@ -35,6 +35,12 @@ enum AppCopy {
     /// sheet, paywall). One source so the wording stays identical in
     /// all three places; each button keeps its own action.
     static let close = "Close"
+
+    /// Dismiss label for sheet Cancel buttons (compress, convert, swipe
+    /// batch review) and the delete-confirm alert. One source so the
+    /// wording stays identical in all four places; each button keeps
+    /// its own action and role.
+    static let cancel = "Cancel"
 }
 
 /// The "Move to Recently Deleted?" confirmation alert, shared by the
@@ -49,7 +55,7 @@ struct DeleteConfirmAlert: ViewModifier {
 
     func body(content: Content) -> some View {
         content.alert("Move to Recently Deleted?", isPresented: $isPresented) {
-            Button("Cancel", role: .cancel) {}
+            Button(AppCopy.cancel, role: .cancel) {}
             Button("Delete \(count)", role: .destructive, action: onConfirm)
         } message: {
             Text(message)

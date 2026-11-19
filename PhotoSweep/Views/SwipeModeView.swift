@@ -417,7 +417,7 @@ struct SwipeModeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Cancel") { activeSheet = nil }
+                    Button(AppCopy.cancel) { activeSheet = nil }
                 }
             }
         }

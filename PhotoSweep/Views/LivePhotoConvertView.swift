@@ -169,7 +169,7 @@ struct LivePhotoConvertView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button(AppCopy.cancel) { dismiss() }
                 }
             }
             // Short content: open at half height so the sheet fits
