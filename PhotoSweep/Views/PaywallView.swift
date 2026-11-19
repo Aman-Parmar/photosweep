@@ -80,9 +80,7 @@ struct PaywallView: View {
                             .font(.caption)
                             .foregroundStyle(.red)
                     }
-                    Button("Restore Purchases") {
-                        Task { await store.restore() }
-                    }
+                    RestorePurchasesButton()
                     .buttonStyle(.bordered)
                     Text("Payment is handled by Apple. Cancel anytime in Settings. The trial ends automatically if you cancel before day 7. Deleting photos is always your choice; Pro never auto-deletes anything.")
                         .font(.caption)
@@ -97,6 +95,20 @@ struct PaywallView: View {
                 }
             }
             .halfHeightSheet()
+        }
+    }
+}
+
+/// Restore Purchases button: label plus the StoreKit restore action,
+/// shared by the paywall and Settings so the two cannot drift apart.
+/// Each caller keeps its own styling (the paywall uses .bordered,
+/// Settings uses the plain list-row style).
+struct RestorePurchasesButton: View {
+    @EnvironmentObject private var store: StoreManager
+
+    var body: some View {
+        Button("Restore Purchases") {
+            Task { await store.restore() }
         }
     }
 }

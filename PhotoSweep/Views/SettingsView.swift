@@ -30,9 +30,7 @@ struct SettingsView: View {
                         Button("Get Pro") { showingPaywall = true }
                             .accessibilityIdentifier("settings-get-pro-button")
                     }
-                    Button("Restore Purchases") {
-                        Task { await store.restore() }
-                    }
+                    RestorePurchasesButton()
                 }
                 Section("Freed this month") {
                     let total = CleanupHistory.freedThisMonth(events: cleanups.map(\.event))
