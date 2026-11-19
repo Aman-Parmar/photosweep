@@ -150,7 +150,7 @@ struct SwipeModeView: View {
         ZStack {
             // The next card peeks behind at reduced scale.
             if let next = nextCard(after: session) {
-                cardView(next)
+                cardView(next, kindIdentifier: "swipe-next-card-kind")
                     .scaleEffect(0.94)
                     .offset(y: 14)
                     .opacity(0.5)
@@ -158,7 +158,7 @@ struct SwipeModeView: View {
                     .accessibilityIdentifier("swipe-next-card")
             }
             if let current = session.currentCard {
-                cardView(current)
+                cardView(current, kindIdentifier: "swipe-card-kind")
                     .id(current.id)
                     .offset(x: dragOffset.width, y: dragOffset.height * 0.25)
                     .rotationEffect(.degrees(Double(dragOffset.width / 15)))
@@ -193,7 +193,7 @@ struct SwipeModeView: View {
         return remaining.dropFirst().first
     }
 
-    private func cardView(_ card: SwipeCard) -> some View {
+    private func cardView(_ card: SwipeCard, kindIdentifier: String) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             if let keeper = card.keeper {
                 ZStack(alignment: .topLeading) {
@@ -221,6 +221,12 @@ struct SwipeModeView: View {
             }
             Text(card.kindLabel)
                 .font(.headline)
+                // Identifier for the screenshot lane: a VStack does
+                // not surface as an `otherElements` query, so the
+                // lane asserts on this text instead (CI run
+                // 44450339524: the `swipe-card` container query never
+                // matched even though the deck rendered).
+                .accessibilityIdentifier(kindIdentifier)
             Text("\(card.countLabel) - \(StorageEstimator.freesLabel(card.reclaimableBytes))")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)

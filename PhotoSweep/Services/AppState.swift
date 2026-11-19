@@ -114,20 +114,32 @@ final class AppState: ObservableObject {
     }
 
     /// Records a keep/delete decision for the current card.
+    /// Explicit local copy, not `swipeSession?.decide(...)`: the
+    /// mutation must land through the @Published setter, and an
+    /// optional-chained mutating call on a struct property is too
+    /// easy to misread as a no-op when it silently does not write
+    /// back (CI run 44450339524: four Delete taps, no summary sheet,
+    /// no commit — the decisions never registered).
     func swipeDecide(_ choice: SwipeDecision.Choice) {
-        swipeSession?.decide(choice)
+        guard var session = swipeSession else { return }
+        session.decide(choice)
+        swipeSession = session
         saveSwipeSnapshot()
     }
 
     /// Moves the current card to the end of this month's queue.
     func swipeSkip() {
-        swipeSession?.skip()
+        guard var session = swipeSession else { return }
+        session.skip()
+        swipeSession = session
         saveSwipeSnapshot()
     }
 
     /// Pops the last decision and puts that card back on top.
     func swipeUndo() {
-        swipeSession?.undo()
+        guard var session = swipeSession else { return }
+        session.undo()
+        swipeSession = session
         saveSwipeSnapshot()
     }
 
@@ -136,7 +148,9 @@ final class AppState: ObservableObject {
     /// have changed the keeper there: the decision was made for a
     /// different keeper, so it must not stand.
     func discardSwipeDecision(forCardID cardID: String) {
-        swipeSession?.discardDecision(forCardID: cardID)
+        guard var session = swipeSession else { return }
+        session.discardDecision(forCardID: cardID)
+        swipeSession = session
         saveSwipeSnapshot()
     }
 

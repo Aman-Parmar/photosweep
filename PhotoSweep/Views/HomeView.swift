@@ -18,7 +18,7 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 4) {
                     header
                     if let result = appState.result {
                         summaryCard(result)
@@ -181,7 +181,12 @@ struct HomeView: View {
     }
 
     private func categoryCards(_ result: ScanResult) -> some View {
-        VStack(spacing: 12) {
+        // Tight spacing on purpose: the swipe entry card above adds
+        // one row, and the "How it works" steps below must still clear
+        // the floating tab bar at rest in shot 01 (CI run 44450339524:
+        // spacing 12 here plus the new card pushed step 3 behind the
+        // bar). The rows keep their own height; only the gaps shrink.
+        VStack(spacing: 8) {
             ForEach(GroupKind.allCases, id: \.rawValue) { kind in
                 NavigationLink {
                     CategoryGroupsView(kind: kind)
@@ -290,7 +295,12 @@ struct CategoryCardRow: View {
                     .font(.subheadline.bold())
             }
         }
-        .padding(.vertical, 2)
+        // No vertical padding here: the category rows sit in a
+        // spacing-8 stack, and the extra 4pt per row (7 rows) pushed
+        // "How it works" step 3 behind the tab bar once the swipe
+        // entry card was added (CI run 44450339524). The rows are
+        // still ~40pt tall from their content.
+        .padding(.vertical, 0)
     }
 
     private var icon: String {
@@ -344,6 +354,9 @@ struct LivePhotosCardRow: View {
                     .font(.subheadline.bold())
             }
         }
-        .padding(.vertical, 2)
+        // Same no-padding rule as CategoryCardRow (see above): the
+        // swipe entry card's row height has to come out of the gaps,
+        // not out of "How it works" step 3's clearance.
+        .padding(.vertical, 0)
     }
 }

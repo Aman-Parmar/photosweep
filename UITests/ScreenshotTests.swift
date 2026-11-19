@@ -160,7 +160,7 @@ final class ScreenshotTests: XCTestCase {
         XCTAssertTrue(monthRow.waitForExistence(timeout: 10))
         monthRow.tap()
         XCTAssertTrue(app.staticTexts["swipe-month-label"].waitForExistence(timeout: 10))
-        XCTAssertTrue(app.otherElements["swipe-card"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["swipe-card-kind"].waitForExistence(timeout: 10))
         let progress = app.staticTexts["swipe-progress-label"]
         XCTAssertTrue(progress.waitForExistence(timeout: 10))
         XCTAssertEqual(progress.label, "0 of 4 reviewed")
@@ -170,7 +170,7 @@ final class ScreenshotTests: XCTestCase {
         let updated = NSPredicate(format: "label == %@", "1 of 4 reviewed")
         expectation(for: updated, evaluatedWith: progress)
         waitForExpectations(timeout: 10)
-        XCTAssertTrue(app.otherElements["swipe-card"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["swipe-card-kind"].waitForExistence(timeout: 10))
         saveScreenshot(named: "11-swipe-deck")
     }
 
@@ -195,6 +195,14 @@ final class ScreenshotTests: XCTestCase {
             XCTAssertTrue(deleteButton.waitForExistence(timeout: 10))
             deleteButton.tap()
         }
+        // The four decisions must have registered before the sheet
+        // can open: wait for the progress value, so a mutation
+        // failure fails here with the cause named instead of as a
+        // missing commit button (CI run 44450339524).
+        let progress = app.staticTexts["swipe-progress-label"]
+        let complete = NSPredicate(format: "label == %@", "4 of 4 reviewed")
+        expectation(for: complete, evaluatedWith: progress)
+        waitForExpectations(timeout: 10)
         // Finishing the month opens the summary sheet: the commit
         // button inside it is the proof the sheet is up (a
         // NavigationStack identifier is not reliably queryable).
