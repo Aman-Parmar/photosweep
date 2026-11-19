@@ -198,11 +198,9 @@ struct GroupReviewView: View {
                                         .cornerRadius(10)
                                     if item.id == keeperID {
                                         Text(AppCopy.keep)
-                                            .font(.caption2.bold())
                                             .padding(.horizontal, 6)
                                             .padding(.vertical, 3)
-                                            .background(Color.accentColor, in: Capsule())
-                                            .foregroundStyle(.white)
+                                            .keeperBadge()
                                             .padding(6)
                                     } else {
                                         Image(systemName: "trash")

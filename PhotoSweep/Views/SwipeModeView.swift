@@ -251,11 +251,9 @@ struct SwipeModeView: View {
                         .frame(height: 300)
                         .cornerRadius(16)
                     Text(AppCopy.keep)
-                        .font(.caption2.bold())
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(Color.accentColor, in: Capsule())
-                        .foregroundStyle(.white)
+                        .keeperBadge()
                         .padding(10)
                 }
             }

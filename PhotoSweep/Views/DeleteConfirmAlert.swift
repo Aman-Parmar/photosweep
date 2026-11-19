@@ -100,4 +100,14 @@ extension View {
             )
         )
     }
+
+    /// Keeper badge style shared by the group review grid and the
+    /// swipe-mode card: caption2 bold white text on an accent capsule.
+    /// One source so the badge cannot drift apart; each badge keeps its
+    /// own padding for its thumbnail size.
+    func keeperBadge() -> some View {
+        font(.caption2.bold())
+            .background(Color.accentColor, in: Capsule())
+            .foregroundStyle(.white)
+    }
 }
