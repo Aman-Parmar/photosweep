@@ -1,6 +1,6 @@
 import XCTest
 
-/// App Store screenshot lane — 10 shots on the iPhone 17 Pro Max simulator.
+/// App Store screenshot lane — 12 shots on the iPhone 17 Pro Max simulator.
 /// Real simulator screenshots of the real app, never mockups. The app runs
 /// in `--screenshot-mode`: the scan result is the fixed synthetic sample
 /// (no real photos, no network) and thumbnails are programmatically
@@ -143,6 +143,67 @@ final class ScreenshotTests: XCTestCase {
         startButton.tap()
         XCTAssertTrue(app.staticTexts["livephoto-convert-done-label"].waitForExistence(timeout: 15))
         saveScreenshot(named: "10-live-photo-convert")
+    }
+
+    // MARK: - 11 Swipe deck
+
+    /// The swipe deck for the sample's newest month (October 2025,
+    /// 4 screenshot cards): month header, card, and progress label,
+    /// then one Keep tap advances the progress and the next card.
+    /// Listing shot 11; it proves the swipe-mode deck renders.
+    func test11SwipeDeck() {
+        app.tabBars.buttons["Scan"].tap()
+        let card = app.buttons["home-swipe-card"]
+        XCTAssertTrue(card.waitForExistence(timeout: 10))
+        card.tap()
+        let monthRow = app.buttons["swipe-month-2025-10"]
+        XCTAssertTrue(monthRow.waitForExistence(timeout: 10))
+        monthRow.tap()
+        XCTAssertTrue(app.staticTexts["swipe-month-label"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.otherElements["swipe-card"].waitForExistence(timeout: 10))
+        let progress = app.staticTexts["swipe-progress-label"]
+        XCTAssertTrue(progress.waitForExistence(timeout: 10))
+        XCTAssertEqual(progress.label, "0 of 4 reviewed")
+        app.buttons["swipe-keep-button"].tap()
+        // The label updates asynchronously after the tap: wait for
+        // the new value instead of asserting on a possibly stale read.
+        let updated = NSPredicate(format: "label == %@", "1 of 4 reviewed")
+        expectation(for: updated, evaluatedWith: progress)
+        waitForExpectations(timeout: 10)
+        XCTAssertTrue(app.otherElements["swipe-card"].waitForExistence(timeout: 10))
+        saveScreenshot(named: "11-swipe-deck")
+    }
+
+    // MARK: - 12 Swipe month complete
+
+    /// Decide every card in the sample's newest month (October 2025,
+    /// 4 screenshot cards) for deletion: finishing the month opens
+    /// the summary sheet, confirming deletes the batch and shows the
+    /// month-done state. Listing shot 12; it proves the swipe-mode
+    /// commit flow renders end to end.
+    func test12SwipeMonthComplete() {
+        app.tabBars.buttons["Scan"].tap()
+        let card = app.buttons["home-swipe-card"]
+        XCTAssertTrue(card.waitForExistence(timeout: 10))
+        card.tap()
+        let monthRow = app.buttons["swipe-month-2025-10"]
+        XCTAssertTrue(monthRow.waitForExistence(timeout: 10))
+        monthRow.tap()
+        XCTAssertTrue(app.staticTexts["swipe-progress-label"].waitForExistence(timeout: 10))
+        for _ in 0..<4 {
+            let deleteButton = app.buttons["swipe-delete-button"]
+            XCTAssertTrue(deleteButton.waitForExistence(timeout: 10))
+            deleteButton.tap()
+        }
+        // Finishing the month opens the summary sheet: the commit
+        // button inside it is the proof the sheet is up (a
+        // NavigationStack identifier is not reliably queryable).
+        let commitButton = app.buttons["swipe-commit-button"]
+        XCTAssertTrue(commitButton.waitForExistence(timeout: 10))
+        XCTAssertEqual(commitButton.label, "Delete 4 photos")
+        commitButton.tap()
+        XCTAssertTrue(app.staticTexts["swipe-month-complete"].waitForExistence(timeout: 10))
+        saveScreenshot(named: "12-swipe-month-complete")
     }
 
     // MARK: - Helper

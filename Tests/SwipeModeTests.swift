@@ -246,4 +246,21 @@ final class SwipeModeTests: XCTestCase {
         XCTAssertEqual(session.batchDeleteCount, 0)
         XCTAssertTrue(session.canCommit(remainingFreeDeletes: 0, isPro: false))
     }
+
+    func testRestoreKeepsDecisionsAndDropsMissingCards() {
+        let months = SwipeMode.months(for: mixedResult())
+        let octoberCards = SwipeMode.cards(for: months[0], in: mixedResult())
+        XCTAssertEqual(octoberCards.count, 3)
+        var session = SwipeSession(month: months[0], cards: octoberCards)
+        let first = session.decide(.delete)
+        XCTAssertNotNil(first)
+        // A decision for a card that no longer exists is dropped.
+        let stale = SwipeDecision(cardID: "swipe-group-gone", choice: .delete, keeperID: "gone")
+        let restored = SwipeSession(
+            month: months[0], cards: octoberCards, decisions: session.allDecisions + [stale])
+        XCTAssertEqual(restored.decidedCount, 1)
+        XCTAssertEqual(restored.currentCard, octoberCards[1])
+        XCTAssertFalse(restored.isComplete)
+        XCTAssertEqual(restored.batchDeleteCount, 1)
+    }
 }

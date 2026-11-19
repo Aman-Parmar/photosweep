@@ -41,6 +41,13 @@ final class AppState: ObservableObject {
         self.deletedCount = UserDefaults.standard.integer(forKey: "photosweep.deletedCount")
         if ScreenshotMode.isEnabled {
             self.result = SampleScan.result
+            // Screenshot mode starts clean every launch: the lane's
+            // tests must not inherit another test's delete budget or
+            // swipe session (the simulator's UserDefaults persist
+            // across test launches in one lane run).
+            deletedCount = 0
+            UserDefaults.standard.removeObject(forKey: "photosweep.deletedCount")
+            UserDefaults.standard.removeObject(forKey: Self.swipeSessionKey)
         }
     }
 
@@ -59,9 +66,158 @@ final class AppState: ObservableObject {
         result?.livePhotos ?? []
     }
 
+    // MARK: - Swipe mode
+
+    /// The active swipe session, if the user opened swipe mode.
+    /// Decisions persist after every swipe (see `saveSwipeSnapshot`),
+    /// keyed by the scan's `scannedAt`, so exiting mid-month keeps
+    /// the state and a rescan clears it — group IDs are scan-specific
+    /// and a stale decision must never delete from a new scan.
+    @Published private(set) var swipeSession: SwipeSession?
+
+    private static let swipeSessionKey = "photosweep.swipeSession"
+
+    /// What persists of a swipe session: the scan it belongs to, the
+    /// month, and the decisions so far. The queue rebuilds from the
+    /// scan result on restore; skip order is the only state lost.
+    private struct SwipeSessionSnapshot: Codable {
+        let scannedAt: TimeInterval
+        let month: SwipeMonth
+        let decisions: [SwipeDecision]
+    }
+
+    /// Months with at least one reviewable card, newest first.
+    var swipeMonths: [SwipeMonth] {
+        guard let current = result else { return [] }
+        return SwipeMode.months(for: current)
+    }
+
+    func swipeCardCount(for month: SwipeMonth) -> Int {
+        guard let current = result else { return 0 }
+        return SwipeMode.cards(for: month, in: current).count
+    }
+
+    /// Starts (or restores) the session for one month. A saved
+    /// session for the same scan and month resumes where it left
+    /// off; anything else starts fresh.
+    func startSwipeSession(month: SwipeMonth) {
+        guard let current = result else { return }
+        let cards = SwipeMode.cards(for: month, in: current)
+        if let snapshot = loadSwipeSnapshot(),
+           snapshot.scannedAt == current.scannedAt.timeIntervalSince1970,
+           snapshot.month == month {
+            swipeSession = SwipeSession(month: month, cards: cards, decisions: snapshot.decisions)
+        } else {
+            swipeSession = SwipeSession(month: month, cards: cards)
+        }
+        saveSwipeSnapshot()
+    }
+
+    /// Records a keep/delete decision for the current card.
+    func swipeDecide(_ choice: SwipeDecision.Choice) {
+        swipeSession?.decide(choice)
+        saveSwipeSnapshot()
+    }
+
+    /// Moves the current card to the end of this month's queue.
+    func swipeSkip() {
+        swipeSession?.skip()
+        saveSwipeSnapshot()
+    }
+
+    /// Pops the last decision and puts that card back on top.
+    func swipeUndo() {
+        swipeSession?.undo()
+        saveSwipeSnapshot()
+    }
+
+    /// Discards the pending decision for one card and re-queues it.
+    /// Used when the user opened the group from the deck and may
+    /// have changed the keeper there: the decision was made for a
+    /// different keeper, so it must not stand.
+    func discardSwipeDecision(forCardID cardID: String) {
+        swipeSession?.discardDecision(forCardID: cardID)
+        saveSwipeSnapshot()
+    }
+
+    /// Rebuilds the active session from the current scan result,
+    /// dropping decisions and cards whose groups are gone (deleted
+    /// from group review) and decisions whose keeper changed. Skip
+    /// order is not preserved — see the restore initializer.
+    func refreshSwipeSession() {
+        guard let session = swipeSession, let current = result else { return }
+        let cards = SwipeMode.cards(for: session.month, in: current)
+        let validDecisions = session.allDecisions.filter { decision in
+            cards.first(where: { $0.id == decision.cardID })?.decisionKeeperID == decision.keeperID
+        }
+        swipeSession = SwipeSession(month: session.month, cards: cards, decisions: validDecisions)
+        saveSwipeSnapshot()
+    }
+
+    /// Commits the swipe batch: deletes every decided group's
+    /// non-keeper items (or screenshot) through the same
+    /// `confirmDelete` paths as group review, in decision order.
+    /// Returns false when the free budget does not cover the batch
+    /// (caller shows the paywall) or a deletion failed partway — in
+    /// that case the session is kept so the user can retry. On
+    /// success the session clears; the caller keeps the totals for
+    /// the done state before calling this.
+    func commitSwipeSession(isPro: Bool) async -> Bool {
+        guard let session = swipeSession else { return false }
+        guard session.canCommit(remainingFreeDeletes: remainingFreeDeletes(isPro: isPro), isPro: isPro) else {
+            return false
+        }
+        for decision in session.deleteDecisions {
+            guard let current = result else { return false }
+            guard let card = SwipeMode.cards(for: current).first(where: { $0.id == decision.cardID }) else {
+                continue
+            }
+            // The keeper must still be the one the decision was made
+            // for; a changed keeper invalidates the decision, so skip
+            // that card rather than deleting from a stale decision.
+            guard card.decisionKeeperID == decision.keeperID else { continue }
+            let ok: Bool
+            switch card {
+            case .group(let group):
+                ok = await confirmDelete(group: group, isPro: isPro)
+            case .screenshot(let item):
+                ok = await confirmDelete(items: [item], isPro: isPro)
+            }
+            if !ok { return false }
+        }
+        swipeSession = nil
+        clearSwipeSnapshot()
+        return true
+    }
+
+    private func saveSwipeSnapshot() {
+        guard let session = swipeSession, let current = result else { return }
+        let snapshot = SwipeSessionSnapshot(
+            scannedAt: current.scannedAt.timeIntervalSince1970,
+            month: session.month,
+            decisions: session.allDecisions)
+        if let data = try? JSONEncoder().encode(snapshot) {
+            UserDefaults.standard.set(data, forKey: Self.swipeSessionKey)
+        }
+    }
+
+    private func loadSwipeSnapshot() -> SwipeSessionSnapshot? {
+        guard let data = UserDefaults.standard.data(forKey: Self.swipeSessionKey) else { return nil }
+        return try? JSONDecoder().decode(SwipeSessionSnapshot.self, from: data)
+    }
+
+    private func clearSwipeSnapshot() {
+        UserDefaults.standard.removeObject(forKey: Self.swipeSessionKey)
+    }
+
     /// Runs a real scan (PhotoKit). In screenshot mode this is a no-op:
     /// the sample result is already loaded.
     func runScan() async {
+        // A rescan clears the swipe session: group IDs are
+        // scan-specific and a stale decision must never delete from
+        // a new scan.
+        swipeSession = nil
+        clearSwipeSnapshot()
         if ScreenshotMode.isEnabled {
             result = SampleScan.result
             return

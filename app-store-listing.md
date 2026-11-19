@@ -39,7 +39,7 @@ photo cleaner, duplicate photos, similar photos, burst photos, screenshots, larg
 - Privacy policy: https://photosweep.singhsec.com/photosweep-privacy
 - Support: https://photosweep.singhsec.com/photosweep-support
 
-## Screenshots (10, iPhone 17 Pro Max)
+## Screenshots (12, iPhone 17 Pro Max)
 
 1. Home scan: summary and category cards
 2. Duplicates group review: keeper marked, delete proposed
@@ -51,6 +51,8 @@ photo cleaner, duplicate photos, similar photos, burst photos, screenshots, larg
 8. Compare with keeper: burst frames side by side, pick the best
 9. Video compression: shrink a video to HEVC, presets with before/after size estimates
 10. Live Photos: convert one to a still photo, about half the size
+11. Swipe mode: one card per group, keep or delete, progress by month
+12. Swipe mode month complete: batch summary, confirm once, done state
 
 ## Review notes for Apple
 

@@ -48,6 +48,7 @@ Notes on pricing (see `SUBSCRIPTION_PLAN.md` and `VALIDATION.md`):
 - Limited photo access is supported: the scan only sees what the user granted, and the Home screen says so plainly ("Scanned 214 of 12,400 photos").
 - The similarity threshold (~0.35 feature distance) and the neighbour window (20) are named constants in `Logic/` with tests pinning the boundary behaviour. Similar grouping is a proposal, never a fact — the user reviews every group.
 - Screenshots are grouped for bulk review with a warning: some screenshots are receipts, tickets, or confirmations worth keeping.
+- Swipe mode: review month by month, one card per group, keep or delete, undo until the batch is confirmed once.
 
 ## Prerequisites
 
@@ -84,7 +85,7 @@ xcodebuild test -scheme PhotoSweep \
   -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
   -only-testing:PhotoSweepTests
 
-# Screenshots (10 shots, iPhone 17 Pro Max simulator)
+# Screenshots (12 shots, iPhone 17 Pro Max simulator)
 xcodebuild test -scheme PhotoSweep \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max,OS=latest' \
   -only-testing:PhotoSweepUITests/ScreenshotTests

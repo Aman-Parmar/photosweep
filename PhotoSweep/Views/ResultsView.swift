@@ -10,6 +10,7 @@ struct ResultsView: View {
     @EnvironmentObject private var store: StoreManager
     @State private var showingPaywall = false
     @State private var showingExporter = false
+    @State private var showingSwipeMode = false
     @State private var reportDocument = CleanupReportDocument(csv: "")
 
     /// False when there is nothing to report: no scan yet, or a scan
@@ -52,6 +53,15 @@ struct ResultsView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
+                        showingSwipeMode = true
+                    } label: {
+                        Label("Swipe", systemImage: "rectangle.stack")
+                    }
+                    .accessibilityIdentifier("results-swipe-button")
+                    .disabled(appState.swipeMonths.isEmpty)
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
                         if store.isPro {
                             if let result = appState.result {
                                 reportDocument = CleanupReportDocument(csv: CleanupReport.csv(for: result))
@@ -66,6 +76,9 @@ struct ResultsView: View {
                     .accessibilityIdentifier("results-export-button")
                     .disabled(!canExport)
                 }
+            }
+            .fullScreenCover(isPresented: $showingSwipeMode) {
+                SwipeModeView()
             }
             .sheet(isPresented: $showingPaywall) {
                 PaywallView()

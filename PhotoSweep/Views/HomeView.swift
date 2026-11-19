@@ -7,6 +7,13 @@ struct HomeView: View {
     @EnvironmentObject private var appState: AppState
     @EnvironmentObject private var store: StoreManager
     @State private var showingPaywall = false
+    @State private var showingSwipeMode = false
+
+    private static let swipeMonthFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter
+    }()
 
     var body: some View {
         NavigationStack {
@@ -15,6 +22,7 @@ struct HomeView: View {
                     header
                     if let result = appState.result {
                         summaryCard(result)
+                        swipeEntryCard
                         categoryCards(result)
                         if result.isPartialScan {
                             partialScanNotice(result)
@@ -97,6 +105,50 @@ struct HomeView: View {
         .controlSize(.large)
         .disabled(appState.isScanning)
         .accessibilityIdentifier("scan-button")
+    }
+
+    /// The swipe-mode entry card, above the category cards. Shown
+    /// only when at least one month has reviewable cards. The
+    /// subtitle names the newest month and its card count (or the
+    /// in-progress count when a session is open for that month).
+    @ViewBuilder
+    private var swipeEntryCard: some View {
+        if let newest = appState.swipeMonths.first {
+            Button {
+                showingSwipeMode = true
+            } label: {
+                HStack {
+                    Image(systemName: "rectangle.stack")
+                        .foregroundStyle(.tint)
+                        .frame(width: 28)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Swipe to review")
+                            .font(.headline)
+                        Text(swipeSubtitle(for: newest))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.vertical, 2)
+            }
+            .accessibilityIdentifier("home-swipe-card")
+            .fullScreenCover(isPresented: $showingSwipeMode) {
+                SwipeModeView()
+            }
+        }
+    }
+
+    private func swipeSubtitle(for month: SwipeMonth) -> String {
+        let label = Self.swipeMonthFormatter.string(from: month.startDate)
+        let total = appState.swipeCardCount(for: month)
+        if let session = appState.swipeSession,
+           session.month == month, session.decidedCount > 0 {
+            return "Swipe through \(label): \(session.decidedCount) of \(total) reviewed"
+        }
+        return "Swipe through \(label): \(total) cards to review"
     }
 
     private func summaryCard(_ result: ScanResult) -> some View {

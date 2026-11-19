@@ -49,8 +49,9 @@ public enum SwipeMode {
 
 /// One calendar month that holds reviewable swipe cards. Year and
 /// month only — the View formats the "October 2026" label from
-/// `startDate`, so this type never depends on a locale.
-public struct SwipeMonth: Equatable, Hashable, Comparable {
+/// `startDate`, so this type never depends on a locale. Codable: the
+/// swipe session persists its month in UserDefaults.
+public struct SwipeMonth: Equatable, Hashable, Comparable, Codable {
     public let year: Int
     public let month: Int
 
@@ -100,6 +101,22 @@ public struct SwipeSession {
         self.totalCards = cards.count
         self.queue = cards
         self.cardsByID = Dictionary(uniqueKeysWithValues: cards.map { ($0.id, $0) })
+    }
+
+    /// Restores a persisted session: the queue holds only the cards
+    /// with no decision yet, in their original order. Decisions for
+    /// cards that no longer exist (deleted elsewhere since the
+    /// session was saved) are dropped silently. Skip order is not
+    /// preserved across a relaunch — skipped cards rejoin the queue
+    /// in scan order, still undecided. That is the only state the
+    /// restore loses, and it never changes what gets deleted.
+    public init(month: SwipeMonth, cards: [SwipeCard], decisions: [SwipeDecision]) {
+        self.month = month
+        self.totalCards = cards.count
+        self.cardsByID = Dictionary(uniqueKeysWithValues: cards.map { ($0.id, $0) })
+        self.decisions = decisions.filter { cardsByID[$0.cardID] != nil }
+        let decidedIDs = Set(self.decisions.map(\.cardID))
+        self.queue = cards.filter { !decidedIDs.contains($0.id) }
     }
 
     /// The card on top of the deck. Nil when the month is complete.
