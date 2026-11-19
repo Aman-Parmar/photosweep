@@ -66,6 +66,20 @@ struct SwipeModeView: View {
                 GroupReviewView(group: group)
             }
         }
+        // Finishing a month opens the summary sheet. This is an
+        // onChange, not a set inside decide(): setting showingSummary
+        // in the same button action that completes the month (and
+        // swaps the deck for the month-complete prompt) dropped the
+        // presentation (CI run 44453664943: progress reached 4 of 4
+        // reviewed, the prompt showed, the sheet never opened).
+        // onChange fires after the view update, in a clean
+        // transaction, so the sheet presents against the settled
+        // hierarchy.
+        .onChange(of: appState.swipeSession?.isComplete ?? false) { _, complete in
+            if complete {
+                showingSummary = true
+            }
+        }
     }
 
     // MARK: - Month picker
@@ -148,21 +162,25 @@ struct SwipeModeView: View {
 
     private func deckCards(_ session: SwipeSession) -> some View {
         ZStack {
-            // The next card peeks behind at reduced scale.
+            // The next card peeks behind at reduced scale. No
+            // container identifier here: an accessibilityIdentifier
+            // on a container overrides the identifiers of everything
+            // inside it (CI run 44453664943: every element in the
+            // card carried 'swipe-card', so the kind text's own
+            // identifier never surfaced). The kind text carries its
+            // own identifier instead; the lane asserts on that.
             if let next = nextCard(after: session) {
                 cardView(next, kindIdentifier: "swipe-next-card-kind")
                     .scaleEffect(0.94)
                     .offset(y: 14)
                     .opacity(0.5)
                     .disabled(true)
-                    .accessibilityIdentifier("swipe-next-card")
             }
             if let current = session.currentCard {
                 cardView(current, kindIdentifier: "swipe-card-kind")
                     .id(current.id)
                     .offset(x: dragOffset.width, y: dragOffset.height * 0.25)
                     .rotationEffect(.degrees(Double(dragOffset.width / 15)))
-                    .accessibilityIdentifier("swipe-card")
                     .onTapGesture { openReview(for: current) }
                     .gesture(
                         DragGesture()
@@ -451,10 +469,10 @@ struct SwipeModeView: View {
     private func decide(_ choice: SwipeDecision.Choice) {
         appState.swipeDecide(choice)
         withAnimation(.spring()) { dragOffset = .zero }
-        // Finishing a month opens the summary sheet.
-        if appState.swipeSession?.isComplete == true {
-            showingSummary = true
-        }
+        // The summary sheet opens via the onChange on
+        // swipeSession.isComplete (see body), not here: setting it
+        // in this action dropped the presentation when the month
+        // completed (CI run 44453664943).
     }
 
     /// Tapping a group card opens the existing group review, where
