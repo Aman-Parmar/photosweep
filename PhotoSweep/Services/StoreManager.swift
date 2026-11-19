@@ -14,7 +14,6 @@ import StoreKit
 final class StoreManager: ObservableObject {
     static let yearlyProductID = "photosweep_pro_yearly"
     static let lifetimeProductID = "photosweep_pro_lifetime"
-    static let subscriptionGroupID = "photosweep_pro"
 
     @Published private(set) var products: [Product] = []
     @Published private(set) var isPro = false

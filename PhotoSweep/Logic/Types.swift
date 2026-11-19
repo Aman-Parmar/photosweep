@@ -80,11 +80,6 @@ public struct PhotoItem: Equatable, Hashable, Identifiable {
 
     /// Pixel count, used by the keeper picker (higher is better).
     public var pixelCount: Int { width * height }
-
-    /// A display label for debugging / sample data. Never a real filename.
-    public var debugLabel: String {
-        isVideo ? "Video \(id)" : "Photo \(id)"
-    }
 }
 
 /// Why a group of items was put together. Shown in the UI so the user
