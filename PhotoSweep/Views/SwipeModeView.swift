@@ -19,13 +19,33 @@ struct SwipeModeView: View {
     @EnvironmentObject private var store: StoreManager
     @Environment(\.dismiss) private var dismiss
 
-    @State private var showingSummary = false
-    @State private var showingPaywall = false
+    /// The one sheet this view presents. A single `.sheet(item:)`
+    /// on purpose: three separate `.sheet` modifiers on the same
+    /// view left the summary sheet unable to present at all (CI
+    /// runs 44453664943 and 44456289635: progress reached 4 of 4
+    /// reviewed, the month-complete prompt showed, the sheet never
+    /// opened — both with an imperative set in decide() and with an
+    /// onChange trigger). One sheet, one binding, no ambiguity about
+    /// which presentation wins.
+    @State private var activeSheet: ActiveSheet?
     @State private var commitFailed = false
     @State private var committedTotals: CommittedTotals?
-    @State private var reviewingGroup: PhotoGroup?
     @State private var reviewingCardID: String?
     @State private var dragOffset: CGSize = .zero
+
+    private enum ActiveSheet: Identifiable {
+        case summary
+        case paywall
+        case review(PhotoGroup)
+
+        var id: String {
+            switch self {
+            case .summary: return "summary"
+            case .paywall: return "paywall"
+            case .review(let group): return "review-\(group.id)"
+            }
+        }
+    }
 
     /// The totals the done state shows after a successful commit,
     /// captured before the commit clears the session.
@@ -55,29 +75,31 @@ struct SwipeModeView: View {
                 monthPickerView
             }
         }
-        .sheet(isPresented: $showingSummary) {
-            summarySheet
-        }
-        .sheet(isPresented: $showingPaywall) {
-            PaywallView()
-        }
-        .sheet(item: $reviewingGroup, onDismiss: handleReviewDismiss) { group in
-            NavigationStack {
-                GroupReviewView(group: group)
+        .sheet(item: $activeSheet, onDismiss: handleSheetDismiss) { sheet in
+            switch sheet {
+            case .summary:
+                summarySheet
+            case .paywall:
+                PaywallView()
+            case .review(let group):
+                NavigationStack {
+                    GroupReviewView(group: group)
+                }
             }
         }
         // Finishing a month opens the summary sheet. This is an
-        // onChange, not a set inside decide(): setting showingSummary
-        // in the same button action that completes the month (and
-        // swaps the deck for the month-complete prompt) dropped the
-        // presentation (CI run 44453664943: progress reached 4 of 4
-        // reviewed, the prompt showed, the sheet never opened).
-        // onChange fires after the view update, in a clean
-        // transaction, so the sheet presents against the settled
-        // hierarchy.
+        // onChange, not a set inside decide(): setting the flag in
+        // the same button action that completes the month (and swaps
+        // the deck for the month-complete prompt) dropped the
+        // presentation (CI run 44453664943). onChange fires after the
+        // view update, in a clean transaction, so the sheet presents
+        // against the settled hierarchy. (Run 44456289635 showed the
+        // trigger was not the whole story: three separate `.sheet`
+        // modifiers on one view also broke the presentation, which
+        // is why this view now has a single sheet above.)
         .onChange(of: appState.swipeSession?.isComplete ?? false) { _, complete in
             if complete {
-                showingSummary = true
+                activeSheet = .summary
             }
         }
     }
@@ -267,7 +289,7 @@ struct SwipeModeView: View {
                     .multilineTextAlignment(.center)
             } else {
                 Button {
-                    showingSummary = true
+                    activeSheet = .summary
                 } label: {
                     HStack {
                         Text("\(session.deleteDecisions.count) to delete, frees ~\(StorageEstimator.formatted(session.batchReclaimableBytes)), \(session.keptCount) kept")
@@ -320,7 +342,7 @@ struct SwipeModeView: View {
                 .font(.headline)
                 .multilineTextAlignment(.center)
             Button("Review and delete") {
-                showingSummary = true
+                activeSheet = .summary
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
@@ -374,7 +396,7 @@ struct SwipeModeView: View {
             .accessibilityIdentifier("swipe-summary-sheet")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Cancel") { showingSummary = false }
+                    Button("Cancel") { activeSheet = nil }
                 }
             }
         }
@@ -409,14 +431,16 @@ struct SwipeModeView: View {
             remainingFreeDeletes: appState.remainingFreeDeletes(isPro: store.isPro),
             isPro: store.isPro
         ) else {
-            showingSummary = false
-            showingPaywall = true
+            // Swapping the sheet's content to the paywall: the
+            // summary was showing, and the single sheet swaps to
+            // the paywall instead of stacking a second one.
+            activeSheet = .paywall
             return
         }
         let totals = CommittedTotals(
             month: session.month, deleted: session.batchDeleteCount, kept: session.keptCount)
         if await appState.commitSwipeSession(isPro: store.isPro) {
-            showingSummary = false
+            activeSheet = nil
             committedTotals = totals
         } else {
             commitFailed = true
@@ -481,17 +505,19 @@ struct SwipeModeView: View {
     private func openReview(for card: SwipeCard) {
         guard case .group(let group) = card else { return }
         reviewingCardID = card.id
-        reviewingGroup = group
+        activeSheet = .review(group)
     }
 
     /// On return from group review: drop any pending decision for
     /// that group (the keeper may have changed, so the decision was
     /// for a different keeper) and rebuild the deck from the current
-    /// scan result, so a group deleted in review drops out.
-    private func handleReviewDismiss() {
-        if let cardID = reviewingCardID {
-            appState.discardSwipeDecision(forCardID: cardID)
-        }
+    /// scan result, so a group deleted in review drops out. Only
+    /// runs for the review sheet: the single sheet's onDismiss
+    /// fires for every sheet, so the review is recognised by the
+    /// card ID that openReview stored (nil for the other sheets).
+    private func handleSheetDismiss() {
+        guard let cardID = reviewingCardID else { return }
+        appState.discardSwipeDecision(forCardID: cardID)
         reviewingCardID = nil
         appState.refreshSwipeSession()
     }
