@@ -256,7 +256,7 @@ struct SwipeModeView: View {
                     PhotoThumbnailView(item: keeper, sampleHue: SampleImageGenerator.hue(for: keeper.id))
                         .frame(height: 300)
                         .cornerRadius(16)
-                    Text("KEEP")
+                    Text(AppCopy.keep)
                         .font(.caption2.bold())
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)

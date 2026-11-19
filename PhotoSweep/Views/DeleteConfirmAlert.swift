@@ -49,6 +49,12 @@ enum AppCopy {
     /// Retry button label shown in the failed phase of the compress and
     /// convert flows. One source so the wording stays identical in both.
     static let tryAgain = "Try again"
+
+    /// Keeper badge label shown on the kept photo in the group review
+    /// grid and on swipe-mode cards. One source so the wording stays
+    /// identical in both places; each badge keeps its own padding for
+    /// its thumbnail size.
+    static let keep = "KEEP"
 }
 
 /// The "Move to Recently Deleted?" confirmation alert, shared by the

@@ -199,7 +199,7 @@ struct GroupReviewView: View {
                                         .frame(height: 110)
                                         .cornerRadius(10)
                                     if item.id == keeperID {
-                                        Text("KEEP")
+                                        Text(AppCopy.keep)
                                             .font(.caption2.bold())
                                             .padding(.horizontal, 6)
                                             .padding(.vertical, 3)
