@@ -180,21 +180,14 @@ struct LivePhotoConvertView: View {
                 .padding()
                 .background(Color(.systemBackground))
             }
-            // At the half-height detent the progress and done sections
-            // can sit below the fold. Scroll them into view so the
-            // user sees the run and its result without hunting.
-            .onChange(of: phase) { _, newPhase in
-                let target: String?
-                switch newPhase {
-                case .converting: target = "livephoto-convert-progress-section"
-                case .done: target = "livephoto-convert-done-section"
-                default: target = nil
-                }
-                if let target {
-                    DispatchQueue.main.async {
-                        withAnimation { proxy.scrollTo(target, anchor: .top) }
-                    }
-                }
+            .onChange(of: phase) { _, _ in
+                SheetScroll.scrollToResult(
+                    proxy: proxy,
+                    isRunning: phase == .converting,
+                    isDone: phase == .done,
+                    runningSectionId: "livephoto-convert-progress-section",
+                    doneSectionId: "livephoto-convert-done-section"
+                )
             }
             .paywallSheet(isPresented: $showingPaywall)
             } // ScrollViewReader

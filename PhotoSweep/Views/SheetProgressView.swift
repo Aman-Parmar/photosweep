@@ -62,3 +62,33 @@ struct SheetFailedSection: View {
         }
     }
 }
+
+/// Shared scroll-to for the compress and convert sheets: at the
+/// half-height detent the progress and done sections can sit below
+/// the fold, so scroll them into view when the run starts or
+/// finishes. The two sheets have different private Phase enums, so
+/// the call site passes booleans plus its own section ids; the
+/// DispatchQueue hop and the animated scrollTo are identical.
+enum SheetScroll {
+    static func scrollToResult(
+        proxy: ScrollViewProxy,
+        isRunning: Bool,
+        isDone: Bool,
+        runningSectionId: String,
+        doneSectionId: String
+    ) {
+        let target: String?
+        if isRunning {
+            target = runningSectionId
+        } else if isDone {
+            target = doneSectionId
+        } else {
+            target = nil
+        }
+        if let target {
+            DispatchQueue.main.async {
+                withAnimation { proxy.scrollTo(target, anchor: .top) }
+            }
+        }
+    }
+}

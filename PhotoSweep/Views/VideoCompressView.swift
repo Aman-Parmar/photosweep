@@ -144,21 +144,14 @@ struct VideoCompressView: View {
                 .padding()
                 .background(Color(.systemBackground))
             }
-            // At the half-height detent the progress and done sections
-            // can sit below the fold. Scroll them into view so the
-            // user sees the run and its result without hunting.
-            .onChange(of: phase) { _, newPhase in
-                let target: String?
-                switch newPhase {
-                case .compressing: target = "compress-progress-section"
-                case .done: target = "compress-done-section"
-                default: target = nil
-                }
-                if let target {
-                    DispatchQueue.main.async {
-                        withAnimation { proxy.scrollTo(target, anchor: .top) }
-                    }
-                }
+            .onChange(of: phase) { _, _ in
+                SheetScroll.scrollToResult(
+                    proxy: proxy,
+                    isRunning: phase == .compressing,
+                    isDone: phase == .done,
+                    runningSectionId: "compress-progress-section",
+                    doneSectionId: "compress-done-section"
+                )
             }
             .paywallSheet(isPresented: $showingPaywall)
             } // ScrollViewReader
