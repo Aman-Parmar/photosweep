@@ -87,13 +87,14 @@ public struct CompressionEstimate: Equatable {
 
     /// Estimated saving as a whole percent of the original, 0...100.
     public var savingsPercent: Int {
-        guard originalBytes > 0 else { return 0 }
-        return Int((Double(bytesSaved) / Double(originalBytes) * 100).rounded())
+        SizeSaving.percentSaved(originalBytes: originalBytes, bytesSaved: bytesSaved)
     }
 
     /// True when the estimate says compression is worth doing for
     /// this clip (saves at least 10%).
-    public var isWorthwhile: Bool { savingsPercent >= 10 }
+    public var isWorthwhile: Bool {
+        SizeSaving.isWorthwhile(originalBytes: originalBytes, bytesSaved: bytesSaved)
+    }
 }
 
 public enum VideoCompression {
