@@ -116,7 +116,7 @@ struct GroupRow: View {
                     .cornerRadius(8)
             }
             VStack(alignment: .leading, spacing: 2) {
-                Text("\(group.items.count) photos")
+                Text(group.countLabel)
                     .font(.headline)
                 Text(group.matchReason)
                     .font(.caption)

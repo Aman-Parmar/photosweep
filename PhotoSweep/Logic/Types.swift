@@ -134,6 +134,11 @@ public struct PhotoGroup: Equatable, Identifiable {
     public var keeper: PhotoItem? {
         items.first { $0.id == keeperID }
     }
+
+    /// "3 photos" for the group row and the swipe card.
+    public var countLabel: String {
+        "\(items.count) photos"
+    }
 }
 
 /// The result of one scan: every group found, plus the counts the Home
@@ -297,7 +302,7 @@ public enum SwipeCard: Equatable, Identifiable {
     /// "3 photos" for a group, "1 screenshot" for a screenshot.
     public var countLabel: String {
         switch self {
-        case .group(let group): return "\(group.items.count) photos"
+        case .group(let group): return group.countLabel
         case .screenshot: return "1 screenshot"
         }
     }
