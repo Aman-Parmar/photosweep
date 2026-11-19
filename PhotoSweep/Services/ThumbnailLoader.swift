@@ -28,6 +28,24 @@ final class ThumbnailLoader: ObservableObject {
     }
 }
 
+/// The 56pt square list-row thumbnail used by the group row, the
+/// screenshots list, the Live Photos list, and the swipe member
+/// strip: one place for the size so the four lists stay identical.
+/// The video row (84x56), group-review grid (110pt), compare view,
+/// and swipe keeper (300pt) are different sizes by design and stay
+/// inline.
+struct ListThumbnailView: View {
+    let item: PhotoItem
+    /// Synthetic hue used only in screenshot mode (derived from the item id).
+    let sampleHue: Double
+
+    var body: some View {
+        PhotoThumbnailView(item: item, sampleHue: sampleHue)
+            .frame(width: 56, height: 56)
+            .cornerRadius(8)
+    }
+}
+
 /// Shows a thumbnail for a `PhotoItem`: a real Photos thumbnail in
 /// normal use, a generated synthetic image in screenshot mode.
 struct PhotoThumbnailView: View {

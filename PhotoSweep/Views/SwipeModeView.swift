@@ -270,9 +270,7 @@ struct SwipeModeView: View {
             // thumbnails for one card.
             HStack(spacing: 8) {
                 ForEach(card.thumbnailItems.dropFirst(), id: \.id) { item in
-                    PhotoThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
-                        .frame(width: 56, height: 56)
-                        .cornerRadius(8)
+                    ListThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
                 }
             }
             Text(card.kindLabel)

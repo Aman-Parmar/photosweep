@@ -32,9 +32,7 @@ struct ScreenshotsView: View {
                         }
                         ForEach(screenshots) { item in
                             HStack(spacing: 12) {
-                                PhotoThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
-                                    .frame(width: 56, height: 56)
-                                    .cornerRadius(8)
+                                ListThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
                                 VStack(alignment: .leading) {
                                     Text(SwipeCard.screenshotLabel)
                                         .font(.headline)

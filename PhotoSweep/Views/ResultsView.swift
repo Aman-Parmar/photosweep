@@ -102,9 +102,7 @@ struct GroupRow: View {
         HStack(spacing: 12) {
             // First item's thumbnail (or the keeper's).
             if let first = group.keeper {
-                PhotoThumbnailView(item: first, sampleHue: SampleImageGenerator.hue(for: first.id))
-                    .frame(width: 56, height: 56)
-                    .cornerRadius(8)
+                ListThumbnailView(item: first, sampleHue: SampleImageGenerator.hue(for: first.id))
             }
             VStack(alignment: .leading, spacing: 2) {
                 Text(group.countLabel)
