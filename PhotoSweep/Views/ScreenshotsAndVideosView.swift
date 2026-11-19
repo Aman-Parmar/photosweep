@@ -36,7 +36,7 @@ struct ScreenshotsView: View {
                                     .frame(width: 56, height: 56)
                                     .cornerRadius(8)
                                 VStack(alignment: .leading) {
-                                    Text("Screenshot")
+                                    Text(SwipeCard.screenshotLabel)
                                         .font(.headline)
                                     Text(StorageEstimator.formatted(item.fileSize))
                                         .font(.caption)

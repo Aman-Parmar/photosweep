@@ -267,11 +267,16 @@ public enum SwipeCard: Equatable, Identifiable {
         }
     }
 
+    /// The label shown for a single screenshot item, in the swipe card
+    /// and in the screenshots bulk-review list. One source so the wording
+    /// stays identical in both places.
+    public static let screenshotLabel = "Screenshot"
+
     /// The label shown on the card: the group kind, or "Screenshot".
     public var kindLabel: String {
         switch self {
         case .group(let group): return group.kind.sectionTitle
-        case .screenshot: return "Screenshot"
+        case .screenshot: return Self.screenshotLabel
         }
     }
 
