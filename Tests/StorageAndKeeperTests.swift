@@ -7,8 +7,6 @@ import XCTest
 /// earliest date), storage estimates, and the never-auto-delete rule.
 final class StorageAndKeeperTests: XCTestCase {
 
-    private let base = Date(timeIntervalSince1970: 1_760_000_000)
-
     private func item(
         id: String,
         size: Int64 = 1_000_000,
@@ -17,12 +15,16 @@ final class StorageAndKeeperTests: XCTestCase {
         sharpness: Double = 0.8,
         dateOffset: TimeInterval = 0
     ) -> PhotoItem {
-        PhotoItem(
+        PhotoItemFixture.make(
             id: id,
-            fileSize: size,
-            width: width, height: height,
-            creationDate: base.addingTimeInterval(dateOffset),
-            sharpness: sharpness
+            size: size,
+            width: width,
+            height: height,
+            dateOffset: dateOffset,
+            sharpness: sharpness,
+            // The old helper relied on the model default (0.5), not
+            // the fixture's 0.7, so it is pinned here explicitly.
+            brightness: 0.5
         )
     }
 

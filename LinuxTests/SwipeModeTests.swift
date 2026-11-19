@@ -9,10 +9,8 @@ import PhotoSweepLogic
 /// bucketing does not depend on the runner's timezone.
 final class SwipeModeTests: XCTestCase {
 
-    private let base = Date(timeIntervalSince1970: 1_760_000_000) // 2025-10-09
-
     private func day(_ offset: Int) -> Date {
-        base.addingTimeInterval(TimeInterval(offset * 86_400))
+        PhotoItemFixture.baseDate.addingTimeInterval(TimeInterval(offset * 86_400))
     }
 
     private func item(
@@ -23,16 +21,13 @@ final class SwipeModeTests: XCTestCase {
         screenshot: Bool = false,
         hash: String? = nil
     ) -> PhotoItem {
-        PhotoItem(
+        PhotoItemFixture.make(
             id: id,
-            contentHash: hash,
-            fileSize: size,
-            width: 4032, height: 3024,
+            hash: hash,
+            size: size,
             isScreenshot: screenshot,
-            creationDate: date,
-            sharpness: sharpness,
-            brightness: 0.7,
-            featurePrint: nil
+            date: date,
+            sharpness: sharpness
         )
     }
 
@@ -41,7 +36,7 @@ final class SwipeModeTests: XCTestCase {
     }
 
     private func result(_ groups: [PhotoGroup]) -> ScanResult {
-        ScanResult(groups: groups, totalScanned: 10, totalLibraryCount: 10, scannedAt: base)
+        ScanResult(groups: groups, totalScanned: 10, totalLibraryCount: 10, scannedAt: PhotoItemFixture.baseDate)
     }
 
     /// Two groups (one September, one October) plus a screenshots

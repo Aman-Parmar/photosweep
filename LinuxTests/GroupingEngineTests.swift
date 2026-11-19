@@ -8,8 +8,6 @@ import PhotoSweepLogic
 /// ranking — and the rule that an item belongs to at most one group.
 final class GroupingEngineTests: XCTestCase {
 
-    private let base = Date(timeIntervalSince1970: 1_760_000_000)
-
     private func item(
         id: String,
         hash: String? = nil,
@@ -23,19 +21,18 @@ final class GroupingEngineTests: XCTestCase {
         duration: TimeInterval = 0,
         dateOffset: TimeInterval = 0
     ) -> PhotoItem {
-        PhotoItem(
+        PhotoItemFixture.make(
             id: id,
-            contentHash: hash,
-            fileSize: size,
-            width: 4032, height: 3024,
+            hash: hash,
+            size: size,
             isScreenshot: screenshot,
             isBurst: burst,
             isVideo: video,
             duration: duration,
-            creationDate: base.addingTimeInterval(dateOffset),
+            dateOffset: dateOffset,
             sharpness: sharpness,
             brightness: brightness,
-            featurePrint: print
+            print: print
         )
     }
 

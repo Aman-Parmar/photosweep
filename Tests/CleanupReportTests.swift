@@ -9,8 +9,6 @@ import XCTest
 /// test change, not a silent one.
 final class CleanupReportTests: XCTestCase {
 
-    private let base = Date(timeIntervalSince1970: 1_760_000_000)
-
     private func item(
         id: String,
         size: Int64 = 4_200_000,
@@ -18,18 +16,13 @@ final class CleanupReportTests: XCTestCase {
         duration: TimeInterval = 0,
         sharpness: Double = 0.8
     ) -> PhotoItem {
-        PhotoItem(
+        PhotoItemFixture.make(
             id: id,
-            contentHash: isVideo ? nil : "hash-\(id)",
-            fileSize: size,
-            width: 4032,
-            height: 3024,
+            hash: isVideo ? nil : "hash-\(id)",
+            size: size,
             isVideo: isVideo,
             duration: duration,
-            creationDate: base,
-            sharpness: sharpness,
-            brightness: 0.7,
-            featurePrint: nil
+            sharpness: sharpness
         )
     }
 
@@ -56,7 +49,7 @@ final class CleanupReportTests: XCTestCase {
             totalScanned: 10,
             totalLibraryCount: 10,
             largeVideos: [video],
-            scannedAt: base
+            scannedAt: PhotoItemFixture.baseDate
         )
     }
 
@@ -84,7 +77,7 @@ final class CleanupReportTests: XCTestCase {
     }
 
     func testEmptyResultStillProducesAReport() {
-        let empty = ScanResult(groups: [], totalScanned: 0, totalLibraryCount: 0, scannedAt: base)
+        let empty = ScanResult(groups: [], totalScanned: 0, totalLibraryCount: 0, scannedAt: PhotoItemFixture.baseDate)
         let csv = CleanupReport.csv(for: empty)
         XCTAssertTrue(csv.contains("Photos scanned,0\n"))
         XCTAssertTrue(csv.contains("Photos proposed for deletion,0\n"))

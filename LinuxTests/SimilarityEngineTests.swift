@@ -8,8 +8,6 @@ import PhotoSweepLogic
 /// never a match — that rule is pinned here.
 final class SimilarityEngineTests: XCTestCase {
 
-    private let base = Date(timeIntervalSince1970: 1_760_000_000)
-
     private func item(
         id: String,
         hash: String? = nil,
@@ -21,18 +19,16 @@ final class SimilarityEngineTests: XCTestCase {
         video: Bool = false,
         dateOffset: TimeInterval = 0
     ) -> PhotoItem {
-        PhotoItem(
+        PhotoItemFixture.make(
             id: id,
-            contentHash: hash,
-            fileSize: 1_000_000,
-            width: 4032, height: 3024,
+            hash: hash,
             isScreenshot: screenshot,
             isBurst: burst,
             isVideo: video,
-            creationDate: base.addingTimeInterval(dateOffset),
+            dateOffset: dateOffset,
             sharpness: sharpness,
             brightness: brightness,
-            featurePrint: print
+            print: print
         )
     }
 
