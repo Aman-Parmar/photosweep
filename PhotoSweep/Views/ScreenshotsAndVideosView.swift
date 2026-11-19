@@ -77,17 +77,16 @@ struct ScreenshotsView: View {
                 }
             }
             .navigationTitle("Screenshots")
-            .alert("Move to Recently Deleted?", isPresented: $showingConfirm) {
-                Button("Cancel", role: .cancel) {}
-                Button("Delete \(selected.count)", role: .destructive) {
-                    Task {
-                        let items = screenshots.filter { selected.contains($0.id) }
-                        let ok = await appState.confirmDelete(items: items, isPro: store.isPro)
-                        if ok { selected.removeAll() }
-                    }
+            .deleteConfirmAlert(
+                isPresented: $showingConfirm,
+                count: selected.count,
+                message: "These screenshots will move to Recently Deleted in Photos, where you can recover them for 30 days."
+            ) {
+                Task {
+                    let items = screenshots.filter { selected.contains($0.id) }
+                    let ok = await appState.confirmDelete(items: items, isPro: store.isPro)
+                    if ok { selected.removeAll() }
                 }
-            } message: {
-                Text("These screenshots will move to Recently Deleted in Photos, where you can recover them for 30 days.")
             }
             .sheet(isPresented: $showingPaywall) {
                 PaywallView()
@@ -188,17 +187,16 @@ struct LargeVideosView: View {
             .sheet(item: $compressItem) { item in
                 VideoCompressView(item: item)
             }
-            .alert("Move to Recently Deleted?", isPresented: $showingConfirm) {
-                Button("Cancel", role: .cancel) {}
-                Button("Delete \(selected.count)", role: .destructive) {
-                    Task {
-                        let items = videos.filter { selected.contains($0.id) }
-                        let ok = await appState.confirmDelete(items: items, isPro: store.isPro)
-                        if ok { selected.removeAll() }
-                    }
+            .deleteConfirmAlert(
+                isPresented: $showingConfirm,
+                count: selected.count,
+                message: "These videos will move to Recently Deleted in Photos, where you can recover them for 30 days."
+            ) {
+                Task {
+                    let items = videos.filter { selected.contains($0.id) }
+                    let ok = await appState.confirmDelete(items: items, isPro: store.isPro)
+                    if ok { selected.removeAll() }
                 }
-            } message: {
-                Text("These videos will move to Recently Deleted in Photos, where you can recover them for 30 days.")
             }
             .sheet(isPresented: $showingPaywall) {
                 PaywallView()

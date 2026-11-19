@@ -282,7 +282,7 @@ struct GroupReviewView: View {
                         .foregroundStyle(.secondary)
                 }
                 if deleteFailed {
-                    Text("Delete failed. Nothing was removed - try again.")
+                    Text(AppCopy.deleteFailed)
                         .font(.caption)
                         .foregroundStyle(.red)
                 }
@@ -291,21 +291,20 @@ struct GroupReviewView: View {
         }
         .navigationTitle(group.kind.sectionTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Move to Recently Deleted?", isPresented: $showingConfirm) {
-            Button("Cancel", role: .cancel) {}
-            Button("Delete \(deletable.count)", role: .destructive) {
-                Task {
-                    let updated = PhotoGroup(id: group.id, kind: group.kind, items: group.items, keeperID: keeperID, matchReason: group.matchReason)
-                    let ok = await appState.confirmDelete(group: updated, isPro: store.isPro)
-                    if ok {
-                        deleted = true
-                    } else {
-                        deleteFailed = true
-                    }
+        .deleteConfirmAlert(
+            isPresented: $showingConfirm,
+            count: deletable.count,
+            message: "These \(deletable.count) photos will move to Recently Deleted in Photos, where you can recover them for 30 days. The keeper stays in your library."
+        ) {
+            Task {
+                let updated = PhotoGroup(id: group.id, kind: group.kind, items: group.items, keeperID: keeperID, matchReason: group.matchReason)
+                let ok = await appState.confirmDelete(group: updated, isPro: store.isPro)
+                if ok {
+                    deleted = true
+                } else {
+                    deleteFailed = true
                 }
             }
-        } message: {
-            Text("These \(deletable.count) photos will move to Recently Deleted in Photos, where you can recover them for 30 days. The keeper stays in your library.")
         }
         .sheet(isPresented: $showingPaywall) {
             PaywallView()

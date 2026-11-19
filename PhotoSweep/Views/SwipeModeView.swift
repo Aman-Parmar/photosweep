@@ -400,7 +400,7 @@ struct SwipeModeView: View {
                     .disabled(session.batchDeleteCount == 0)
                     .accessibilityIdentifier("swipe-commit-button")
                     if commitFailed {
-                        Text("Delete failed. Nothing was removed - try again.")
+                        Text(AppCopy.deleteFailed)
                             .font(.caption)
                             .foregroundStyle(.red)
                     }
