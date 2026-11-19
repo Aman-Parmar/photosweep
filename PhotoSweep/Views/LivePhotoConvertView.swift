@@ -177,14 +177,12 @@ struct LivePhotoConvertView: View {
                         Button(phase == .failed ? AppCopy.tryAgain : "Convert to still") {
                             startConversion()
                         }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
+                        .primaryActionButton()
                         .frame(maxWidth: .infinity)
                         .accessibilityIdentifier("livephoto-convert-start-button")
                     } else if phase == .done {
                         Button(AppCopy.done) { dismiss() }
-                            .buttonStyle(.borderedProminent)
-                            .controlSize(.large)
+                            .primaryActionButton()
                             .frame(maxWidth: .infinity)
                             .accessibilityIdentifier("livephoto-convert-done-button")
                     }

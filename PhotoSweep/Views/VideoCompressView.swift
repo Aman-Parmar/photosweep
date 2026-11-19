@@ -142,14 +142,12 @@ struct VideoCompressView: View {
                         Button(phase == .failed ? AppCopy.tryAgain : "Compress video") {
                             startCompression()
                         }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
+                        .primaryActionButton()
                         .frame(maxWidth: .infinity)
                         .accessibilityIdentifier("compress-start-button")
                     } else if phase == .done {
                         Button(AppCopy.done) { dismiss() }
-                            .buttonStyle(.borderedProminent)
-                            .controlSize(.large)
+                            .primaryActionButton()
                             .frame(maxWidth: .infinity)
                             .accessibilityIdentifier("compress-done-button")
                     }

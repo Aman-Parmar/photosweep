@@ -93,8 +93,7 @@ struct HomeView: View {
                     .frame(maxWidth: .infinity)
             }
         }
-        .buttonStyle(.borderedProminent)
-        .controlSize(.large)
+        .primaryActionButton()
         .disabled(appState.isScanning)
         .accessibilityIdentifier("scan-button")
     }

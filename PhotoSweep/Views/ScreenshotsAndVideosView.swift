@@ -208,8 +208,7 @@ private struct BulkDeleteButton: View {
 
     var body: some View {
         Button(AppCopy.deleteSelectedLabel(count: count), action: action)
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
+            .primaryActionButton()
             .frame(maxWidth: .infinity)
             .padding()
             .background(Color(.systemBackground))

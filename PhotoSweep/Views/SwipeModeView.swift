@@ -356,8 +356,7 @@ struct SwipeModeView: View {
             Button("Review and delete") {
                 activeSheet = .summary
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
+            .primaryActionButton()
             .accessibilityIdentifier("swipe-review-summary-button")
         }
         .frame(maxWidth: .infinity)
@@ -389,8 +388,7 @@ struct SwipeModeView: View {
                     Button(AppCopy.deletePhotosLabel(count: session.batchDeleteCount)) {
                         Task { await commit() }
                     }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
+                    .primaryActionButton()
                     .frame(maxWidth: .infinity)
                     .disabled(session.batchDeleteCount == 0)
                     .accessibilityIdentifier("swipe-commit-button")
@@ -483,8 +481,7 @@ struct SwipeModeView: View {
                     committedTotals = nil
                     appState.startSwipeSession(month: next)
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
+                .primaryActionButton()
                 .accessibilityIdentifier("swipe-next-month-button")
             }
             Button(AppCopy.done) { dismiss() }

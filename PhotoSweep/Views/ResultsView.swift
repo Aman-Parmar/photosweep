@@ -255,8 +255,7 @@ struct GroupReviewView: View {
                     Text("\(AppCopy.deletePhotosLabel(count: deletable.count)) - \(StorageEstimator.freesLabel(reclaimable))")
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
+                .primaryActionButton()
                 .disabled(deletable.isEmpty || deleted)
                 .accessibilityIdentifier("group-delete-button")
                 if !store.isPro {
@@ -331,8 +330,7 @@ struct CompareView: View {
                     Button("Keep this photo instead") {
                         onKeepItem()
                     }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
+                    .primaryActionButton()
                     .frame(maxWidth: .infinity)
                     .accessibilityIdentifier("compare-keep-button")
                     Button(AppCopy.close) {

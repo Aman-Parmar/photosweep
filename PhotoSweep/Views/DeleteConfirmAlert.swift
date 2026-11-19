@@ -119,4 +119,18 @@ extension View {
             .background(Color.accentColor, in: Capsule())
             .foregroundStyle(.white)
     }
+
+    /// Primary action button style shared by the scan, group-delete,
+    /// compare-keep, bulk-delete, compress, convert, and swipe-commit
+    /// buttons: prominent bordered style at large control size. One
+    /// source so the primary action cannot drift apart; each button
+    /// keeps its own label, action, width, disabled state, and
+    /// accessibility identifier. The paywall buy buttons and the
+    /// swipe-deck Keep/Delete buttons use the prominent style without
+    /// the large size by design, and the secondary buttons use the
+    /// plain bordered style, so they do not use this helper.
+    func primaryActionButton() -> some View {
+        buttonStyle(.borderedProminent)
+            .controlSize(.large)
+    }
 }
