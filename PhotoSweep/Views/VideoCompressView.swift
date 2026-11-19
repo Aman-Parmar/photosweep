@@ -135,10 +135,7 @@ struct VideoCompressView: View {
                     Button(AppCopy.cancel) { dismiss() }
                 }
             }
-            // Short content: open at half height so the sheet fits
-            // the estimate instead of leaving a wide blank band below
-            // it. The user can drag up to full height.
-            .presentationDetents([.medium, .large])
+            .halfHeightSheet()
             .safeAreaInset(edge: .bottom) {
                 VStack(spacing: 12) {
                     if phase == .pick || phase == .failed {

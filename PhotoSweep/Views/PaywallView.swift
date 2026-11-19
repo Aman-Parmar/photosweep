@@ -96,15 +96,20 @@ struct PaywallView: View {
                     Button(AppCopy.close) { dismiss() }
                 }
             }
-            // Short content: open at half height so the sheet fits
-            // the paywall instead of leaving a wide blank band below
-            // it. The user can drag up to full height.
-            .presentationDetents([.medium, .large])
+            .halfHeightSheet()
         }
     }
 }
 
 extension View {
+    /// Short-content sheets open at half height so the sheet fits the
+    /// content instead of leaving a wide blank band below it. The
+    /// user can drag up to full height. Shared by the paywall,
+    /// compress, and convert sheets.
+    func halfHeightSheet() -> some View {
+        presentationDetents([.medium, .large])
+    }
+
     /// Presents the Pro paywall sheet, shared by every view that offers
     /// an upgrade (home, results, settings, bulk lists, compress,
     /// convert). Each caller keeps its own @State flag; only the
