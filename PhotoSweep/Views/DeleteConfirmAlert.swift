@@ -55,6 +55,13 @@ enum AppCopy {
     /// identical in both places; each badge keeps its own padding for
     /// its thumbnail size.
     static let keep = "KEEP"
+
+    /// Delete-confirm message for the bulk-review lists (screenshots,
+    /// large videos). One source so the wording stays identical in both
+    /// places; the caller supplies the plural item noun.
+    static func recentlyDeletedMessage(noun: String) -> String {
+        "These \(noun) will move to Recently Deleted in Photos, where you can recover them for 30 days."
+    }
 }
 
 /// The "Move to Recently Deleted?" confirmation alert, shared by the

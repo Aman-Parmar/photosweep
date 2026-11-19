@@ -71,7 +71,7 @@ struct ScreenshotsView: View {
             .deleteConfirmAlert(
                 isPresented: $showingConfirm,
                 count: selected.count,
-                message: "These screenshots will move to Recently Deleted in Photos, where you can recover them for 30 days."
+                message: AppCopy.recentlyDeletedMessage(noun: "screenshots")
             ) {
                 Task {
                     let items = screenshots.filter { selected.contains($0.id) }
@@ -172,7 +172,7 @@ struct LargeVideosView: View {
             .deleteConfirmAlert(
                 isPresented: $showingConfirm,
                 count: selected.count,
-                message: "These videos will move to Recently Deleted in Photos, where you can recover them for 30 days."
+                message: AppCopy.recentlyDeletedMessage(noun: "videos")
             ) {
                 Task {
                     let items = videos.filter { selected.contains($0.id) }
