@@ -96,6 +96,10 @@ struct PaywallView: View {
                     Button("Close") { dismiss() }
                 }
             }
+            // Short content: open at half height so the sheet fits
+            // the paywall instead of leaving a wide blank band below
+            // it. The user can drag up to full height.
+            .presentationDetents([.medium, .large])
         }
     }
 }
