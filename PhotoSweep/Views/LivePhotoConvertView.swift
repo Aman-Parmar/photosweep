@@ -151,11 +151,10 @@ struct LivePhotoConvertView: View {
                 }
 
                 if phase == .failed {
-                    Section {
-                        Text(appState.scanError ?? "Conversion did not finish. Your Live Photo was not changed.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
+                    SheetFailedSection(
+                        errorMessage: appState.scanError,
+                        fallback: "Conversion did not finish. Your Live Photo was not changed."
+                    )
                 }
             }
             .navigationTitle("Convert to still")

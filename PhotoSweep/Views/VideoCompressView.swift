@@ -115,11 +115,10 @@ struct VideoCompressView: View {
                 }
 
                 if phase == .failed {
-                    Section {
-                        Text(appState.scanError ?? "Compression did not finish. Your original video was not changed.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
+                    SheetFailedSection(
+                        errorMessage: appState.scanError,
+                        fallback: "Compression did not finish. Your original video was not changed."
+                    )
                 }
             }
             .navigationTitle("Compress video")

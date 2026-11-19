@@ -45,3 +45,20 @@ struct SheetDoneSection: View {
         .id(sectionIdentifier)
     }
 }
+
+/// Shared failed section for the compress and convert sheets: the
+/// error message when one exists, else the per-sheet fallback saying
+/// the original was not changed. The fallback copy stays per-sheet
+/// so each sheet keeps its own wording.
+struct SheetFailedSection: View {
+    let errorMessage: String?
+    let fallback: String
+
+    var body: some View {
+        Section {
+            Text(errorMessage ?? fallback)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+}
