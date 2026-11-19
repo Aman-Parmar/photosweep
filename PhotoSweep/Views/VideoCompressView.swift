@@ -45,7 +45,7 @@ struct VideoCompressView: View {
             List {
                 Section {
                     HStack {
-                        Text("Original")
+                        Text(AppCopy.original)
                         Spacer()
                         Text("\(StorageEstimator.formatted(item.fileSize)) · \(CleanupReport.formattedDuration(item.duration)) · \(item.width) x \(item.height)")
                             .foregroundStyle(.secondary)
@@ -142,7 +142,7 @@ struct VideoCompressView: View {
             .safeAreaInset(edge: .bottom) {
                 VStack(spacing: 12) {
                     if phase == .pick || phase == .failed {
-                        Button(phase == .failed ? "Try again" : "Compress video") {
+                        Button(phase == .failed ? AppCopy.tryAgain : "Compress video") {
                             startCompression()
                         }
                         .buttonStyle(.borderedProminent)

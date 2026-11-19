@@ -110,7 +110,7 @@ struct LivePhotoConvertView: View {
             List {
                 Section {
                     HStack {
-                        Text("Original")
+                        Text(AppCopy.original)
                         Spacer()
                         Text("\(StorageEstimator.formatted(item.fileSize)) · \(item.width) x \(item.height)")
                             .foregroundStyle(.secondary)
@@ -179,7 +179,7 @@ struct LivePhotoConvertView: View {
             .safeAreaInset(edge: .bottom) {
                 VStack(spacing: 12) {
                     if phase == .pick || phase == .failed {
-                        Button(phase == .failed ? "Try again" : "Convert to still") {
+                        Button(phase == .failed ? AppCopy.tryAgain : "Convert to still") {
                             startConversion()
                         }
                         .buttonStyle(.borderedProminent)

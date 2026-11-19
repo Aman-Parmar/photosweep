@@ -41,6 +41,14 @@ enum AppCopy {
     /// wording stays identical in all four places; each button keeps
     /// its own action and role.
     static let cancel = "Cancel"
+
+    /// Source-item row label in the compress and convert sheets. One
+    /// source so the wording stays identical in both flows.
+    static let original = "Original"
+
+    /// Retry button label shown in the failed phase of the compress and
+    /// convert flows. One source so the wording stays identical in both.
+    static let tryAgain = "Try again"
 }
 
 /// The "Move to Recently Deleted?" confirmation alert, shared by the
