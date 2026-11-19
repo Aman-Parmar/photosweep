@@ -252,7 +252,7 @@ struct GroupReviewView: View {
                         showingPaywall = true
                     }
                 } label: {
-                    Text("Delete \(deletable.count) photo\(deletable.count == 1 ? "" : "s") - \(StorageEstimator.freesLabel(reclaimable))")
+                    Text("\(AppCopy.deletePhotosLabel(count: deletable.count)) - \(StorageEstimator.freesLabel(reclaimable))")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)

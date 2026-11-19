@@ -25,6 +25,15 @@ enum AppCopy {
         "Delete \(count) selected"
     }
 
+    /// Delete-confirm button label for the group review and the swipe
+    /// batch review. One source so the wording and pluralisation stay
+    /// identical in both flows; the group review appends its frees
+    /// suffix at the call site, and each button keeps its own action
+    /// and accessibility identifier.
+    static func deletePhotosLabel(count: Int) -> String {
+        "Delete \(count) photo\(count == 1 ? "" : "s")"
+    }
+
     /// Dismiss label for sheet and flow Done buttons (compress, convert,
     /// swipe deck, month picker, month done). One source so the wording
     /// stays identical in all five places; each button keeps its own

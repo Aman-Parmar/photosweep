@@ -386,7 +386,7 @@ struct SwipeModeView: View {
                         }
                     }
                     .listStyle(.plain)
-                    Button("Delete \(session.batchDeleteCount) photo\(session.batchDeleteCount == 1 ? "" : "s")") {
+                    Button(AppCopy.deletePhotosLabel(count: session.batchDeleteCount)) {
                         Task { await commit() }
                     }
                     .buttonStyle(.borderedProminent)
