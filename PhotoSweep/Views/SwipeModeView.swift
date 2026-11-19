@@ -538,3 +538,13 @@ struct SwipeModeView: View {
         appState.refreshSwipeSession()
     }
 }
+
+extension View {
+    /// Presents swipe mode as a full-screen cover, shared by the home
+    /// entry card and the results toolbar button. Each caller keeps
+    /// its own @State flag; only the presentation is shared, so the
+    /// cover cannot drift apart.
+    func swipeModeCover(isPresented: Binding<Bool>) -> some View {
+        fullScreenCover(isPresented: isPresented) { SwipeModeView() }
+    }
+}

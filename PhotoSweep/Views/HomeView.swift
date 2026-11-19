@@ -125,9 +125,7 @@ struct HomeView: View {
                 .padding(.vertical, 2)
             }
             .accessibilityIdentifier("home-swipe-card")
-            .fullScreenCover(isPresented: $showingSwipeMode) {
-                SwipeModeView()
-            }
+            .swipeModeCover(isPresented: $showingSwipeMode)
         }
     }
 

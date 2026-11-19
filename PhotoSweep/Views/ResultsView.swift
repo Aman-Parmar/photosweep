@@ -77,9 +77,7 @@ struct ResultsView: View {
                     .disabled(!canExport)
                 }
             }
-            .fullScreenCover(isPresented: $showingSwipeMode) {
-                SwipeModeView()
-            }
+            .swipeModeCover(isPresented: $showingSwipeMode)
             .paywallSheet(isPresented: $showingPaywall)
             .fileExporter(
                 isPresented: $showingExporter,
