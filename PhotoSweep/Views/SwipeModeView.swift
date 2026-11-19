@@ -282,7 +282,7 @@ struct SwipeModeView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             if case .screenshot = card {
-                Text("Check each one: some screenshots are receipts, tickets, or confirmations worth keeping.")
+                Text(AppCopy.screenshotWarning)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

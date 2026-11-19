@@ -11,6 +11,11 @@ enum AppCopy {
     static func savedLine(bytes: Int64) -> String {
         "Saved ~\(StorageEstimator.formatted(bytes))"
     }
+
+    /// Screenshot-review warning shown on the screenshots bulk-review list
+    /// and on swipe-mode screenshot cards. One source so the wording stays
+    /// identical in both places.
+    static let screenshotWarning = "Check each one: some screenshots are receipts, tickets, or confirmations worth keeping."
 }
 
 /// The "Move to Recently Deleted?" confirmation alert, shared by the
