@@ -110,9 +110,7 @@ struct HomeView: View {
                 showingSwipeMode = true
             } label: {
                 HStack {
-                    Image(systemName: "rectangle.stack")
-                        .foregroundStyle(.tint)
-                        .frame(width: 28)
+                    HomeRowIcon(systemName: "rectangle.stack")
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Swipe to review")
                             .font(.headline)
@@ -259,9 +257,7 @@ struct CategoryCardRow: View {
 
     var body: some View {
         HStack {
-            Image(systemName: icon)
-                .foregroundStyle(.tint)
-                .frame(width: 28)
+            HomeRowIcon(systemName: icon)
             VStack(alignment: .leading, spacing: 2) {
                 Text(kind.sectionTitle)
                     .font(.headline)
@@ -318,9 +314,7 @@ struct LivePhotosCardRow: View {
 
     var body: some View {
         HStack {
-            Image(systemName: "livephoto")
-                .foregroundStyle(.tint)
-                .frame(width: 28)
+            HomeRowIcon(systemName: "livephoto")
             VStack(alignment: .leading, spacing: 2) {
                 Text("Live Photos")
                     .font(.headline)
@@ -338,5 +332,17 @@ struct LivePhotosCardRow: View {
         // swipe entry card's row height has to come out of the gaps,
         // not out of "How it works" step 3's clearance.
         .padding(.vertical, 0)
+    }
+}
+
+/// The tinted leading icon shared by the three home rows (swipe entry,
+/// category, Live Photos): same 28pt width so the row titles align.
+private struct HomeRowIcon: View {
+    let systemName: String
+
+    var body: some View {
+        Image(systemName: systemName)
+            .foregroundStyle(.tint)
+            .frame(width: 28)
     }
 }
