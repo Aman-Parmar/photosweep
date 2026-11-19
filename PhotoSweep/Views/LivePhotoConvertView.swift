@@ -107,20 +107,14 @@ struct LivePhotoConvertView: View {
             ScrollViewReader { proxy in
             List {
                 Section {
-                    HStack {
-                        Text(AppCopy.original)
-                        Spacer()
-                        Text("\(StorageEstimator.formatted(item.fileSize)) · \(item.width) x \(item.height)")
-                            .foregroundStyle(.secondary)
-                    }
-                    .font(.subheadline)
-                    HStack {
-                        Text("Still photo")
-                        Spacer()
-                        Text("~\(StorageEstimator.formatted(estimate.estimatedStillBytes)) (estimate)")
-                            .foregroundStyle(.secondary)
-                    }
-                    .font(.subheadline)
+                    SheetDetailRow(
+                        label: AppCopy.original,
+                        detail: "\(StorageEstimator.formatted(item.fileSize)) · \(item.width) x \(item.height)"
+                    )
+                    SheetDetailRow(
+                        label: "Still photo",
+                        detail: "~\(StorageEstimator.formatted(estimate.estimatedStillBytes)) (estimate)"
+                    )
                     if !canConvert {
                         Text("You have used your \(AppState.freeDeleteLimit) free deletes. Converting a Live Photo moves the original to Recently Deleted, so it costs one delete. Upgrade to Pro for unlimited deletes.")
                             .font(.caption)

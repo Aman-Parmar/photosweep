@@ -44,13 +44,10 @@ struct VideoCompressView: View {
             ScrollViewReader { proxy in
             List {
                 Section {
-                    HStack {
-                        Text(AppCopy.original)
-                        Spacer()
-                        Text("\(StorageEstimator.formatted(item.fileSize)) · \(CleanupReport.formattedDuration(item.duration)) · \(item.width) x \(item.height)")
-                            .foregroundStyle(.secondary)
-                    }
-                    .font(.subheadline)
+                    SheetDetailRow(
+                        label: AppCopy.original,
+                        detail: "\(StorageEstimator.formatted(item.fileSize)) · \(CleanupReport.formattedDuration(item.duration)) · \(item.width) x \(item.height)"
+                    )
                     if !canCompress {
                         Text("Video compression is a Pro feature. Pick a preset to see what it would save, then upgrade to compress.")
                             .font(.caption)

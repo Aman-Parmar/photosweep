@@ -63,6 +63,26 @@ struct SheetFailedSection: View {
     }
 }
 
+/// Shared label/value row for the compress and convert sheets: the
+/// "Original" row in both sheets plus the "Still photo" row in the
+/// convert sheet. The label and the detail string stay per-row so
+/// each sheet keeps its own wording; the layout, secondary detail
+/// style, and subheadline font are identical.
+struct SheetDetailRow: View {
+    let label: String
+    let detail: String
+
+    var body: some View {
+        HStack {
+            Text(label)
+            Spacer()
+            Text(detail)
+                .foregroundStyle(.secondary)
+        }
+        .font(.subheadline)
+    }
+}
+
 /// Shared scroll-to for the compress and convert sheets: at the
 /// half-height detent the progress and done sections can sit below
 /// the fold, so scroll them into view when the run starts or
