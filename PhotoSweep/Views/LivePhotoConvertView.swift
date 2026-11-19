@@ -152,7 +152,7 @@ struct LivePhotoConvertView: View {
                 if phase == .done, let outcome {
                     Section {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Saved ~\(StorageEstimator.formatted(outcome.bytesSaved))")
+                            Text(AppCopy.savedLine(bytes: outcome.bytesSaved))
                                 .font(.headline)
                                 .accessibilityIdentifier("livephoto-convert-done-label")
                             Text("Still photo saved (~\(StorageEstimator.formatted(outcome.stillBytes))). The Live Photo is in Recently Deleted.")

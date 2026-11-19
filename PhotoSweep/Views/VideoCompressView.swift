@@ -115,7 +115,7 @@ struct VideoCompressView: View {
                 if phase == .done, let outcome {
                     Section {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Saved ~\(StorageEstimator.formatted(outcome.bytesSaved))")
+                            Text(AppCopy.savedLine(bytes: outcome.bytesSaved))
                                 .font(.headline)
                                 .accessibilityIdentifier("compress-done-label")
                             Text("Compressed to ~\(StorageEstimator.formatted(outcome.compressedBytes)). The original is in Recently Deleted.")

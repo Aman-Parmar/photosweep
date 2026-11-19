@@ -5,6 +5,12 @@ import SwiftUI
 /// group review and swipe flows.
 enum AppCopy {
     static let deleteFailed = "Delete failed. Nothing was removed - try again."
+
+    /// Done-state headline for the compress and convert sheets. One source
+    /// so the wording stays identical in both flows.
+    static func savedLine(bytes: Int64) -> String {
+        "Saved ~\(StorageEstimator.formatted(bytes))"
+    }
 }
 
 /// The "Move to Recently Deleted?" confirmation alert, shared by the
