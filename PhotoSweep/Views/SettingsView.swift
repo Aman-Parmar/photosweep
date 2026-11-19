@@ -85,9 +85,7 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
-            .sheet(isPresented: $showingPaywall) {
-                PaywallView()
-            }
+            .paywallSheet(isPresented: $showingPaywall)
             .sheet(isPresented: $showingPrivacy) {
                 NavigationStack {
                     ScrollView {

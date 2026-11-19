@@ -42,9 +42,7 @@ struct HomeView: View {
                     .accessibilityIdentifier("home-get-pro-button")
                 }
             }
-            .sheet(isPresented: $showingPaywall) {
-                PaywallView()
-            }
+            .paywallSheet(isPresented: $showingPaywall)
         }
     }
 

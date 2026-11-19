@@ -80,9 +80,7 @@ struct ResultsView: View {
             .fullScreenCover(isPresented: $showingSwipeMode) {
                 SwipeModeView()
             }
-            .sheet(isPresented: $showingPaywall) {
-                PaywallView()
-            }
+            .paywallSheet(isPresented: $showingPaywall)
             .fileExporter(
                 isPresented: $showingExporter,
                 document: reportDocument,
@@ -295,9 +293,7 @@ struct GroupReviewView: View {
                 }
             }
         }
-        .sheet(isPresented: $showingPaywall) {
-            PaywallView()
-        }
+        .paywallSheet(isPresented: $showingPaywall)
         .sheet(item: $compareItem) { item in
             if let keeper = group.items.first(where: { $0.id == keeperID }) {
                 CompareView(

@@ -79,9 +79,7 @@ struct ScreenshotsView: View {
                     if ok { selected.removeAll() }
                 }
             }
-            .sheet(isPresented: $showingPaywall) {
-                PaywallView()
-            }
+            .paywallSheet(isPresented: $showingPaywall)
         }
     }
 }
@@ -182,9 +180,7 @@ struct LargeVideosView: View {
                     if ok { selected.removeAll() }
                 }
             }
-            .sheet(isPresented: $showingPaywall) {
-                PaywallView()
-            }
+            .paywallSheet(isPresented: $showingPaywall)
         }
     }
 

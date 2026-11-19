@@ -103,3 +103,13 @@ struct PaywallView: View {
         }
     }
 }
+
+extension View {
+    /// Presents the Pro paywall sheet, shared by every view that offers
+    /// an upgrade (home, results, settings, bulk lists, compress,
+    /// convert). Each caller keeps its own @State flag; only the
+    /// presentation is shared, so the sheet cannot drift apart.
+    func paywallSheet(isPresented: Binding<Bool>) -> some View {
+        sheet(isPresented: isPresented) { PaywallView() }
+    }
+}

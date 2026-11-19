@@ -211,9 +211,7 @@ struct LivePhotoConvertView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showingPaywall) {
-                PaywallView()
-            }
+            .paywallSheet(isPresented: $showingPaywall)
             } // ScrollViewReader
         }
     }
