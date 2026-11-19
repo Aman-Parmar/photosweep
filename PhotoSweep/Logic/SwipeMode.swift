@@ -113,9 +113,15 @@ public struct SwipeSession {
     public init(month: SwipeMonth, cards: [SwipeCard], decisions: [SwipeDecision]) {
         self.month = month
         self.totalCards = cards.count
-        self.cardsByID = Dictionary(uniqueKeysWithValues: cards.map { ($0.id, $0) })
-        self.decisions = decisions.filter { cardsByID[$0.cardID] != nil }
-        let decidedIDs = Set(self.decisions.map(\.cardID))
+        // Locals first: a closure may not touch `self` (even a
+        // just-assigned property) until every stored property is
+        // initialized, so build the map and the filtered decisions
+        // before assigning anything.
+        let byID = Dictionary(uniqueKeysWithValues: cards.map { ($0.id, $0) })
+        let valid = decisions.filter { byID[$0.cardID] != nil }
+        self.cardsByID = byID
+        self.decisions = valid
+        let decidedIDs = Set(valid.map(\.cardID))
         self.queue = cards.filter { !decidedIDs.contains($0.id) }
     }
 
