@@ -186,10 +186,10 @@ struct LargeVideosView: View {
 
 }
 
-/// Selection mark for the bulk-review lists: a filled check when the item
-/// is selected, a hollow circle otherwise. Shared by the screenshots and
-/// large-videos lists so both marks stay identical.
-private struct SelectionCircle: View {
+/// Selection mark: a filled check when the item is selected, a hollow
+/// circle otherwise. Shared by the screenshots and large-videos lists
+/// and the compress preset picker so every selection mark stays identical.
+struct SelectionCircle: View {
     let isSelected: Bool
 
     var body: some View {

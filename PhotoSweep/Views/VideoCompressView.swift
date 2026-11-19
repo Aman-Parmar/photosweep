@@ -85,8 +85,7 @@ struct VideoCompressView: View {
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
-                                Image(systemName: preset == candidate ? "checkmark.circle.fill" : "circle")
-                                    .foregroundStyle(preset == candidate ? Color.accentColor : Color.secondary)
+                                SelectionCircle(isSelected: preset == candidate)
                             }
                         }
                         .accessibilityIdentifier("compress-preset-\(candidate.rawValue)")
