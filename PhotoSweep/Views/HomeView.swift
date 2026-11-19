@@ -193,7 +193,7 @@ struct HomeView: View {
                 } label: {
                     CategoryCardRow(kind: kind, result: result)
                 }
-                .accessibilityIdentifier("home-category-\(kindID(kind))")
+                .accessibilityIdentifier("home-category-\(kind.categoryID)")
             }
             NavigationLink {
                 LivePhotosView()
@@ -240,18 +240,6 @@ struct HomeView: View {
             // Settings > About and in the listing. A caption under the
             // steps wrapped to two lines and the second line sat
             // half-hidden behind the floating tab bar in the 01 shot.
-        }
-    }
-
-    // MARK: - Helpers
-
-    private func kindID(_ kind: GroupKind) -> String {
-        switch kind {
-        case .exactDuplicate: return "duplicates"
-        case .similar: return "similar"
-        case .blurry: return "blurry"
-        case .screenshots: return "screenshots"
-        case .largeVideos: return "videos"
         }
     }
 }

@@ -98,6 +98,20 @@ public enum GroupKind: String, Equatable, Hashable, CaseIterable {
 
     /// The section a group belongs to in the Results tab.
     public var sectionTitle: String { rawValue }
+
+    /// The short slug used in accessibility identifiers (e.g.
+    /// `home-category-duplicates`, `results-group-blurry-0`). The
+    /// single source for the mapping the Home and Results views used
+    /// to duplicate as private `kindID` functions.
+    public var categoryID: String {
+        switch self {
+        case .exactDuplicate: return "duplicates"
+        case .similar: return "similar"
+        case .blurry: return "blurry"
+        case .screenshots: return "screenshots"
+        case .largeVideos: return "videos"
+        }
+    }
 }
 
 /// One reviewable group. Deletion is never automatic: a group only

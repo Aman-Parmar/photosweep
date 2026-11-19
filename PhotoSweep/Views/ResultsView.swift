@@ -35,7 +35,7 @@ struct ResultsView: View {
                                         } label: {
                                             GroupRow(group: group)
                                         }
-                                        .accessibilityIdentifier("results-group-\(kindID(kind))-\(index)")
+                                        .accessibilityIdentifier("results-group-\(kind.categoryID)-\(index)")
                                     }
                                 }
                             }
@@ -92,15 +92,6 @@ struct ResultsView: View {
         }
     }
 
-    private func kindID(_ kind: GroupKind) -> String {
-        switch kind {
-        case .exactDuplicate: return "duplicates"
-        case .similar: return "similar"
-        case .blurry: return "blurry"
-        case .screenshots: return "screenshots"
-        case .largeVideos: return "videos"
-        }
-    }
 }
 
 /// One group row: kind, item count, and the reclaimable estimate.
