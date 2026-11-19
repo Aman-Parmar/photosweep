@@ -57,7 +57,7 @@ struct ScreenshotsView: View {
                     .safeAreaInset(edge: .bottom) {
                         if !selected.isEmpty {
                             BulkDeleteButton(count: selected.count, accessibilityIdentifier: "screenshots-delete-button") {
-                                if store.isPro || appState.remainingFreeDeletes(isPro: false) >= selected.count {
+                                if appState.canDelete(count: selected.count, isPro: store.isPro) {
                                     showingConfirm = true
                                 } else {
                                     showingPaywall = true

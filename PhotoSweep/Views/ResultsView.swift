@@ -246,7 +246,7 @@ struct GroupReviewView: View {
                         .foregroundStyle(.secondary)
                 }
                 Button {
-                    if store.isPro || appState.remainingFreeDeletes(isPro: false) >= deletable.count {
+                    if appState.canDelete(count: deletable.count, isPro: store.isPro) {
                         showingConfirm = true
                     } else {
                         showingPaywall = true

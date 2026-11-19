@@ -254,6 +254,12 @@ final class AppState: ObservableObject {
         isPro ? Int.max : max(0, Self.freeDeleteLimit - deletedCount)
     }
 
+    /// Whether deleting `count` photos is allowed: Pro is unlimited,
+    /// otherwise the free budget must cover the whole batch.
+    func canDelete(count: Int, isPro: Bool) -> Bool {
+        isPro || remainingFreeDeletes(isPro: false) >= count
+    }
+
     /// Confirms deletion of a group's deletable items. Returns false
     /// when the free budget does not cover it (caller shows the
     /// paywall). In screenshot mode this only updates the sample.
@@ -261,7 +267,7 @@ final class AppState: ObservableObject {
     func confirmDelete(group: PhotoGroup, isPro: Bool) async -> Bool {
         let items = group.deletableItems
         guard !items.isEmpty else { return true }
-        guard isPro || remainingFreeDeletes(isPro: false) >= items.count else {
+        guard canDelete(count: items.count, isPro: isPro) else {
             return false
         }
         if ScreenshotMode.isEnabled {
@@ -289,7 +295,7 @@ final class AppState: ObservableObject {
     @discardableResult
     func confirmDelete(items: [PhotoItem], isPro: Bool) async -> Bool {
         guard !items.isEmpty else { return true }
-        guard isPro || remainingFreeDeletes(isPro: false) >= items.count else {
+        guard canDelete(count: items.count, isPro: isPro) else {
             return false
         }
         if ScreenshotMode.isEnabled {
