@@ -34,6 +34,14 @@ enum AppCopy {
         "Delete \(count) photo\(count == 1 ? "" : "s")"
     }
 
+    /// Free-tier budget line shown in the group review and in Settings.
+    /// One source so the wording stays identical in both places; the
+    /// group review appends its "Pro deletes unlimited." suffix at the
+    /// call site, and each line keeps its own styling.
+    static func freeDeletesLeft(remaining: Int) -> String {
+        "Free: \(remaining) of \(AppState.freeDeleteLimit) deletes left"
+    }
+
     /// Dismiss label for sheet and flow Done buttons (compress, convert,
     /// swipe deck, month picker, month done). One source so the wording
     /// stays identical in all five places; each button keeps its own

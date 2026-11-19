@@ -259,7 +259,7 @@ struct GroupReviewView: View {
                 .disabled(deletable.isEmpty || deleted)
                 .accessibilityIdentifier("group-delete-button")
                 if !store.isPro {
-                    Text("Free: \(appState.remainingFreeDeletes(isPro: false)) of \(AppState.freeDeleteLimit) deletes left. Pro deletes unlimited.")
+                    Text("\(AppCopy.freeDeletesLeft(remaining: appState.remainingFreeDeletes(isPro: false))). Pro deletes unlimited.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

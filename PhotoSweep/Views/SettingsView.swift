@@ -24,7 +24,7 @@ struct SettingsView: View {
                             .foregroundStyle(store.isPro ? .green : .secondary)
                     }
                     if !store.isPro {
-                        Text("Free: \(appState.remainingFreeDeletes(isPro: false)) of \(AppState.freeDeleteLimit) deletes left.")
+                        Text(AppCopy.freeDeletesLeft(remaining: appState.remainingFreeDeletes(isPro: false)))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         Button("Get Pro") { showingPaywall = true }
