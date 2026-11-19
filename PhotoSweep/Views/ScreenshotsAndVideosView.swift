@@ -43,8 +43,7 @@ struct ScreenshotsView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 Spacer()
-                                Image(systemName: selected.contains(item.id) ? "checkmark.circle.fill" : "circle")
-                                    .foregroundStyle(selected.contains(item.id) ? Color.accentColor : Color.secondary)
+                                SelectionCircle(isSelected: selected.contains(item.id))
                             }
                             .contentShape(Rectangle())
                             .onTapGesture {
@@ -150,8 +149,7 @@ struct LargeVideosView: View {
                                 .controlSize(.small)
                                 .accessibilityIdentifier("video-compress-button-\(item.id)")
                                 if store.isPro {
-                                    Image(systemName: selected.contains(item.id) ? "checkmark.circle.fill" : "circle")
-                                        .foregroundStyle(selected.contains(item.id) ? Color.accentColor : Color.secondary)
+                                    SelectionCircle(isSelected: selected.contains(item.id))
                                 }
                             }
                             .contentShape(Rectangle())
@@ -204,4 +202,16 @@ struct LargeVideosView: View {
         }
     }
 
+}
+
+/// Selection mark for the bulk-review lists: a filled check when the item
+/// is selected, a hollow circle otherwise. Shared by the screenshots and
+/// large-videos lists so both marks stay identical.
+private struct SelectionCircle: View {
+    let isSelected: Bool
+
+    var body: some View {
+        Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+            .foregroundStyle(isSelected ? Color.accentColor : Color.secondary)
+    }
 }
