@@ -9,12 +9,6 @@ struct HomeView: View {
     @State private var showingPaywall = false
     @State private var showingSwipeMode = false
 
-    private static let swipeMonthFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
-        return formatter
-    }()
-
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -142,7 +136,7 @@ struct HomeView: View {
     }
 
     private func swipeSubtitle(for month: SwipeMonth) -> String {
-        let label = Self.swipeMonthFormatter.string(from: month.startDate)
+        let label = month.title
         let total = appState.swipeCardCount(for: month)
         if let session = appState.swipeSession,
            session.month == month, session.decidedCount > 0 {

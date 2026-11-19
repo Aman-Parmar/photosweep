@@ -55,19 +55,13 @@ struct SwipeModeView: View {
         let kept: Int
     }
 
-    private static let monthFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
-        return formatter
-    }()
-
     /// Both Done buttons dismiss the swipe flow (the deck header's
     /// and the month-done state's), so they share one accessibility
     /// identifier: one literal, so the two can never drift apart.
     private static let doneButtonIdentifier = "swipe-done-button"
 
     private func monthLabel(_ month: SwipeMonth) -> String {
-        Self.monthFormatter.string(from: month.startDate)
+        month.title
     }
 
     var body: some View {

@@ -77,6 +77,18 @@ public struct SwipeMonth: Equatable, Hashable, Comparable, Codable {
             from: DateComponents(year: year, month: month, day: 1)
         ) ?? Date()
     }
+
+    /// "September 2025": the month label both the home swipe card and
+    /// the swipe deck show, from one formatter so the two can never drift apart.
+    public var title: String {
+        Self.monthTitleFormatter.string(from: startDate)
+    }
+
+    private static let monthTitleFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter
+    }()
 }
 
 /// One month's swipe session: the deck queue plus the decision stack.
