@@ -16,6 +16,14 @@ enum AppCopy {
     /// and on swipe-mode screenshot cards. One source so the wording stays
     /// identical in both places.
     static let screenshotWarning = "Check each one: some screenshots are receipts, tickets, or confirmations worth keeping."
+
+    /// Bulk-delete button label for the screenshots list and the large
+    /// videos list. One source so the wording stays identical in both
+    /// places; the two buttons keep their own actions and accessibility
+    /// identifiers.
+    static func deleteSelectedLabel(count: Int) -> String {
+        "Delete \(count) selected"
+    }
 }
 
 /// The "Move to Recently Deleted?" confirmation alert, shared by the

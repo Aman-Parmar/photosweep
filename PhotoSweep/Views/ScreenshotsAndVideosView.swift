@@ -59,7 +59,7 @@ struct ScreenshotsView: View {
                     }
                     .safeAreaInset(edge: .bottom) {
                         if !selected.isEmpty {
-                            Button("Delete \(selected.count) selected") {
+                            Button(AppCopy.deleteSelectedLabel(count: selected.count)) {
                                 if store.isPro || appState.remainingFreeDeletes(isPro: false) >= selected.count {
                                     showingConfirm = true
                                 } else {
@@ -170,7 +170,7 @@ struct LargeVideosView: View {
                     }
                     .safeAreaInset(edge: .bottom) {
                         if store.isPro && !selected.isEmpty {
-                            Button("Delete \(selected.count) selected") {
+                            Button(AppCopy.deleteSelectedLabel(count: selected.count)) {
                                 showingConfirm = true
                             }
                             .buttonStyle(.borderedProminent)
