@@ -19,12 +19,15 @@ final class AppState: ObservableObject {
     /// Free-tier delete budget: 20 photos. Pro is unlimited.
     static let freeDeleteLimit = 20
 
+    /// UserDefaults key for the lifetime deleted-photo count.
+    private static let deletedCountKey = "photosweep.deletedCount"
+
     @Published private(set) var result: ScanResult?
     @Published private(set) var isScanning = false
     @Published private(set) var scanError: String?
     @Published private(set) var deletedCount: Int {
         didSet {
-            UserDefaults.standard.set(deletedCount, forKey: "photosweep.deletedCount")
+            UserDefaults.standard.set(deletedCount, forKey: Self.deletedCountKey)
         }
     }
 
@@ -38,7 +41,7 @@ final class AppState: ObservableObject {
     private let scanner = PhotoScanner()
 
     init() {
-        self.deletedCount = UserDefaults.standard.integer(forKey: "photosweep.deletedCount")
+        self.deletedCount = UserDefaults.standard.integer(forKey: Self.deletedCountKey)
         if ScreenshotMode.isEnabled {
             self.result = SampleScan.result
             // Screenshot mode starts clean every launch: the lane's
@@ -46,7 +49,7 @@ final class AppState: ObservableObject {
             // swipe session (the simulator's UserDefaults persist
             // across test launches in one lane run).
             deletedCount = 0
-            UserDefaults.standard.removeObject(forKey: "photosweep.deletedCount")
+            UserDefaults.standard.removeObject(forKey: Self.deletedCountKey)
             UserDefaults.standard.removeObject(forKey: Self.swipeSessionKey)
         }
     }
