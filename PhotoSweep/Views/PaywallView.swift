@@ -93,7 +93,7 @@ struct PaywallView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") { dismiss() }
+                    Button(AppCopy.close) { dismiss() }
                 }
             }
             // Short content: open at half height so the sheet fits

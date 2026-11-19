@@ -24,6 +24,17 @@ enum AppCopy {
     static func deleteSelectedLabel(count: Int) -> String {
         "Delete \(count) selected"
     }
+
+    /// Dismiss label for sheet and flow Done buttons (compress, convert,
+    /// swipe deck, month picker, month done). One source so the wording
+    /// stays identical in all five places; each button keeps its own
+    /// action and accessibility identifier.
+    static let done = "Done"
+
+    /// Dismiss label for sheet Close buttons (compare sheet, privacy
+    /// sheet, paywall). One source so the wording stays identical in
+    /// all three places; each button keeps its own action.
+    static let close = "Close"
 }
 
 /// The "Move to Recently Deleted?" confirmation alert, shared by the

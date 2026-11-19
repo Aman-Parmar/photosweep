@@ -354,7 +354,7 @@ struct CompareView: View {
                     .controlSize(.large)
                     .frame(maxWidth: .infinity)
                     .accessibilityIdentifier("compare-keep-button")
-                    Button("Close") {
+                    Button(AppCopy.close) {
                         dismiss()
                     }
                     .buttonStyle(.bordered)

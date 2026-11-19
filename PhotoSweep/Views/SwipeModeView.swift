@@ -132,7 +132,7 @@ struct SwipeModeView: View {
             .accessibilityIdentifier("swipe-month-picker")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") { dismiss() }
+                    Button(AppCopy.done) { dismiss() }
                 }
             }
         }
@@ -174,7 +174,7 @@ struct SwipeModeView: View {
     private var deckHeader: some View {
         ZStack {
             HStack {
-                Button("Done") { dismiss() }
+                Button(AppCopy.done) { dismiss() }
                     .accessibilityIdentifier(Self.doneButtonIdentifier)
                 Spacer()
             }
@@ -497,7 +497,7 @@ struct SwipeModeView: View {
                 .controlSize(.large)
                 .accessibilityIdentifier("swipe-next-month-button")
             }
-            Button("Done") { dismiss() }
+            Button(AppCopy.done) { dismiss() }
                 .buttonStyle(.bordered)
                 .controlSize(.large)
                 .accessibilityIdentifier(Self.doneButtonIdentifier)

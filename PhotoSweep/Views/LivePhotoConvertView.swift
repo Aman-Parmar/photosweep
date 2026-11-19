@@ -187,7 +187,7 @@ struct LivePhotoConvertView: View {
                         .frame(maxWidth: .infinity)
                         .accessibilityIdentifier("livephoto-convert-start-button")
                     } else if phase == .done {
-                        Button("Done") { dismiss() }
+                        Button(AppCopy.done) { dismiss() }
                             .buttonStyle(.borderedProminent)
                             .controlSize(.large)
                             .frame(maxWidth: .infinity)

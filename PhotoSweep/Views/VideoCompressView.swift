@@ -150,7 +150,7 @@ struct VideoCompressView: View {
                         .frame(maxWidth: .infinity)
                         .accessibilityIdentifier("compress-start-button")
                     } else if phase == .done {
-                        Button("Done") { dismiss() }
+                        Button(AppCopy.done) { dismiss() }
                             .buttonStyle(.borderedProminent)
                             .controlSize(.large)
                             .frame(maxWidth: .infinity)

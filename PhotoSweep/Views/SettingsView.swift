@@ -99,7 +99,7 @@ struct SettingsView: View {
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
-                            Button("Close") { showingPrivacy = false }
+                            Button(AppCopy.close) { showingPrivacy = false }
                         }
                     }
                 }
