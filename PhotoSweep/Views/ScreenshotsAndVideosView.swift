@@ -139,7 +139,7 @@ struct LargeVideosView: View {
                                 VStack(alignment: .leading) {
                                     Text(StorageEstimator.formatted(item.fileSize))
                                         .font(.headline)
-                                    Text(formattedDuration(item.duration))
+                                    Text(CleanupReport.formattedDuration(item.duration))
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
@@ -206,9 +206,4 @@ struct LargeVideosView: View {
         }
     }
 
-    private func formattedDuration(_ seconds: TimeInterval) -> String {
-        let minutes = Int(seconds) / 60
-        let secs = Int(seconds) % 60
-        return String(format: "%d:%02d", minutes, secs)
-    }
 }

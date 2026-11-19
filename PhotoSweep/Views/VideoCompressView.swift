@@ -47,7 +47,7 @@ struct VideoCompressView: View {
                     HStack {
                         Text("Original")
                         Spacer()
-                        Text("\(StorageEstimator.formatted(item.fileSize)) · \(formattedDuration(item.duration)) · \(item.width) x \(item.height)")
+                        Text("\(StorageEstimator.formatted(item.fileSize)) · \(CleanupReport.formattedDuration(item.duration)) · \(item.width) x \(item.height)")
                             .foregroundStyle(.secondary)
                     }
                     .font(.subheadline)
@@ -213,9 +213,4 @@ struct VideoCompressView: View {
         }
     }
 
-    private func formattedDuration(_ seconds: TimeInterval) -> String {
-        let minutes = Int(seconds) / 60
-        let secs = Int(seconds) % 60
-        return String(format: "%d:%02d", minutes, secs)
-    }
 }
