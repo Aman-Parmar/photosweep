@@ -393,7 +393,6 @@ struct SwipeModeView: View {
             .padding()
             .navigationTitle("Review batch")
             .navigationBarTitleDisplayMode(.inline)
-            .accessibilityIdentifier("swipe-summary-sheet")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Cancel") { activeSheet = nil }
