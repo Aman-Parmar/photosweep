@@ -89,11 +89,7 @@ struct PaywallView: View {
                 .padding()
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(AppCopy.close) { dismiss() }
-                }
-            }
+            .cancellationButton(label: AppCopy.close) { dismiss() }
             .halfHeightSheet()
         }
     }

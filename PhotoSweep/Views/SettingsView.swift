@@ -93,11 +93,7 @@ struct SettingsView: View {
                     }
                     .navigationTitle("Privacy Policy")
                     .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button(AppCopy.close) { showingPrivacy = false }
-                        }
-                    }
+                    .cancellationButton(label: AppCopy.close) { showingPrivacy = false }
                 }
             }
         }

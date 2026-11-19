@@ -141,4 +141,19 @@ extension View {
         buttonStyle(.borderedProminent)
             .controlSize(.large)
     }
+
+    /// Cancellation-action toolbar button shared by the paywall, the
+    /// compress and convert sheets, and the Settings privacy sheet: a
+    /// Close/Cancel button in the cancellation slot. One source so the
+    /// placement cannot drift apart; each caller keeps its own label
+    /// (Close vs Cancel) and dismiss action. The swipe review batch
+    /// uses a trailing Cancel button by design, so it does not use
+    /// this helper.
+    func cancellationButton(label: String, action: @escaping () -> Void) -> some View {
+        toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(label, action: action)
+            }
+        }
+    }
 }

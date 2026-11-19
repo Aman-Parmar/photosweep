@@ -159,11 +159,7 @@ struct LivePhotoConvertView: View {
             }
             .navigationTitle("Convert to still")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(AppCopy.cancel) { dismiss() }
-                }
-            }
+            .cancellationButton(label: AppCopy.cancel) { dismiss() }
             .halfHeightSheet()
             .safeAreaInset(edge: .bottom) {
                 VStack(spacing: 12) {
