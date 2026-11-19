@@ -162,23 +162,15 @@ struct LivePhotoConvertView: View {
             .cancellationButton(label: AppCopy.cancel) { dismiss() }
             .halfHeightSheet()
             .safeAreaInset(edge: .bottom) {
-                VStack(spacing: 12) {
-                    if phase == .pick || phase == .failed {
-                        Button(phase == .failed ? AppCopy.tryAgain : "Convert to still") {
-                            startConversion()
-                        }
-                        .primaryActionButton()
-                        .frame(maxWidth: .infinity)
-                        .accessibilityIdentifier("livephoto-convert-start-button")
-                    } else if phase == .done {
-                        Button(AppCopy.done) { dismiss() }
-                            .primaryActionButton()
-                            .frame(maxWidth: .infinity)
-                            .accessibilityIdentifier("livephoto-convert-done-button")
-                    }
-                }
-                .padding()
-                .background(Color(.systemBackground))
+                SheetActionBar(
+                    isDone: phase == .done,
+                    isRunning: phase == .converting,
+                    hasFailed: phase == .failed,
+                    startLabel: "Convert to still",
+                    startAccessibilityIdentifier: "livephoto-convert-start-button",
+                    doneAccessibilityIdentifier: "livephoto-convert-done-button",
+                    onStart: startConversion
+                )
             }
             .onChange(of: phase) { _, _ in
                 SheetScroll.scrollToResult(

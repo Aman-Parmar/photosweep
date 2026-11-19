@@ -126,23 +126,15 @@ struct VideoCompressView: View {
             .cancellationButton(label: AppCopy.cancel) { dismiss() }
             .halfHeightSheet()
             .safeAreaInset(edge: .bottom) {
-                VStack(spacing: 12) {
-                    if phase == .pick || phase == .failed {
-                        Button(phase == .failed ? AppCopy.tryAgain : "Compress video") {
-                            startCompression()
-                        }
-                        .primaryActionButton()
-                        .frame(maxWidth: .infinity)
-                        .accessibilityIdentifier("compress-start-button")
-                    } else if phase == .done {
-                        Button(AppCopy.done) { dismiss() }
-                            .primaryActionButton()
-                            .frame(maxWidth: .infinity)
-                            .accessibilityIdentifier("compress-done-button")
-                    }
-                }
-                .padding()
-                .background(Color(.systemBackground))
+                SheetActionBar(
+                    isDone: phase == .done,
+                    isRunning: phase == .compressing,
+                    hasFailed: phase == .failed,
+                    startLabel: "Compress video",
+                    startAccessibilityIdentifier: "compress-start-button",
+                    doneAccessibilityIdentifier: "compress-done-button",
+                    onStart: startCompression
+                )
             }
             .onChange(of: phase) { _, _ in
                 SheetScroll.scrollToResult(

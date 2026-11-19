@@ -92,3 +92,42 @@ enum SheetScroll {
         }
     }
 }
+
+/// Shared bottom action bar for the compress and convert sheets: a
+/// primary start button while picking or after a failure ("Try again"
+/// when failed), nothing while the run is in progress, and a Done
+/// button once it finished. The two sheets have different private
+/// Phase enums, so the call site passes booleans plus its own start
+/// label, start action, and accessibility identifiers; the bar
+/// layout, padding, and background are identical.
+struct SheetActionBar: View {
+    @Environment(\.dismiss) private var dismiss
+
+    let isDone: Bool
+    let isRunning: Bool
+    let hasFailed: Bool
+    let startLabel: String
+    let startAccessibilityIdentifier: String
+    let doneAccessibilityIdentifier: String
+    let onStart: () -> Void
+
+    var body: some View {
+        VStack(spacing: 12) {
+            if !isDone && !isRunning {
+                Button(hasFailed ? AppCopy.tryAgain : startLabel) {
+                    onStart()
+                }
+                .primaryActionButton()
+                .frame(maxWidth: .infinity)
+                .accessibilityIdentifier(startAccessibilityIdentifier)
+            } else if isDone {
+                Button(AppCopy.done) { dismiss() }
+                    .primaryActionButton()
+                    .frame(maxWidth: .infinity)
+                    .accessibilityIdentifier(doneAccessibilityIdentifier)
+            }
+        }
+        .padding()
+        .background(Color(.systemBackground))
+    }
+}
