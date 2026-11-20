@@ -214,8 +214,17 @@ extension View {
     /// Delete-failure caption shared by the group review and the swipe
     /// batch review: caption red text on the shared AppCopy.deleteFailed
     /// wording. One source so the banner cannot drift apart; each banner
-    /// keeps its own placement and condition.
+    /// keeps its own placement and condition. Reuses errorCaption: same
+    /// look, but this name ties the style to the delete-failure wording.
     func deleteFailedCaption() -> some View {
+        errorCaption()
+    }
+
+    /// Error caption shared by the scan error on Home and the purchase
+    /// error on the paywall: caption red text. One source so error
+    /// messages cannot drift apart; each keeps its own wording, alignment,
+    /// and placement.
+    func errorCaption() -> some View {
         font(.caption)
             .foregroundStyle(.red)
     }

@@ -75,8 +75,7 @@ struct PaywallView: View {
                     }
                     if let errorMessage {
                         Text(errorMessage)
-                            .font(.caption)
-                            .foregroundStyle(.red)
+                            .errorCaption()
                     }
                     RestorePurchasesButton()
                     .buttonStyle(.bordered)

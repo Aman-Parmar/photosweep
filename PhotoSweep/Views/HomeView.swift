@@ -73,8 +73,7 @@ struct HomeView: View {
             scanButton
             if let error = appState.scanError {
                 Text(error)
-                    .font(.caption)
-                    .foregroundStyle(.red)
+                    .errorCaption()
                     .multilineTextAlignment(.center)
             }
             Text("Scanning reads your photos on-device. Nothing leaves this phone.")
