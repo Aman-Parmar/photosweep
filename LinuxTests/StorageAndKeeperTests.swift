@@ -100,6 +100,13 @@ final class StorageAndKeeperTests: XCTestCase {
         XCTAssertEqual(StorageEstimator.approx(500), "~500 B")
     }
 
+    func testOriginalDetailLine() {
+        let photo = PhotoItemFixture.make(id: "p", size: 6_000_000)
+        XCTAssertEqual(photo.originalDetailLine(), "6 MB · 4032 x 3024")
+        let video = PhotoItemFixture.make(id: "v", size: 2_700_000_000, isVideo: true, duration: 182)
+        XCTAssertEqual(video.originalDetailLine(duration: video.duration), "2.7 GB · 3:02 · 4032 x 3024")
+    }
+
     func testReclaimableBytesSums() {
         XCTAssertEqual(
             StorageEstimator.reclaimableBytes(for: [item(id: "a", size: 100), item(id: "b", size: 200)]),

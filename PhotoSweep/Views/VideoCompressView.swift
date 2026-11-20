@@ -39,7 +39,7 @@ struct VideoCompressView: View {
                 Section {
                     SheetDetailRow(
                         label: AppCopy.original,
-                        detail: "\(StorageEstimator.formatted(item.fileSize)) · \(CleanupReport.formattedDuration(item.duration)) · \(item.width) x \(item.height)"
+                        detail: item.originalDetailLine(duration: item.duration)
                     )
                     if !canCompress {
                         Text("Video compression is a Pro feature. Pick a preset to see what it would save, then upgrade to compress.")

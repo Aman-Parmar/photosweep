@@ -102,7 +102,7 @@ struct LivePhotoConvertView: View {
                 Section {
                     SheetDetailRow(
                         label: AppCopy.original,
-                        detail: "\(StorageEstimator.formatted(item.fileSize)) · \(item.width) x \(item.height)"
+                        detail: item.originalDetailLine()
                     )
                     SheetDetailRow(
                         label: "Still photo",

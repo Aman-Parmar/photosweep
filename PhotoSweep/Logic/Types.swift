@@ -80,6 +80,18 @@ public struct PhotoItem: Equatable, Hashable, Identifiable {
 
     /// Pixel count, used by the keeper picker (higher is better).
     public var pixelCount: Int { width * height }
+
+    /// "Original" row detail line for the compress/convert sheets:
+    /// "1.2 GB · 3:02 · 4032 x 3024" with a duration, "1.2 GB · 4032 x 3024"
+    /// without. One source so the separator and order cannot drift apart
+    /// between the two sheets.
+    public func originalDetailLine(duration: TimeInterval? = nil) -> String {
+        let size = StorageEstimator.formatted(fileSize)
+        if let duration {
+            return "\(size) · \(CleanupReport.formattedDuration(duration)) · \(width) x \(height)"
+        }
+        return "\(size) · \(width) x \(height)"
+    }
 }
 
 /// Why a group of items was put together. Shown in the UI so the user
