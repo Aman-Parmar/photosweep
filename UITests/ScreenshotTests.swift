@@ -13,6 +13,13 @@ import XCTest
 final class ScreenshotTests: XCTestCase {
     private var app: XCUIApplication!
 
+    /// Default wait for a UI element to appear in the screenshot lane.
+    /// One source so the 30 waits cannot drift apart; the three
+    /// 15-second waits on the compress/convert done labels stay longer
+    /// on purpose, because those labels appear only after a simulated
+    /// job finishes.
+    private let defaultWaitTimeout: TimeInterval = 10
+
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = XCUIApplication()
@@ -24,14 +31,14 @@ final class ScreenshotTests: XCTestCase {
 
     func test01HomeScan() {
         app.tabBars.buttons["Scan"].tap()
-        XCTAssertTrue(app.staticTexts["reclaimable-total"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["reclaimable-total"].waitForExistence(timeout: defaultWaitTimeout))
         // The "How it works" steps are one line each so the whole
         // section fits above the floating tab bar at rest: no scroll,
         // because scrolling ghosts the header under the translucent
         // nav bar (QA FAIL on b3f66d2). Fail loudly if a step is ever
         // covered again instead of silently capturing a cut shot.
         let step3 = app.staticTexts["how-it-works-step-3"]
-        XCTAssertTrue(step3.waitForExistence(timeout: 10))
+        XCTAssertTrue(step3.waitForExistence(timeout: defaultWaitTimeout))
         XCTAssertTrue(step3.isHittable, "How it works step 3 should clear the tab bar")
         saveScreenshot(named: "01-home-scan")
     }
@@ -64,7 +71,7 @@ final class ScreenshotTests: XCTestCase {
 
     func test05Screenshots() {
         app.tabBars.buttons["Screenshots"].tap()
-        XCTAssertTrue(app.navigationBars["Screenshots"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.navigationBars["Screenshots"].waitForExistence(timeout: defaultWaitTimeout))
         saveScreenshot(named: "05-screenshots")
     }
 
@@ -72,7 +79,7 @@ final class ScreenshotTests: XCTestCase {
 
     func test06LargeVideos() {
         app.tabBars.buttons["Videos"].tap()
-        XCTAssertTrue(app.navigationBars["Large Videos"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.navigationBars["Large Videos"].waitForExistence(timeout: defaultWaitTimeout))
         saveScreenshot(named: "06-large-videos")
     }
 
@@ -81,7 +88,7 @@ final class ScreenshotTests: XCTestCase {
     func test07Paywall() {
         app.tabBars.buttons["Settings"].tap()
         app.buttons["settings-get-pro-button"].tap()
-        XCTAssertTrue(app.staticTexts["PhotoSweep Pro"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["PhotoSweep Pro"].waitForExistence(timeout: defaultWaitTimeout))
         saveScreenshot(named: "07-paywall")
     }
 
@@ -94,9 +101,9 @@ final class ScreenshotTests: XCTestCase {
         app.tabBars.buttons["Results"].tap()
         openGroup(rowID: "results-group-similar-0")
         let compareButton = app.buttons["group-compare-sample-burst-1"]
-        XCTAssertTrue(compareButton.waitForExistence(timeout: 10))
+        XCTAssertTrue(compareButton.waitForExistence(timeout: defaultWaitTimeout))
         compareButton.tap()
-        XCTAssertTrue(app.buttons["compare-keep-button"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["compare-keep-button"].waitForExistence(timeout: defaultWaitTimeout))
         saveScreenshot(named: "08-compare")
     }
 
@@ -110,11 +117,11 @@ final class ScreenshotTests: XCTestCase {
     func test09VideoCompress() {
         app.tabBars.buttons["Videos"].tap()
         let compressButton = app.buttons["video-compress-button-sample-video-0"]
-        XCTAssertTrue(compressButton.waitForExistence(timeout: 10))
+        XCTAssertTrue(compressButton.waitForExistence(timeout: defaultWaitTimeout))
         compressButton.tap()
-        XCTAssertTrue(app.staticTexts["Compress video"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["Compress video"].waitForExistence(timeout: defaultWaitTimeout))
         let startButton = app.buttons["compress-start-button"]
-        XCTAssertTrue(startButton.waitForExistence(timeout: 10))
+        XCTAssertTrue(startButton.waitForExistence(timeout: defaultWaitTimeout))
         startButton.tap()
         XCTAssertTrue(app.staticTexts["compress-done-label"].waitForExistence(timeout: 15))
         saveScreenshot(named: "09-video-compress")
@@ -131,15 +138,15 @@ final class ScreenshotTests: XCTestCase {
     func test10LivePhotoConvert() {
         app.tabBars.buttons["Scan"].tap()
         let card = app.buttons["home-category-livephotos"]
-        XCTAssertTrue(card.waitForExistence(timeout: 10))
+        XCTAssertTrue(card.waitForExistence(timeout: defaultWaitTimeout))
         card.tap()
-        XCTAssertTrue(app.navigationBars["Live Photos"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.navigationBars["Live Photos"].waitForExistence(timeout: defaultWaitTimeout))
         let convertButton = app.buttons["livephoto-convert-button-sample-live-0"]
-        XCTAssertTrue(convertButton.waitForExistence(timeout: 10))
+        XCTAssertTrue(convertButton.waitForExistence(timeout: defaultWaitTimeout))
         convertButton.tap()
-        XCTAssertTrue(app.staticTexts["Convert to still"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["Convert to still"].waitForExistence(timeout: defaultWaitTimeout))
         let startButton = app.buttons["livephoto-convert-start-button"]
-        XCTAssertTrue(startButton.waitForExistence(timeout: 10))
+        XCTAssertTrue(startButton.waitForExistence(timeout: defaultWaitTimeout))
         startButton.tap()
         XCTAssertTrue(app.staticTexts["livephoto-convert-done-label"].waitForExistence(timeout: 15))
         saveScreenshot(named: "10-live-photo-convert")
@@ -154,23 +161,23 @@ final class ScreenshotTests: XCTestCase {
     func test11SwipeDeck() {
         app.tabBars.buttons["Scan"].tap()
         let card = app.buttons["home-swipe-card"]
-        XCTAssertTrue(card.waitForExistence(timeout: 10))
+        XCTAssertTrue(card.waitForExistence(timeout: defaultWaitTimeout))
         card.tap()
         let monthRow = app.buttons["swipe-month-2025-10"]
-        XCTAssertTrue(monthRow.waitForExistence(timeout: 10))
+        XCTAssertTrue(monthRow.waitForExistence(timeout: defaultWaitTimeout))
         monthRow.tap()
-        XCTAssertTrue(app.staticTexts["swipe-month-label"].waitForExistence(timeout: 10))
-        XCTAssertTrue(app.staticTexts["swipe-card-kind"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["swipe-month-label"].waitForExistence(timeout: defaultWaitTimeout))
+        XCTAssertTrue(app.staticTexts["swipe-card-kind"].waitForExistence(timeout: defaultWaitTimeout))
         let progress = app.staticTexts["swipe-progress-label"]
-        XCTAssertTrue(progress.waitForExistence(timeout: 10))
+        XCTAssertTrue(progress.waitForExistence(timeout: defaultWaitTimeout))
         XCTAssertEqual(progress.label, "0 of 4 reviewed")
         app.buttons["swipe-keep-button"].tap()
         // The label updates asynchronously after the tap: wait for
         // the new value instead of asserting on a possibly stale read.
         let updated = NSPredicate(format: "label == %@", "1 of 4 reviewed")
         expectation(for: updated, evaluatedWith: progress)
-        waitForExpectations(timeout: 10)
-        XCTAssertTrue(app.staticTexts["swipe-card-kind"].waitForExistence(timeout: 10))
+        waitForExpectations(timeout: defaultWaitTimeout)
+        XCTAssertTrue(app.staticTexts["swipe-card-kind"].waitForExistence(timeout: defaultWaitTimeout))
         saveScreenshot(named: "11-swipe-deck")
     }
 
@@ -184,15 +191,15 @@ final class ScreenshotTests: XCTestCase {
     func test12SwipeMonthComplete() {
         app.tabBars.buttons["Scan"].tap()
         let card = app.buttons["home-swipe-card"]
-        XCTAssertTrue(card.waitForExistence(timeout: 10))
+        XCTAssertTrue(card.waitForExistence(timeout: defaultWaitTimeout))
         card.tap()
         let monthRow = app.buttons["swipe-month-2025-10"]
-        XCTAssertTrue(monthRow.waitForExistence(timeout: 10))
+        XCTAssertTrue(monthRow.waitForExistence(timeout: defaultWaitTimeout))
         monthRow.tap()
-        XCTAssertTrue(app.staticTexts["swipe-progress-label"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["swipe-progress-label"].waitForExistence(timeout: defaultWaitTimeout))
         for _ in 0..<4 {
             let deleteButton = app.buttons["swipe-delete-button"]
-            XCTAssertTrue(deleteButton.waitForExistence(timeout: 10))
+            XCTAssertTrue(deleteButton.waitForExistence(timeout: defaultWaitTimeout))
             deleteButton.tap()
         }
         // The four decisions must have registered before the sheet
@@ -202,15 +209,15 @@ final class ScreenshotTests: XCTestCase {
         let progress = app.staticTexts["swipe-progress-label"]
         let complete = NSPredicate(format: "label == %@", "4 of 4 reviewed")
         expectation(for: complete, evaluatedWith: progress)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: defaultWaitTimeout)
         // Finishing the month opens the summary sheet: the commit
         // button inside it is the proof the sheet is up (a
         // NavigationStack identifier is not reliably queryable).
         let commitButton = app.buttons["swipe-commit-button"]
-        XCTAssertTrue(commitButton.waitForExistence(timeout: 10))
+        XCTAssertTrue(commitButton.waitForExistence(timeout: defaultWaitTimeout))
         XCTAssertEqual(commitButton.label, "Delete 4 photos")
         commitButton.tap()
-        XCTAssertTrue(app.staticTexts["swipe-month-complete"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["swipe-month-complete"].waitForExistence(timeout: defaultWaitTimeout))
         saveScreenshot(named: "12-swipe-month-complete")
     }
 
@@ -232,7 +239,7 @@ final class ScreenshotTests: XCTestCase {
            row.waitForExistence(timeout: 2) {
             row.tap()
         }
-        XCTAssertTrue(app.buttons["group-delete-button"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["group-delete-button"].waitForExistence(timeout: defaultWaitTimeout))
     }
 
     /// Saves the screenshot both as an XCTAttachment (in the xcresult) and
