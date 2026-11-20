@@ -21,7 +21,7 @@ struct PaywallView: View {
                         .foregroundStyle(.secondary)
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach([
-                            "Unlimited deletes (free: 20 photos)",
+                            "Unlimited deletes (free: \(AppState.freeDeleteLimit) photos)",
                             "Large-video cleanup",
                             "Export a cleanup report",
                             "No ads, no account, now or ever",
