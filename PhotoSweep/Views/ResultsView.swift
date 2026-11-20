@@ -6,6 +6,13 @@ import UniformTypeIdentifiers
 /// sync instead of drifting as separate magic numbers.
 private let thumbnailCornerRadius: CGFloat = 10
 
+/// Outer padding shared by the trash and compare overlay icons on
+/// group-review photo tiles, so both icons sit the same distance from
+/// the tile edge. The 6pt padding inside `thumbnailOverlayIcon` itself
+/// is separate by design: that one sizes the icon circle, this one
+/// positions the icon on the tile.
+private let tileOverlayPadding: CGFloat = 6
+
 /// Results tab: every group, in sections by kind, largest reclaim
 /// first. Tapping a group opens GroupReviewView. The row identifiers
 /// are what the screenshot lane taps:
@@ -204,7 +211,7 @@ struct GroupReviewView: View {
                                     } else {
                                         Image(systemName: "trash")
                                             .thumbnailOverlayIcon()
-                                            .padding(6)
+                                            .padding(tileOverlayPadding)
                                     }
                                 }
                             }
@@ -230,7 +237,7 @@ struct GroupReviewView: View {
                                 .buttonStyle(.plain)
                                 .accessibilityIdentifier("group-compare-\(item.id)")
                                 .accessibilityLabel("Compare this photo with the keeper")
-                                .padding(6)
+                                .padding(tileOverlayPadding)
                             }
                         }
                     }
