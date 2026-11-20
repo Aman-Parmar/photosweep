@@ -50,7 +50,7 @@ public enum GroupingEngine {
         let screenshots = photos.filter { $0.isScreenshot }
         if screenshots.count >= 2 {
             groups.append(makeGroup(
-                id: "screenshots",
+                id: GroupKind.screenshots.categoryID,
                 kind: .screenshots,
                 items: screenshots,
                 reason: "Screenshots, grouped for bulk review. Check each one: some may be receipts or confirmations worth keeping."
@@ -115,7 +115,7 @@ public enum GroupingEngine {
         }
         if blurry.count >= 2 {
             groups.append(makeGroup(
-                id: "blurry",
+                id: GroupKind.blurry.categoryID,
                 kind: .blurry,
                 items: blurry,
                 reason: "Blurry or very dark photos. Review each one: a blurry photo can still be the only copy of a moment."
