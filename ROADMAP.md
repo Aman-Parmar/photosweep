@@ -11,7 +11,7 @@ Agile model since 2026-11-18 (Aman: adopt agile, not waterfall). One-week sprint
 - StoreKit 2: Pro $29.99/yr (7-day trial) / $39.99 lifetime, no weekly plan, free 20 deletes
 - Cleanup report export (CSV, Pro)
 - Real 1024x1024 app icon; photosweep.singhsec.com support + privacy pages live
-- CI: Linux first, then macOS test + 8-shot screenshot lanes in parallel; docs-only skips CI; cancel in-flight
+- CI: Linux first, then macOS test + 12-shot screenshot lanes in parallel; docs-only skips CI; cancel in-flight
 
 ## Sprint 1 — 2026-11-18 to 2026-11-24 (in progress)
 
