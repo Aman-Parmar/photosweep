@@ -123,11 +123,11 @@ final class ScreenshotTests: XCTestCase {
         XCTAssertTrue(compressButton.waitForExistence(timeout: defaultWaitTimeout))
         compressButton.tap()
         XCTAssertTrue(app.staticTexts["Compress video"].waitForExistence(timeout: defaultWaitTimeout))
-        let startButton = app.buttons["compress-start-button"]
-        XCTAssertTrue(startButton.waitForExistence(timeout: defaultWaitTimeout))
-        startButton.tap()
-        XCTAssertTrue(app.staticTexts["compress-done-label"].waitForExistence(timeout: jobDoneWaitTimeout))
-        saveScreenshot(named: "09-video-compress")
+        runSheetToDone(
+            startButtonID: "compress-start-button",
+            doneLabelID: "compress-done-label",
+            screenshotName: "09-video-compress"
+        )
     }
 
     // MARK: - 10 Live Photo to still
@@ -148,11 +148,11 @@ final class ScreenshotTests: XCTestCase {
         XCTAssertTrue(convertButton.waitForExistence(timeout: defaultWaitTimeout))
         convertButton.tap()
         XCTAssertTrue(app.staticTexts["Convert to still"].waitForExistence(timeout: defaultWaitTimeout))
-        let startButton = app.buttons["livephoto-convert-start-button"]
-        XCTAssertTrue(startButton.waitForExistence(timeout: defaultWaitTimeout))
-        startButton.tap()
-        XCTAssertTrue(app.staticTexts["livephoto-convert-done-label"].waitForExistence(timeout: jobDoneWaitTimeout))
-        saveScreenshot(named: "10-live-photo-convert")
+        runSheetToDone(
+            startButtonID: "livephoto-convert-start-button",
+            doneLabelID: "livephoto-convert-done-label",
+            screenshotName: "10-live-photo-convert"
+        )
     }
 
     // MARK: - 11 Swipe deck
@@ -171,9 +171,7 @@ final class ScreenshotTests: XCTestCase {
         app.buttons["swipe-keep-button"].tap()
         // The label updates asynchronously after the tap: wait for
         // the new value instead of asserting on a possibly stale read.
-        let updated = NSPredicate(format: "label == %@", "1 of 4 reviewed")
-        expectation(for: updated, evaluatedWith: progress)
-        waitForExpectations(timeout: defaultWaitTimeout)
+        waitForProgressLabel("1 of 4 reviewed")
         XCTAssertTrue(app.staticTexts["swipe-card-kind"].waitForExistence(timeout: defaultWaitTimeout))
         saveScreenshot(named: "11-swipe-deck")
     }
@@ -197,10 +195,7 @@ final class ScreenshotTests: XCTestCase {
         // can open: wait for the progress value, so a mutation
         // failure fails here with the cause named instead of as a
         // missing commit button (CI run 44450339524).
-        let progress = app.staticTexts["swipe-progress-label"]
-        let complete = NSPredicate(format: "label == %@", "4 of 4 reviewed")
-        expectation(for: complete, evaluatedWith: progress)
-        waitForExpectations(timeout: defaultWaitTimeout)
+        waitForProgressLabel("4 of 4 reviewed")
         // Finishing the month opens the summary sheet: the commit
         // button inside it is the proof the sheet is up (a
         // NavigationStack identifier is not reliably queryable).
@@ -213,6 +208,29 @@ final class ScreenshotTests: XCTestCase {
     }
 
     // MARK: - Helper
+
+    /// Runs a sheet's simulated job to its done state: tap the start
+    /// button, wait for the done label, then capture the shot. Shared
+    /// by test09 and test10 so the run-to-done steps cannot drift
+    /// apart; the start button, done label, and shot name stay
+    /// per-sheet.
+    private func runSheetToDone(startButtonID: String, doneLabelID: String, screenshotName: String) {
+        let startButton = app.buttons[startButtonID]
+        XCTAssertTrue(startButton.waitForExistence(timeout: defaultWaitTimeout))
+        startButton.tap()
+        XCTAssertTrue(app.staticTexts[doneLabelID].waitForExistence(timeout: jobDoneWaitTimeout))
+        saveScreenshot(named: screenshotName)
+    }
+
+    /// Waits for the swipe progress label to show the expected value
+    /// ("1 of 4 reviewed", "4 of 4 reviewed"). Shared by test11 and
+    /// test12 so the predicate wait cannot drift apart.
+    private func waitForProgressLabel(_ expected: String) {
+        let progress = app.staticTexts["swipe-progress-label"]
+        let predicate = NSPredicate(format: "label == %@", expected)
+        expectation(for: predicate, evaluatedWith: progress)
+        waitForExpectations(timeout: defaultWaitTimeout)
+    }
 
     /// Opens the swipe deck for the sample's newest month (October
     /// 2025): Scan tab, swipe card, month row. Shared by test11 and
