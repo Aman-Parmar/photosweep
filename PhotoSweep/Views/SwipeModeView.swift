@@ -37,6 +37,14 @@ struct SwipeModeView: View {
     /// ROADMAP documents the 120pt threshold; keep the two in sync.
     private static let swipeThreshold: CGFloat = 120
 
+    /// Peek-card geometry: the next card reads as a card behind the top
+    /// one, not a rim of the same colour (QA shot 11, 2026-11-19: the
+    /// old 0.94 scale and 14pt offset left only a thin light-grey rim).
+    /// ROADMAP documents these values; keep the two in sync.
+    private static let peekScale: CGFloat = 0.90
+    private static let peekOffset: CGFloat = 24
+    private static let peekOpacity: Double = 0.8
+
     private enum ActiveSheet: Identifiable {
         case summary
         case paywall
@@ -207,9 +215,9 @@ struct SwipeModeView: View {
                 // 2026-11-19: the old 0.94 scale and 14pt offset left
                 // only a thin light-grey rim).
                 cardView(next, kindIdentifier: "swipe-next-card-kind", isPeek: true)
-                    .scaleEffect(0.90)
-                    .offset(y: 24)
-                    .opacity(0.8)
+                    .scaleEffect(Self.peekScale)
+                    .offset(y: Self.peekOffset)
+                    .opacity(Self.peekOpacity)
                     .disabled(true)
             }
             if let current = session.currentCard {
