@@ -61,7 +61,7 @@ struct ResultsView: View {
                     )
                 }
             }
-            .navigationTitle("Results")
+            .navigationTitle(AppCopy.results)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {

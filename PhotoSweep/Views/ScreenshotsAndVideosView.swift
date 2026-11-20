@@ -62,7 +62,7 @@ struct ScreenshotsView: View {
                     }
                 }
             }
-            .navigationTitle("Screenshots")
+            .navigationTitle(AppCopy.screenshots)
             .deleteConfirmAlert(
                 isPresented: $showingConfirm,
                 count: selected.count,

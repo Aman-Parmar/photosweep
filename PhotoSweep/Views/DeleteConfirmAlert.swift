@@ -92,6 +92,16 @@ enum AppCopy {
     /// stays identical in both places.
     static let livePhotos = "Live Photos"
 
+    /// Tab titles that double as their view's navigation title: the
+    /// Results tab, the Screenshots tab, and the Settings tab. One
+    /// source each so the tab label and the navigation title cannot
+    /// drift apart; the Scan tab ("Scan") and the Videos tab
+    /// ("Videos" vs "Large Videos") differ by design, so they do
+    /// not use these.
+    static let results = "Results"
+    static let screenshots = "Screenshots"
+    static let settings = "Settings"
+
     /// Video compression sheet title shown as the sheet's navigation
     /// title and as its start button label. One source so the wording
     /// stays identical in both places.

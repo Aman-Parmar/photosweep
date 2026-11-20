@@ -82,7 +82,7 @@ struct SettingsView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .navigationTitle("Settings")
+            .navigationTitle(AppCopy.settings)
             .paywallSheet(isPresented: $showingPaywall)
             .sheet(isPresented: $showingPrivacy) {
                 NavigationStack {
