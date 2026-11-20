@@ -63,6 +63,12 @@ struct LivePhotosView: View {
     }
 }
 
+/// The scroll targets for the convert sheet: the progress and done
+/// sections carry these ids, and `.sheetScrollOnPhaseChange` must pass
+/// the same strings, or the scroll-to-result silently finds nothing.
+private let livePhotoConvertProgressSectionId = "livephoto-convert-progress-section"
+private let livePhotoConvertDoneSectionId = "livephoto-convert-done-section"
+
 /// Live Photo conversion sheet: see the estimated still size, then
 /// convert. The sheet shows the estimate to everyone, free or Pro:
 /// it is the honest preview of what conversion would save. The action
@@ -122,7 +128,7 @@ struct LivePhotoConvertView: View {
                         progress: progress,
                         verb: "Converting",
                         accessibilityIdentifier: "livephoto-convert-progress",
-                        sectionIdentifier: "livephoto-convert-progress-section"
+                        sectionIdentifier: livePhotoConvertProgressSectionId
                     )
                 }
 
@@ -131,7 +137,7 @@ struct LivePhotoConvertView: View {
                         bytesSaved: outcome.bytesSaved,
                         detail: "Still photo saved (\(StorageEstimator.approx(outcome.stillBytes))). The Live Photo is in Recently Deleted.",
                         accessibilityIdentifier: "livephoto-convert-done-label",
-                        sectionIdentifier: "livephoto-convert-done-section"
+                        sectionIdentifier: livePhotoConvertDoneSectionId
                     )
                 }
 
@@ -160,8 +166,8 @@ struct LivePhotoConvertView: View {
             .sheetScrollOnPhaseChange(
                 proxy: proxy,
                 phase: phase,
-                runningSectionId: "livephoto-convert-progress-section",
-                doneSectionId: "livephoto-convert-done-section"
+                runningSectionId: livePhotoConvertProgressSectionId,
+                doneSectionId: livePhotoConvertDoneSectionId
             )
             .paywallSheet(isPresented: $showingPaywall)
             } // ScrollViewReader

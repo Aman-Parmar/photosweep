@@ -1,5 +1,11 @@
 import SwiftUI
 
+/// The scroll targets for the compress sheet: the progress and done
+/// sections carry these ids, and `.sheetScrollOnPhaseChange` must pass
+/// the same strings, or the scroll-to-result silently finds nothing.
+private let compressProgressSectionId = "compress-progress-section"
+private let compressDoneSectionId = "compress-done-section"
+
 /// Video compression sheet: pick one of three HEVC presets, see the
 /// estimated size before and after, then compress.
 ///
@@ -89,7 +95,7 @@ struct VideoCompressView: View {
                         progress: progress,
                         verb: "Compressing",
                         accessibilityIdentifier: "compress-progress",
-                        sectionIdentifier: "compress-progress-section"
+                        sectionIdentifier: compressProgressSectionId
                     )
                 }
 
@@ -98,7 +104,7 @@ struct VideoCompressView: View {
                         bytesSaved: outcome.bytesSaved,
                         detail: "Compressed to \(StorageEstimator.approx(outcome.compressedBytes)). The original is in Recently Deleted.",
                         accessibilityIdentifier: "compress-done-label",
-                        sectionIdentifier: "compress-done-section"
+                        sectionIdentifier: compressDoneSectionId
                     )
                 }
 
@@ -127,8 +133,8 @@ struct VideoCompressView: View {
             .sheetScrollOnPhaseChange(
                 proxy: proxy,
                 phase: phase,
-                runningSectionId: "compress-progress-section",
-                doneSectionId: "compress-done-section"
+                runningSectionId: compressProgressSectionId,
+                doneSectionId: compressDoneSectionId
             )
             .paywallSheet(isPresented: $showingPaywall)
             } // ScrollViewReader
