@@ -241,7 +241,7 @@ jobs:
           # The screenshot tests launch the app in --screenshot-mode
           # (synthetic generated sample images, no real photos, no
           # network) on the iPhone 17 Pro Max simulator (1320x2868,
-          # the primary App Store size) and write nine PNGs to
+          # the primary App Store size) and write twelve PNGs to
           # /tmp/photosweep-screenshots. A clean status bar (9:41, full
           # signal, full battery) is set before the lane runs.
           # Push to main only: screenshots cost macOS minutes, and pull
@@ -256,7 +256,7 @@ jobs:
             -only-testing:PhotoSweepUITests/ScreenshotTests \
             -resultBundlePath build/screenshots-results
           ls -la /tmp/photosweep-screenshots
-          test "$(ls /tmp/photosweep-screenshots/*.png | wc -l)" -ge 9
+          test "$(ls /tmp/photosweep-screenshots/*.png | wc -l)" -ge 12
 
       - name: Upload App Store screenshots
         uses: actions/upload-artifact@v5
