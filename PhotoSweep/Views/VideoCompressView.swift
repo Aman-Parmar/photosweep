@@ -43,8 +43,7 @@ struct VideoCompressView: View {
                     )
                     if !canCompress {
                         Text("Video compression is a Pro feature. Pick a preset to see what it would save, then upgrade to compress.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .secondaryCaption()
                     }
                 }
 
@@ -61,8 +60,7 @@ struct VideoCompressView: View {
                                         .font(.headline)
                                         .foregroundStyle(Color.primary)
                                     Text(candidate.detail)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .secondaryCaption()
                                 }
                                 Spacer()
                                 VStack(alignment: .trailing, spacing: 2) {
@@ -72,8 +70,7 @@ struct VideoCompressView: View {
                                     Text(candidateEstimate.bytesSaved > 0
                                          ? "Saves \(StorageEstimator.approx(candidateEstimate.bytesSaved)) (\(candidateEstimate.savingsPercent)% smaller, estimate)"
                                          : "About the same size")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .secondaryCaption()
                                 }
                                 SelectionCircle(isSelected: preset == candidate)
                             }
@@ -84,8 +81,7 @@ struct VideoCompressView: View {
 
                 Section {
                     Text("The compressed copy is saved to Photos. The original moves to Recently Deleted, where you can recover it for 30 days. Sizes are estimates: the real saving depends on the clip.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .secondaryCaption()
                 }
 
                 if phase == .running {

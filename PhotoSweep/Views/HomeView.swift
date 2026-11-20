@@ -78,8 +78,7 @@ struct HomeView: View {
                     .multilineTextAlignment(.center)
             }
             Text("Scanning reads your photos on-device. Nothing leaves this phone.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .secondaryCaption()
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
@@ -119,8 +118,7 @@ struct HomeView: View {
                         Text(AppCopy.swipeToReview)
                             .font(.headline)
                         Text(swipeSubtitle(for: newest))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .secondaryCaption()
                     }
                     Spacer()
                     Image(systemName: "chevron.right")
@@ -148,22 +146,19 @@ struct HomeView: View {
             HStack {
                 VStack(alignment: .leading) {
                     Text("Could free up")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .secondaryCaption()
                     Text(StorageEstimator.approx(result.totalReclaimableBytes))
                         .font(.title.bold())
                         .accessibilityIdentifier("reclaimable-total")
                     Text("estimate: \(result.totalDeletableCount) photos across \(result.groups.count) groups")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .secondaryCaption()
                 }
                 Spacer()
                 VStack(alignment: .trailing) {
                     Text("\(result.totalScanned)")
                         .font(.title3.bold())
                     Text("photos scanned")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .secondaryCaption()
                 }
             }
             scanButton
@@ -201,8 +196,7 @@ struct HomeView: View {
             "Scanned \(result.totalScanned) of \(result.totalLibraryCount) photos with limited photo access. Grant full access in Settings to scan the rest.",
             systemImage: "exclamationmark.triangle"
         )
-        .font(.caption)
-        .foregroundStyle(.secondary)
+        .secondaryCaption()
         .padding()
         .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
     }
@@ -329,8 +323,7 @@ private struct HomeRow: View {
                 Text(title)
                     .font(.headline)
                 Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .secondaryCaption()
             }
             Spacer()
             if frees > 0 {

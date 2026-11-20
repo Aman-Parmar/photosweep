@@ -173,6 +173,15 @@ extension View {
             .foregroundStyle(.white)
     }
 
+    /// Secondary caption style shared by detail and helper text across
+    /// home, results, settings, paywall, lists, swipe mode, and the
+    /// compress/convert sheets: caption font in the secondary color.
+    /// One source so the muted-caption look cannot drift apart.
+    func secondaryCaption() -> some View {
+        font(.caption)
+            .foregroundStyle(.secondary)
+    }
+
     /// Dark-circle overlay icon shared by the delete (trash) and compare
     /// icons on group-review photo tiles: caption white glyph on a
     /// translucent black circle. One source so the tile icons cannot

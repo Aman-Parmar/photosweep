@@ -25,8 +25,7 @@ struct SettingsView: View {
                     }
                     if !store.isPro {
                         Text(AppCopy.freeDeletesLeft(remaining: appState.remainingFreeDeletes(isPro: false)))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .secondaryCaption()
                         Button(AppCopy.getPro) { showingPaywall = true }
                             .accessibilityIdentifier("settings-get-pro-button")
                     }
@@ -36,27 +35,23 @@ struct SettingsView: View {
                     let total = CleanupHistory.freedThisMonth(events: cleanups.map(\.event))
                     if total.photos == 0 && total.videos == 0 && total.livePhotos == 0 {
                         Text("Nothing freed yet this month.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .secondaryCaption()
                     } else {
                         Text(freedSummary(total: total))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .secondaryCaption()
                     }
                 }
                 Section("Scan history") {
                     if history.isEmpty {
                         Text("No scans yet. Scan your photos from the Scan tab.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .secondaryCaption()
                     } else {
                         ForEach(history) { record in
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(record.scannedAt, style: .date)
                                     .font(.headline)
                                 Text("\(record.totalScanned) scanned · \(record.totalDeletableCount) photos in \(record.groupsCount) groups · \(StorageEstimator.approx(record.totalReclaimableBytes)) reclaimable (estimate)")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .secondaryCaption()
                             }
                         }
                         Button("Clear scan history", role: .destructive) {
@@ -70,16 +65,13 @@ struct SettingsView: View {
                 Section("Privacy") {
                     Button(AppCopy.privacyPolicy) { showingPrivacy = true }
                     Text("On-device only. No photos leave this phone, no account, no analytics, no ads. Deleted photos go to Recently Deleted for 30 days.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .secondaryCaption()
                 }
                 Section("About") {
                     Text("PhotoSweep 1.0: Free up iPhone storage, honestly. No weekly plan, no auto-delete, no cloud.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .secondaryCaption()
                     Text("Apple Photos already finds exact duplicates free. PhotoSweep finds what it doesn't: similar and burst shots, blurry photos, screenshots, large videos, and Live Photos to convert to stills.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .secondaryCaption()
                 }
             }
             .navigationTitle(AppCopy.settings)

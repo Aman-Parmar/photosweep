@@ -303,8 +303,7 @@ struct SwipeModeView: View {
         Group {
             if session.allDecisions.isEmpty {
                 Text("Swipe right to keep, left to delete. Nothing is deleted until you confirm the batch.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .secondaryCaption()
                     .multilineTextAlignment(.center)
             } else {
                 Button {

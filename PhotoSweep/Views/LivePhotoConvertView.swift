@@ -31,8 +31,7 @@ struct LivePhotosView: View {
                     List {
                         Section {
                             Text("\(livePhotos.count) Live Photos. Converting one keeps the still photo and drops the video clip, saving about half its size (estimate). The still is saved first, then the original moves to Recently Deleted, where you can recover it for 30 days.")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .secondaryCaption()
                         }
                         ForEach(livePhotos) { item in
                             let estimate = LivePhotoConversion.estimate(originalBytes: item.fileSize)
@@ -42,8 +41,7 @@ struct LivePhotosView: View {
                                     Text("Live Photo")
                                         .font(.headline)
                                     Text("\(StorageEstimator.formatted(item.fileSize)) · saves \(StorageEstimator.approx(estimate.bytesSaved)) (estimate)")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .secondaryCaption()
                                 }
                                 Spacer()
                                 Button("Convert") {
@@ -110,15 +108,13 @@ struct LivePhotoConvertView: View {
                     )
                     if !canConvert {
                         Text("You have used your \(AppState.freeDeleteLimit) free deletes. Converting a Live Photo moves the original to Recently Deleted, so it costs one delete. Upgrade to Pro for unlimited deletes.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .secondaryCaption()
                     }
                 }
 
                 Section {
                     Text("Saves \(StorageEstimator.approx(estimate.bytesSaved)) (about \(estimate.savingsPercent)% smaller, estimate). The still photo is saved as a new photo first, keeping its date. Then the Live Photo moves to Recently Deleted, where you can recover it for 30 days.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .secondaryCaption()
                 }
 
                 if phase == .running {

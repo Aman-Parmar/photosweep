@@ -44,8 +44,7 @@ struct PaywallView: View {
                     .accessibilityIdentifier("paywall-prices")
                     if store.products.isEmpty {
                         Text(store.isLoading ? "Loading prices…" : "Prices will load when the App Store is reachable. The prices above are the App Store prices.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .secondaryCaption()
                     } else {
                         ForEach(store.products) { product in
                             Button {
@@ -62,8 +61,7 @@ struct PaywallView: View {
                                         Text(product.displayName)
                                             .font(.headline)
                                         Text(product.description)
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                            .secondaryCaption()
                                     }
                                     Spacer()
                                     Text(product.displayPrice)
@@ -83,8 +81,7 @@ struct PaywallView: View {
                     RestorePurchasesButton()
                     .buttonStyle(.bordered)
                     Text("Payment is handled by Apple. Cancel anytime in Settings. The trial ends automatically if you cancel before day 7. Deleting photos is always your choice; Pro never auto-deletes anything.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .secondaryCaption()
                 }
                 .padding()
             }

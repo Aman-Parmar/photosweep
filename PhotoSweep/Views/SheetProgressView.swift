@@ -61,8 +61,7 @@ struct SheetProgressView: View {
             ProgressView(value: progress)
                 .accessibilityIdentifier(accessibilityIdentifier)
             Text("\(verb)... \(Int((progress * 100).rounded()))%")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .secondaryCaption()
         }
     }
 }
@@ -108,8 +107,7 @@ struct SheetDoneSection: View {
                     .font(.headline)
                     .accessibilityIdentifier(accessibilityIdentifier)
                 Text(detail)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .secondaryCaption()
             }
         }
         .id(sectionIdentifier)
@@ -127,8 +125,7 @@ struct SheetFailedSection: View {
     var body: some View {
         Section {
             Text(errorMessage ?? fallback)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .secondaryCaption()
         }
     }
 }

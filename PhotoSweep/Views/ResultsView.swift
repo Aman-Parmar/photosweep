@@ -116,8 +116,7 @@ struct GroupRow: View {
                 Text(group.countLabel)
                     .font(.headline)
                 Text(group.matchReason)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .secondaryCaption()
                     .lineLimit(2)
             }
             Spacer()
@@ -194,8 +193,7 @@ struct GroupReviewView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 Text("Tap a photo to keep it instead. \(deletable.count) of \(group.items.count) will be deleted.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .secondaryCaption()
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
                     ForEach(group.items) { item in
                         ZStack(alignment: .topLeading) {
@@ -262,8 +260,7 @@ struct GroupReviewView: View {
                 .accessibilityIdentifier("group-delete-button")
                 if !store.isPro {
                     Text("\(AppCopy.freeDeletesLeft(remaining: appState.remainingFreeDeletes(isPro: false))). Pro deletes unlimited.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .secondaryCaption()
                 }
                 if deleteFailed {
                     Text(AppCopy.deleteFailed)
@@ -376,8 +373,7 @@ private struct CompareColumn: View {
             Text(StorageEstimator.formatted(item.fileSize))
                 .font(.subheadline)
             Text("\(item.width) x \(item.height) px")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .secondaryCaption()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
