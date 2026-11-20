@@ -116,34 +116,33 @@ final class AppState: ObservableObject {
         saveSwipeSnapshot()
     }
 
-    /// Records a keep/delete decision for the current card.
-    /// Explicit local copy, not `swipeSession?.decide(...)`: the
+    /// Applies one mutation to the active swipe session and persists
+    /// it. Explicit local copy, not `swipeSession?.decide(...)`: the
     /// mutation must land through the @Published setter, and an
     /// optional-chained mutating call on a struct property is too
     /// easy to misread as a no-op when it silently does not write
     /// back (CI run 44450339524: four Delete taps, no summary sheet,
     /// no commit — the decisions never registered).
-    func swipeDecide(_ choice: SwipeDecision.Choice) {
+    private func mutateSwipeSession(_ mutate: (inout SwipeSession) -> Void) {
         guard var session = swipeSession else { return }
-        session.decide(choice)
+        mutate(&session)
         swipeSession = session
         saveSwipeSnapshot()
+    }
+
+    /// Records a keep/delete decision for the current card.
+    func swipeDecide(_ choice: SwipeDecision.Choice) {
+        mutateSwipeSession { $0.decide(choice) }
     }
 
     /// Moves the current card to the end of this month's queue.
     func swipeSkip() {
-        guard var session = swipeSession else { return }
-        session.skip()
-        swipeSession = session
-        saveSwipeSnapshot()
+        mutateSwipeSession { $0.skip() }
     }
 
     /// Pops the last decision and puts that card back on top.
     func swipeUndo() {
-        guard var session = swipeSession else { return }
-        session.undo()
-        swipeSession = session
-        saveSwipeSnapshot()
+        mutateSwipeSession { $0.undo() }
     }
 
     /// Discards the pending decision for one card and re-queues it.
@@ -151,10 +150,7 @@ final class AppState: ObservableObject {
     /// have changed the keeper there: the decision was made for a
     /// different keeper, so it must not stand.
     func discardSwipeDecision(forCardID cardID: String) {
-        guard var session = swipeSession else { return }
-        session.discardDecision(forCardID: cardID)
-        swipeSession = session
-        saveSwipeSnapshot()
+        mutateSwipeSession { $0.discardDecision(forCardID: cardID) }
     }
 
     /// Rebuilds the active session from the current scan result,
