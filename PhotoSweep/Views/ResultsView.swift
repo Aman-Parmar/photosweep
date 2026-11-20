@@ -202,10 +202,7 @@ struct GroupReviewView: View {
                                             .padding(6)
                                     } else {
                                         Image(systemName: "trash")
-                                            .font(.caption)
-                                            .padding(6)
-                                            .background(Color.black.opacity(0.55), in: Circle())
-                                            .foregroundStyle(.white)
+                                            .thumbnailOverlayIcon()
                                             .padding(6)
                                     }
                                 }
@@ -227,10 +224,7 @@ struct GroupReviewView: View {
                                     compareItem = item
                                 } label: {
                                     Image(systemName: "rectangle.on.rectangle")
-                                        .font(.caption)
-                                        .padding(6)
-                                        .background(Color.black.opacity(0.55), in: Circle())
-                                        .foregroundStyle(.white)
+                                        .thumbnailOverlayIcon()
                                 }
                                 .buttonStyle(.plain)
                                 .accessibilityIdentifier("group-compare-\(item.id)")

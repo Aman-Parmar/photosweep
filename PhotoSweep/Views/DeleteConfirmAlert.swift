@@ -128,6 +128,18 @@ extension View {
             .foregroundStyle(.white)
     }
 
+    /// Dark-circle overlay icon shared by the delete (trash) and compare
+    /// icons on group-review photo tiles: caption white glyph on a
+    /// translucent black circle. One source so the tile icons cannot
+    /// drift apart; each icon keeps its own symbol, action, and outer
+    /// padding for its tile position.
+    func thumbnailOverlayIcon() -> some View {
+        font(.caption)
+            .padding(6)
+            .background(Color.black.opacity(0.55), in: Circle())
+            .foregroundStyle(.white)
+    }
+
     /// Primary action button style shared by the scan, group-delete,
     /// compare-keep, bulk-delete, compress, convert, and swipe-commit
     /// buttons: prominent bordered style at large control size. One
