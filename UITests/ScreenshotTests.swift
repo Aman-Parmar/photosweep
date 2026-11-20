@@ -14,11 +14,14 @@ final class ScreenshotTests: XCTestCase {
     private var app: XCUIApplication!
 
     /// Default wait for a UI element to appear in the screenshot lane.
-    /// One source so the 30 waits cannot drift apart; the three
-    /// 15-second waits on the compress/convert done labels stay longer
-    /// on purpose, because those labels appear only after a simulated
-    /// job finishes.
+    /// One source so the 30 waits cannot drift apart.
     private let defaultWaitTimeout: TimeInterval = 10
+
+    /// Longer wait for the compress/convert done labels, which appear
+    /// only after a simulated job finishes. The 15-second row wait in
+    /// openGroup stays a literal: it is a slow-simulator allowance,
+    /// not a job-done wait.
+    private let jobDoneWaitTimeout: TimeInterval = 15
 
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -123,7 +126,7 @@ final class ScreenshotTests: XCTestCase {
         let startButton = app.buttons["compress-start-button"]
         XCTAssertTrue(startButton.waitForExistence(timeout: defaultWaitTimeout))
         startButton.tap()
-        XCTAssertTrue(app.staticTexts["compress-done-label"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.staticTexts["compress-done-label"].waitForExistence(timeout: jobDoneWaitTimeout))
         saveScreenshot(named: "09-video-compress")
     }
 
@@ -148,7 +151,7 @@ final class ScreenshotTests: XCTestCase {
         let startButton = app.buttons["livephoto-convert-start-button"]
         XCTAssertTrue(startButton.waitForExistence(timeout: defaultWaitTimeout))
         startButton.tap()
-        XCTAssertTrue(app.staticTexts["livephoto-convert-done-label"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.staticTexts["livephoto-convert-done-label"].waitForExistence(timeout: jobDoneWaitTimeout))
         saveScreenshot(named: "10-live-photo-convert")
     }
 
