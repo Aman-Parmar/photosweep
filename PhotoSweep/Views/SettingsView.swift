@@ -18,7 +18,7 @@ struct SettingsView: View {
             List {
                 Section {
                     HStack {
-                        Text("PhotoSweep Pro")
+                        Text(AppCopy.proName)
                         Spacer()
                         Text(store.isPro ? "Active" : "Free")
                             .foregroundStyle(store.isPro ? .green : .secondary)
@@ -68,7 +68,7 @@ struct SettingsView: View {
                     }
                 }
                 Section("Privacy") {
-                    Button("Privacy Policy") { showingPrivacy = true }
+                    Button(AppCopy.privacyPolicy) { showingPrivacy = true }
                     Text("On-device only. No photos leave this phone, no account, no analytics, no ads. Deleted photos go to Recently Deleted for 30 days.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -91,7 +91,7 @@ struct SettingsView: View {
                             .font(.body)
                             .padding()
                     }
-                    .navigationTitle("Privacy Policy")
+                    .navigationTitle(AppCopy.privacyPolicy)
                     .navigationBarTitleDisplayMode(.inline)
                     .cancellationButton(label: AppCopy.close) { showingPrivacy = false }
                 }

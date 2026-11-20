@@ -14,7 +14,7 @@ struct PaywallView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("PhotoSweep Pro")
+                    Text(AppCopy.proName)
                         .font(.largeTitle.bold())
                         .accessibilityIdentifier("paywall-title")
                     Text("Free scans and reviews forever. Pro is for people with a lot to clean.")

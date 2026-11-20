@@ -111,7 +111,7 @@ struct HomeView: View {
                 HStack {
                     HomeRowIcon(systemName: "rectangle.stack")
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Swipe to review")
+                        Text(AppCopy.swipeToReview)
                             .font(.headline)
                         Text(swipeSubtitle(for: newest))
                             .font(.caption)

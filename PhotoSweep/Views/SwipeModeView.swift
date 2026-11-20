@@ -126,7 +126,7 @@ struct SwipeModeView: View {
                     .accessibilityIdentifier("swipe-month-\(month.year)-\(month.month)")
                 }
             }
-            .navigationTitle("Swipe to review")
+            .navigationTitle(AppCopy.swipeToReview)
             .accessibilityIdentifier("swipe-month-picker")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
