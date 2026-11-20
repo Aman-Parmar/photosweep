@@ -59,7 +59,6 @@ concurrency:
 env:
   SCHEME: PhotoSweep
   BUNDLE_ID: com.singhsec.photosweep
-  XCODE_VERSION: "26.0"
 
 jobs:
   # ------------------------------------------------------------------
