@@ -353,7 +353,7 @@ struct SwipeModeView: View {
     /// empty, so the month needs its summary to proceed.
     private func monthCompletePrompt(_ session: SwipeSession) -> some View {
         VStack(spacing: 16) {
-            Image(systemName: "checkmark.circle")
+            Image(systemName: AppIcons.checkmarkCircle)
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
             Text("\(monthLabel(session.month)) complete: \(session.decidedCount) reviewed.")

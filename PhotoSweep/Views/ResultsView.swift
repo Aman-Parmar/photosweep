@@ -56,7 +56,7 @@ struct ResultsView: View {
                 } else {
                     ContentUnavailableView(
                         "No groups yet",
-                        systemImage: "rectangle.stack",
+                        systemImage: AppIcons.resultsStack,
                         description: Text("Scan your photos first. Groups of duplicates, similar shots, blurry photos and screenshots will appear here for review.")
                     )
                 }
@@ -67,7 +67,7 @@ struct ResultsView: View {
                     Button {
                         showingSwipeMode = true
                     } label: {
-                        Label("Swipe", systemImage: "rectangle.stack")
+                        Label("Swipe", systemImage: AppIcons.resultsStack)
                     }
                     .accessibilityIdentifier("results-swipe-button")
                     .disabled(appState.swipeMonths.isEmpty)
@@ -138,7 +138,7 @@ struct CategoryGroupsView: View {
             if groups.isEmpty {
                 ContentUnavailableView(
                     "Nothing here",
-                    systemImage: "checkmark.circle",
+                    systemImage: AppIcons.checkmarkCircle,
                     description: Text("No \(kind.sectionTitle.lowercased()) found in the last scan.")
                 )
             } else {
@@ -241,7 +241,7 @@ struct GroupReviewView: View {
                     }
                 }
                 if deleted {
-                    Label("Moved to Recently Deleted. You can undo in Photos for 30 days.", systemImage: "checkmark.circle")
+                    Label("Moved to Recently Deleted. You can undo in Photos for 30 days.", systemImage: AppIcons.checkmarkCircle)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }

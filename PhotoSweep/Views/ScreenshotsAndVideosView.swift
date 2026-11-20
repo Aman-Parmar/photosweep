@@ -20,7 +20,7 @@ struct ScreenshotsView: View {
                 if screenshots.isEmpty {
                     ContentUnavailableView(
                         "No screenshots",
-                        systemImage: "camera.viewfinder",
+                        systemImage: AppIcons.screenshotsTab,
                         description: Text("Scan your photos first. Screenshots will appear here for bulk review. Check each one: some may be receipts or confirmations worth keeping.")
                     )
                 } else {

@@ -34,11 +34,11 @@ struct ContentView: View {
                 }
             ResultsView()
                 .tabItem {
-                    Label(AppCopy.results, systemImage: "rectangle.stack")
+                    Label(AppCopy.results, systemImage: AppIcons.resultsStack)
                 }
             ScreenshotsView()
                 .tabItem {
-                    Label(AppCopy.screenshots, systemImage: "camera.viewfinder")
+                    Label(AppCopy.screenshots, systemImage: AppIcons.screenshotsTab)
                 }
             LargeVideosView()
                 .tabItem {

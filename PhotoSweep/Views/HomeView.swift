@@ -113,7 +113,7 @@ struct HomeView: View {
                 showingSwipeMode = true
             } label: {
                 HStack {
-                    HomeRowIcon(systemName: "rectangle.stack")
+                    HomeRowIcon(systemName: AppIcons.resultsStack)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(AppCopy.swipeToReview)
                             .font(.headline)
@@ -265,7 +265,7 @@ struct CategoryCardRow: View {
         case .exactDuplicate: return "doc.on.doc"
         case .similar: return "square.stack.3d.up"
         case .blurry: return "eye.slash"
-        case .screenshots: return "camera.viewfinder"
+        case .screenshots: return AppIcons.screenshotsTab
         case .largeVideos: return "video"
         }
     }
