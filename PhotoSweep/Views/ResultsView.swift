@@ -214,7 +214,7 @@ struct GroupReviewView: View {
                             }
                             .buttonStyle(.plain)
                             .accessibilityIdentifier("group-item-\(item.id)")
-                            .accessibilityLabel(item.id == keeperID ? "Keep this photo" : "Keep this photo instead")
+                            .accessibilityLabel(item.id == keeperID ? "Keep this photo" : AppCopy.keepThisPhotoInstead)
                         }
                         // Compare: side by side with the keeper, so the
                         // user can judge whether the two really are the
@@ -324,7 +324,7 @@ struct CompareView: View {
                         CompareColumn(title: "Keeper", item: keeper, isKeeper: true)
                         CompareColumn(title: "This photo", item: item, isKeeper: false)
                     }
-                    Button("Keep this photo instead") {
+                    Button(AppCopy.keepThisPhotoInstead) {
                         onKeepItem()
                     }
                     .primaryActionButton()

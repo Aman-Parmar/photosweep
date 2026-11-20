@@ -127,6 +127,13 @@ enum AppCopy {
     /// its thumbnail size.
     static let keep = "KEEP"
 
+    /// "Keep this photo instead" label shown as the group-review tile's
+    /// VoiceOver label for a non-keeper photo and as the compare
+    /// sheet's keep button. One source so the wording stays identical
+    /// in both places; each keeps its own action and accessibility
+    /// identifier.
+    static let keepThisPhotoInstead = "Keep this photo instead"
+
     /// Delete-confirm message for the bulk-review lists (screenshots,
     /// large videos). One source so the wording stays identical in both
     /// places; the caller supplies the plural item noun.
