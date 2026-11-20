@@ -162,13 +162,7 @@ final class ScreenshotTests: XCTestCase {
     /// then one Keep tap advances the progress and the next card.
     /// Listing shot 11; it proves the swipe-mode deck renders.
     func test11SwipeDeck() {
-        app.tabBars.buttons["Scan"].tap()
-        let card = app.buttons["home-swipe-card"]
-        XCTAssertTrue(card.waitForExistence(timeout: defaultWaitTimeout))
-        card.tap()
-        let monthRow = app.buttons["swipe-month-2025-10"]
-        XCTAssertTrue(monthRow.waitForExistence(timeout: defaultWaitTimeout))
-        monthRow.tap()
+        openSwipeMonth()
         XCTAssertTrue(app.staticTexts["swipe-month-label"].waitForExistence(timeout: defaultWaitTimeout))
         XCTAssertTrue(app.staticTexts["swipe-card-kind"].waitForExistence(timeout: defaultWaitTimeout))
         let progress = app.staticTexts["swipe-progress-label"]
@@ -192,13 +186,7 @@ final class ScreenshotTests: XCTestCase {
     /// month-done state. Listing shot 12; it proves the swipe-mode
     /// commit flow renders end to end.
     func test12SwipeMonthComplete() {
-        app.tabBars.buttons["Scan"].tap()
-        let card = app.buttons["home-swipe-card"]
-        XCTAssertTrue(card.waitForExistence(timeout: defaultWaitTimeout))
-        card.tap()
-        let monthRow = app.buttons["swipe-month-2025-10"]
-        XCTAssertTrue(monthRow.waitForExistence(timeout: defaultWaitTimeout))
-        monthRow.tap()
+        openSwipeMonth()
         XCTAssertTrue(app.staticTexts["swipe-progress-label"].waitForExistence(timeout: defaultWaitTimeout))
         for _ in 0..<4 {
             let deleteButton = app.buttons["swipe-delete-button"]
@@ -225,6 +213,21 @@ final class ScreenshotTests: XCTestCase {
     }
 
     // MARK: - Helper
+
+    /// Opens the swipe deck for the sample's newest month (October
+    /// 2025): Scan tab, swipe card, month row. Shared by test11 and
+    /// test12 so the entry steps cannot drift apart; the month id is
+    /// the sample data's newest month, so it changes only if the
+    /// sample data does.
+    private func openSwipeMonth() {
+        app.tabBars.buttons["Scan"].tap()
+        let card = app.buttons["home-swipe-card"]
+        XCTAssertTrue(card.waitForExistence(timeout: defaultWaitTimeout))
+        card.tap()
+        let monthRow = app.buttons["swipe-month-2025-10"]
+        XCTAssertTrue(monthRow.waitForExistence(timeout: defaultWaitTimeout))
+        monthRow.tap()
+    }
 
     /// Opens a group from the Results list and waits for the review
     /// screen's delete button. The row tap is retried once: on the
