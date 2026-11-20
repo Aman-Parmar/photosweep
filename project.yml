@@ -88,7 +88,7 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
   # App Store screenshots. A UI test target, not a unit test target: it
   # launches the real app in screenshot mode (bundled synthetic sample
-  # data, no real photos, no network) and captures the seven screens.
+  # data, no real photos, no network) and captures the twelve screens.
   # Runs only in the screenshots lane, never in the everyday test lane,
   # because simulator screenshots cost macOS minutes.
   PhotoSweepUITests:
