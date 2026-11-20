@@ -261,9 +261,9 @@ struct CategoryCardRow: View {
 
     private var icon: String {
         switch kind {
-        case .exactDuplicate: return "doc.on.doc"
-        case .similar: return "square.stack.3d.up"
-        case .blurry: return "eye.slash"
+        case .exactDuplicate: return AppIcons.exactDuplicate
+        case .similar: return AppIcons.similar
+        case .blurry: return AppIcons.blurry
         case .screenshots: return AppIcons.screenshotsTab
         case .largeVideos: return AppIcons.videos
         }

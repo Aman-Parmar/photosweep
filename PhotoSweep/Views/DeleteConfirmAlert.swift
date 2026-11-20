@@ -315,6 +315,20 @@ enum AppIcons {
     /// Filled selection checkmark: the Screenshots selection circle
     /// and the swipe month-done state.
     static let checkmarkCircleFill = "checkmark.circle.fill"
+
+    /// Hollow selection circle: the unselected state of
+    /// SelectionCircle, pairing with checkmarkCircleFill so the
+    /// two states of one mark stay together.
+    static let circle = "circle"
+
+    /// Exact-duplicates category row icon on Home.
+    static let exactDuplicate = "doc.on.doc"
+
+    /// Similar-photos category row icon on Home.
+    static let similar = "square.stack.3d.up"
+
+    /// Blurry-or-dark category row icon on Home.
+    static let blurry = "eye.slash"
 }
 
 /// Shared surface colours for the views that must stay in sync: the

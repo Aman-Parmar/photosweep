@@ -181,7 +181,7 @@ struct SelectionCircle: View {
     let isSelected: Bool
 
     var body: some View {
-        Image(systemName: isSelected ? AppIcons.checkmarkCircleFill : "circle")
+        Image(systemName: isSelected ? AppIcons.checkmarkCircleFill : AppIcons.circle)
             .foregroundStyle(isSelected ? Color.accentColor : Color.secondary)
     }
 }
