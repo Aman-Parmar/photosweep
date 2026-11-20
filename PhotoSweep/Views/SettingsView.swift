@@ -27,7 +27,7 @@ struct SettingsView: View {
                         Text(AppCopy.freeDeletesLeft(remaining: appState.remainingFreeDeletes(isPro: false)))
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                        Button("Get Pro") { showingPaywall = true }
+                        Button(AppCopy.getPro) { showingPaywall = true }
                             .accessibilityIdentifier("settings-get-pro-button")
                     }
                     RestorePurchasesButton()

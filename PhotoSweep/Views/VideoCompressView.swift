@@ -113,7 +113,7 @@ struct VideoCompressView: View {
                     )
                 }
             }
-            .navigationTitle("Compress video")
+            .navigationTitle(AppCopy.compressVideo)
             .navigationBarTitleDisplayMode(.inline)
             .cancellationButton(label: AppCopy.cancel) { dismiss() }
             .halfHeightSheet()
@@ -122,7 +122,7 @@ struct VideoCompressView: View {
                     isDone: phase == .done,
                     isRunning: phase == .running,
                     hasFailed: phase == .failed,
-                    startLabel: "Compress video",
+                    startLabel: AppCopy.compressVideo,
                     startAccessibilityIdentifier: "compress-start-button",
                     doneAccessibilityIdentifier: "compress-done-button",
                     onStart: startCompression

@@ -36,7 +36,7 @@ struct HomeView: View {
             .navigationTitle("PhotoSweep")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(store.isPro ? "Pro ✓" : "Get Pro") {
+                    Button(store.isPro ? "Pro ✓" : AppCopy.getPro) {
                         showingPaywall = true
                     }
                     .accessibilityIdentifier("home-get-pro-button")
@@ -297,7 +297,7 @@ struct LivePhotosCardRow: View {
     var body: some View {
         HomeRow(
             icon: "livephoto",
-            title: "Live Photos",
+            title: AppCopy.livePhotos,
             subtitle: count == 0 ? "No Live Photos found" : "\(count) Live Photos to convert",
             frees: frees
         )

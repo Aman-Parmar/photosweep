@@ -57,7 +57,7 @@ struct LivePhotosView: View {
                     }
                 }
             }
-            .navigationTitle("Live Photos")
+            .navigationTitle(AppCopy.livePhotos)
             .sheet(item: $convertItem) { item in
                 LivePhotoConvertView(item: item)
             }
@@ -146,7 +146,7 @@ struct LivePhotoConvertView: View {
                     )
                 }
             }
-            .navigationTitle("Convert to still")
+            .navigationTitle(AppCopy.convertToStill)
             .navigationBarTitleDisplayMode(.inline)
             .cancellationButton(label: AppCopy.cancel) { dismiss() }
             .halfHeightSheet()
@@ -155,7 +155,7 @@ struct LivePhotoConvertView: View {
                     isDone: phase == .done,
                     isRunning: phase == .running,
                     hasFailed: phase == .failed,
-                    startLabel: "Convert to still",
+                    startLabel: AppCopy.convertToStill,
                     startAccessibilityIdentifier: "livephoto-convert-start-button",
                     doneAccessibilityIdentifier: "livephoto-convert-done-button",
                     onStart: startConversion

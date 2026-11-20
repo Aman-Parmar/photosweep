@@ -81,6 +81,27 @@ enum AppCopy {
     /// identical in both places.
     static let privacyPolicy = "Privacy Policy"
 
+    /// Upgrade button label shown in the Home toolbar and in the
+    /// Settings Pro row. One source so the wording stays identical
+    /// in both places; each button keeps its own action and
+    /// accessibility identifier.
+    static let getPro = "Get Pro"
+
+    /// Live Photos category name shown on the Home row and as the
+    /// Live Photos list navigation title. One source so the wording
+    /// stays identical in both places.
+    static let livePhotos = "Live Photos"
+
+    /// Video compression sheet title shown as the sheet's navigation
+    /// title and as its start button label. One source so the wording
+    /// stays identical in both places.
+    static let compressVideo = "Compress video"
+
+    /// Live Photo conversion sheet title shown as the sheet's
+    /// navigation title and as its start button label. One source so
+    /// the wording stays identical in both places.
+    static let convertToStill = "Convert to still"
+
     /// Keeper badge label shown on the kept photo in the group review
     /// grid and on swipe-mode cards. One source so the wording stays
     /// identical in both places; each badge keeps its own padding for
