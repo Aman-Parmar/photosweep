@@ -60,33 +60,6 @@ final class SimilarityEngineTests: XCTestCase {
         XCTAssertNil(SimilarityEngine.featureDistance([], []))
     }
 
-    // MARK: - Exact duplicates
-
-    func testExactDuplicatesShareHash() {
-        XCTAssertTrue(SimilarityEngine.areExactDuplicates(
-            item(id: "a", hash: "abc"),
-            item(id: "b", hash: "abc")
-        ))
-    }
-
-    func testDifferentHashesAreNotExactDuplicates() {
-        XCTAssertFalse(SimilarityEngine.areExactDuplicates(
-            item(id: "a", hash: "abc"),
-            item(id: "b", hash: "def")
-        ))
-    }
-
-    func testNilHashIsNeverAnExactDuplicate() {
-        XCTAssertFalse(SimilarityEngine.areExactDuplicates(
-            item(id: "a", hash: nil),
-            item(id: "b", hash: nil)
-        ))
-        XCTAssertFalse(SimilarityEngine.areExactDuplicates(
-            item(id: "a", hash: "abc"),
-            item(id: "b", hash: nil)
-        ))
-    }
-
     // MARK: - Similar
 
     func testSimilarWhenDistanceUnderThreshold() {

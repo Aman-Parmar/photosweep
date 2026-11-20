@@ -45,13 +45,6 @@ public enum SimilarityEngine {
         return sum.squareRoot()
     }
 
-    /// True when two items are exact duplicates: equal non-nil content
-    /// hashes. A nil hash on either side is never an exact match.
-    public static func areExactDuplicates(_ a: PhotoItem, _ b: PhotoItem) -> Bool {
-        guard let ha = a.contentHash, let hb = b.contentHash else { return false }
-        return ha == hb
-    }
-
     /// True when two items are visually similar: both have feature
     /// prints and their distance is at or below the threshold.
     /// Burst photos are similar by construction (same moment, tiny
