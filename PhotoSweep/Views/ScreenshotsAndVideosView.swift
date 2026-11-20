@@ -181,7 +181,7 @@ struct SelectionCircle: View {
     let isSelected: Bool
 
     var body: some View {
-        Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+        Image(systemName: isSelected ? AppIcons.checkmarkCircleFill : "circle")
             .foregroundStyle(isSelected ? Color.accentColor : Color.secondary)
     }
 }
@@ -212,7 +212,7 @@ private struct BulkDeleteButton: View {
             .primaryActionButton()
             .frame(maxWidth: .infinity)
             .padding()
-            .background(Color(.systemBackground))
+            .background(AppColors.sheetFooterBackground)
             .accessibilityIdentifier(accessibilityIdentifier)
     }
 }

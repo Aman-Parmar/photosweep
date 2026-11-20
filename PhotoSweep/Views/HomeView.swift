@@ -164,7 +164,7 @@ struct HomeView: View {
             scanButton
         }
         .padding()
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
+        .background(AppColors.cardBackground, in: RoundedRectangle(cornerRadius: 16))
     }
 
     private func categoryCards(_ result: ScanResult) -> some View {
@@ -198,7 +198,7 @@ struct HomeView: View {
         )
         .secondaryCaption()
         .padding()
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+        .background(AppColors.cardBackground, in: RoundedRectangle(cornerRadius: 12))
     }
 
     private var howItWorks: some View {

@@ -238,6 +238,6 @@ struct SheetActionBar: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(AppColors.sheetFooterBackground)
     }
 }

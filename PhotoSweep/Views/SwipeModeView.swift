@@ -290,7 +290,7 @@ struct SwipeModeView: View {
             }
         }
         .padding()
-        .background(isPeek ? Color(.systemGray5) : Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 20))
+        .background(isPeek ? Color(.systemGray5) : AppColors.cardBackground, in: RoundedRectangle(cornerRadius: 20))
         .overlay {
             if isPeek {
                 RoundedRectangle(cornerRadius: 20)
@@ -470,7 +470,7 @@ struct SwipeModeView: View {
             // a wide blank band underneath (QA shot 12, 2026-11-19:
             // ~1600px blank below the content).
             Spacer()
-            Image(systemName: "checkmark.circle.fill")
+            Image(systemName: AppIcons.checkmarkCircleFill)
                 .font(.system(size: largeStateIconSize))
                 .foregroundStyle(.green)
             Text("\(monthLabel(totals.month)) done: \(totals.deleted) deleted, \(totals.kept) kept")

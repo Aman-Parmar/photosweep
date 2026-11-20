@@ -278,4 +278,22 @@ enum AppIcons {
     /// moved-to-Recently-Deleted banner in ResultsView, and the
     /// swipe month-complete prompt.
     static let checkmarkCircle = "checkmark.circle"
+
+    /// Filled selection checkmark: the Screenshots selection circle
+    /// and the swipe month-done state.
+    static let checkmarkCircleFill = "checkmark.circle.fill"
+}
+
+/// Shared surface colours for the views that must stay in sync: the
+/// card surface on the default background, and the solid sheet-footer
+/// background that keeps scrolling content from showing through
+/// under a bottom button bar.
+enum AppColors {
+    /// Card surface: Home summary card and limited-access banner,
+    /// and the swipe deck top card.
+    static let cardBackground = Color(.secondarySystemBackground)
+
+    /// Sheet footer: the full-width button bar at the bottom of the
+    /// Screenshots delete bar and the compress/convert sheets.
+    static let sheetFooterBackground = Color(.systemBackground)
 }

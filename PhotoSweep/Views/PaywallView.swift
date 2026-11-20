@@ -26,7 +26,7 @@ struct PaywallView: View {
                             "Export a cleanup report",
                             "No ads, no account, now or ever",
                         ], id: \.self) { feature in
-                            Label(feature, systemImage: "checkmark.circle.fill")
+                            Label(feature, systemImage: AppIcons.checkmarkCircleFill)
                                 .foregroundStyle(.primary)
                         }
                     }
