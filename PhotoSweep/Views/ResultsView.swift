@@ -214,7 +214,7 @@ struct GroupReviewView: View {
                             }
                             .buttonStyle(.plain)
                             .accessibilityIdentifier("group-item-\(item.id)")
-                            .accessibilityLabel(item.id == keeperID ? "Keep this photo" : "Delete this photo")
+                            .accessibilityLabel(item.id == keeperID ? "Keep this photo" : "Keep this photo instead")
                         }
                         // Compare: side by side with the keeper, so the
                         // user can judge whether the two really are the
