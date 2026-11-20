@@ -253,27 +253,12 @@ struct CategoryCardRow: View {
     }
 
     var body: some View {
-        HStack {
-            HomeRowIcon(systemName: icon)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(kind.sectionTitle)
-                    .font(.headline)
-                Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-            if frees > 0 {
-                Text(StorageEstimator.freesLabel(frees))
-                    .font(.subheadline.bold())
-            }
-        }
-        // No vertical padding here: the category rows sit in a
-        // spacing-8 stack, and the extra 4pt per row (7 rows) pushed
-        // "How it works" step 3 behind the tab bar once the swipe
-        // entry card was added (CI run 44450339524). The rows are
-        // still ~40pt tall from their content.
-        .padding(.vertical, 0)
+        HomeRow(
+            icon: icon,
+            title: kind.sectionTitle,
+            subtitle: subtitle,
+            frees: frees
+        )
     }
 
     private var icon: String {
@@ -310,12 +295,35 @@ struct LivePhotosCardRow: View {
     }
 
     var body: some View {
+        HomeRow(
+            icon: "livephoto",
+            title: "Live Photos",
+            subtitle: count == 0 ? "No Live Photos found" : "\(count) Live Photos to convert",
+            frees: frees
+        )
+    }
+}
+
+/// The shared home row shell: tinted icon, title + subtitle, optional
+/// frees label on the right. CategoryCardRow and LivePhotosCardRow keep
+/// their own counts and copy; only the layout is shared, so both rows
+/// stay identical. No vertical padding here: the rows sit in a spacing-8
+/// stack, and the extra 4pt per row (7 rows) pushed "How it works" step 3
+/// behind the tab bar once the swipe entry card was added (CI run
+/// 44450339524). The rows are still ~40pt tall from their content.
+private struct HomeRow: View {
+    let icon: String
+    let title: String
+    let subtitle: String
+    let frees: Int64
+
+    var body: some View {
         HStack {
-            HomeRowIcon(systemName: "livephoto")
+            HomeRowIcon(systemName: icon)
             VStack(alignment: .leading, spacing: 2) {
-                Text("Live Photos")
+                Text(title)
                     .font(.headline)
-                Text(count == 0 ? "No Live Photos found" : "\(count) Live Photos to convert")
+                Text(subtitle)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -325,9 +333,6 @@ struct LivePhotosCardRow: View {
                     .font(.subheadline.bold())
             }
         }
-        // Same no-padding rule as CategoryCardRow (see above): the
-        // swipe entry card's row height has to come out of the gaps,
-        // not out of "How it works" step 3's clearance.
         .padding(.vertical, 0)
     }
 }
