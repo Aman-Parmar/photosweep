@@ -30,7 +30,7 @@ struct ContentView: View {
         TabView {
             HomeView()
                 .tabItem {
-                    Label("Scan", systemImage: "photo.on.rectangle.angled")
+                    Label(AppCopy.scan, systemImage: AppIcons.scanTab)
                 }
             ResultsView()
                 .tabItem {
@@ -42,11 +42,11 @@ struct ContentView: View {
                 }
             LargeVideosView()
                 .tabItem {
-                    Label("Videos", systemImage: AppIcons.videos)
+                    Label(AppCopy.videos, systemImage: AppIcons.videos)
                 }
             SettingsView()
                 .tabItem {
-                    Label(AppCopy.settings, systemImage: "gear")
+                    Label(AppCopy.settings, systemImage: AppIcons.settings)
                 }
         }
         .task {

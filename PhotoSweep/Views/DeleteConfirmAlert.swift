@@ -95,15 +95,21 @@ enum AppCopy {
     /// Tab titles that double as their view's navigation title: the
     /// Results tab, the Screenshots tab, and the Settings tab. One
     /// source each so the tab label and the navigation title cannot
-    /// drift apart; the Scan tab ("Scan") and the Videos tab
-    /// ("Videos" vs "Large Videos") differ by design, so they do
-    /// not use these. The Screenshots title is the GroupKind raw
+    /// drift apart; the Screenshots title is the GroupKind raw
     /// value, so the tab, its navigation title, the Home category
     /// row, and the Results section title all show the same word
     /// from one source.
     static let results = "Results"
     static let screenshots = GroupKind.screenshots.rawValue
     static let settings = "Settings"
+
+    /// Tab-only titles: the Scan tab and the Videos tab. They live
+    /// here with the other tab titles so all five are in one place,
+    /// but they do not double as navigation titles by design: the
+    /// Scan tab has no navigation title, and the Videos tab ("Videos")
+    /// differs from its view's navigation title ("Large Videos").
+    static let scan = "Scan"
+    static let videos = "Videos"
 
     /// Video compression sheet title shown as the sheet's navigation
     /// title and as its start button label. One source so the wording
@@ -274,10 +280,14 @@ struct KeepBadgeLabel: View {
 }
 
 /// Shared SF Symbol names for the icons that must stay in sync across
-/// their sites: the Results stack, the Screenshots tab, the Videos
-/// symbol, and the all-clear checkmark. One source so a rename changes
-/// every site; each caller keeps its own label, placement, and styling.
+/// their sites: the Scan tab, the Results stack, the Screenshots tab,
+/// the Videos symbol, the Settings tab, and the all-clear checkmark.
+/// One source so a rename changes every site; each caller keeps its
+/// own label, placement, and styling.
 enum AppIcons {
+    /// Scan tab: the tab bar icon for the Home scan view.
+    static let scanTab = "photo.on.rectangle.angled"
+
     /// Results stack: tab bar, Results empty state, swipe toolbar
     /// button, Home swipe entry card.
     static let resultsStack = "rectangle.stack"
@@ -289,6 +299,9 @@ enum AppIcons {
     /// Videos section: tab bar, the Large Videos empty state, and
     /// the Large Videos category row icon on Home.
     static let videos = "video"
+
+    /// Settings tab: the tab bar icon for the Settings view.
+    static let settings = "gear"
 
     /// Live Photos icon: the Live Photos category row icon on Home
     /// and the Live Photos list empty state.
