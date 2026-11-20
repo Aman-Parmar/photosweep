@@ -97,9 +97,12 @@ enum AppCopy {
     /// source each so the tab label and the navigation title cannot
     /// drift apart; the Scan tab ("Scan") and the Videos tab
     /// ("Videos" vs "Large Videos") differ by design, so they do
-    /// not use these.
+    /// not use these. The Screenshots title is the GroupKind raw
+    /// value, so the tab, its navigation title, the Home category
+    /// row, and the Results section title all show the same word
+    /// from one source.
     static let results = "Results"
-    static let screenshots = "Screenshots"
+    static let screenshots = GroupKind.screenshots.rawValue
     static let settings = "Settings"
 
     /// Video compression sheet title shown as the sheet's navigation
