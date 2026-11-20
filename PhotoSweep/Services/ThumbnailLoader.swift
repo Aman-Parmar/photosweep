@@ -28,6 +28,14 @@ final class ThumbnailLoader: ObservableObject {
     }
 }
 
+/// Corner radius shared by the small thumbnails: the 56pt list-row
+/// thumbnail below and the 84x56 video-row thumbnail in
+/// ScreenshotsAndVideosView. One source so the two stay in sync
+/// instead of drifting as separate magic numbers. The results-flow
+/// thumbnails use the larger `thumbnailCornerRadius` (10) in
+/// ResultsView and stay separate by design.
+let smallThumbnailCornerRadius: CGFloat = 8
+
 /// The 56pt square list-row thumbnail used by the group row, the
 /// screenshots list, the Live Photos list, and the swipe member
 /// strip: one place for the size so the four lists stay identical.
@@ -50,7 +58,7 @@ struct ListThumbnailView: View {
     var body: some View {
         PhotoThumbnailView(item: item, sampleHue: sampleHue)
             .frame(width: 56, height: 56)
-            .cornerRadius(8)
+            .cornerRadius(smallThumbnailCornerRadius)
     }
 }
 

@@ -118,7 +118,7 @@ struct LargeVideosView: View {
                             HStack(spacing: 12) {
                                 PhotoThumbnailView(item: item)
                                     .frame(width: 84, height: 56)
-                                    .cornerRadius(8)
+                                    .cornerRadius(smallThumbnailCornerRadius)
                                 VStack(alignment: .leading) {
                                     Text(StorageEstimator.formatted(item.fileSize))
                                         .font(.headline)
