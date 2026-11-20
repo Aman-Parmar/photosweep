@@ -9,7 +9,7 @@ enum AppCopy {
     /// Done-state headline for the compress and convert sheets. One source
     /// so the wording stays identical in both flows.
     static func savedLine(bytes: Int64) -> String {
-        "Saved ~\(StorageEstimator.formatted(bytes))"
+        "Saved \(StorageEstimator.approx(bytes))"
     }
 
     /// Screenshot-review warning shown on the screenshots bulk-review list

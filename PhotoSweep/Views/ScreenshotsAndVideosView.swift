@@ -111,7 +111,7 @@ struct LargeVideosView: View {
                 } else {
                     List {
                         Section {
-                            Text("\(videos.count) large videos, ~\(StorageEstimator.formatted(totalBytes)) total (estimate). Video cleanup is a Pro feature. Compress shrinks a video instead of deleting it: the smaller copy stays, the original goes to Recently Deleted.")
+                            Text("\(videos.count) large videos, \(StorageEstimator.approx(totalBytes)) total (estimate). Video cleanup is a Pro feature. Compress shrinks a video instead of deleting it: the smaller copy stays, the original goes to Recently Deleted.")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }

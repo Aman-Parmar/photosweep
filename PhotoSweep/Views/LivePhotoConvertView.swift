@@ -41,7 +41,7 @@ struct LivePhotosView: View {
                                 VStack(alignment: .leading) {
                                     Text("Live Photo")
                                         .font(.headline)
-                                    Text("\(StorageEstimator.formatted(item.fileSize)) · saves ~\(StorageEstimator.formatted(estimate.bytesSaved)) (estimate)")
+                                    Text("\(StorageEstimator.formatted(item.fileSize)) · saves \(StorageEstimator.approx(estimate.bytesSaved)) (estimate)")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
@@ -106,7 +106,7 @@ struct LivePhotoConvertView: View {
                     )
                     SheetDetailRow(
                         label: "Still photo",
-                        detail: "~\(StorageEstimator.formatted(estimate.estimatedStillBytes)) (estimate)"
+                        detail: "\(StorageEstimator.approx(estimate.estimatedStillBytes)) (estimate)"
                     )
                     if !canConvert {
                         Text("You have used your \(AppState.freeDeleteLimit) free deletes. Converting a Live Photo moves the original to Recently Deleted, so it costs one delete. Upgrade to Pro for unlimited deletes.")
@@ -116,7 +116,7 @@ struct LivePhotoConvertView: View {
                 }
 
                 Section {
-                    Text("Saves ~\(StorageEstimator.formatted(estimate.bytesSaved)) (about \(estimate.savingsPercent)% smaller, estimate). The still photo is saved as a new photo first, keeping its date. Then the Live Photo moves to Recently Deleted, where you can recover it for 30 days.")
+                    Text("Saves \(StorageEstimator.approx(estimate.bytesSaved)) (about \(estimate.savingsPercent)% smaller, estimate). The still photo is saved as a new photo first, keeping its date. Then the Live Photo moves to Recently Deleted, where you can recover it for 30 days.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -133,7 +133,7 @@ struct LivePhotoConvertView: View {
                 if phase == .done, let outcome {
                     SheetDoneSection(
                         bytesSaved: outcome.bytesSaved,
-                        detail: "Still photo saved (~\(StorageEstimator.formatted(outcome.stillBytes))). The Live Photo is in Recently Deleted.",
+                        detail: "Still photo saved (\(StorageEstimator.approx(outcome.stillBytes))). The Live Photo is in Recently Deleted.",
                         accessibilityIdentifier: "livephoto-convert-done-label",
                         sectionIdentifier: "livephoto-convert-done-section"
                     )

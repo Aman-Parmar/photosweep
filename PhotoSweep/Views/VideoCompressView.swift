@@ -66,11 +66,11 @@ struct VideoCompressView: View {
                                 }
                                 Spacer()
                                 VStack(alignment: .trailing, spacing: 2) {
-                                    Text("~\(StorageEstimator.formatted(candidateEstimate.estimatedBytes))")
+                                    Text(StorageEstimator.approx(candidateEstimate.estimatedBytes))
                                         .font(.headline)
                                         .foregroundStyle(Color.primary)
                                     Text(candidateEstimate.bytesSaved > 0
-                                         ? "Saves ~\(StorageEstimator.formatted(candidateEstimate.bytesSaved)) (\(candidateEstimate.savingsPercent)% smaller, estimate)"
+                                         ? "Saves \(StorageEstimator.approx(candidateEstimate.bytesSaved)) (\(candidateEstimate.savingsPercent)% smaller, estimate)"
                                          : "About the same size")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
@@ -100,7 +100,7 @@ struct VideoCompressView: View {
                 if phase == .done, let outcome {
                     SheetDoneSection(
                         bytesSaved: outcome.bytesSaved,
-                        detail: "Compressed to ~\(StorageEstimator.formatted(outcome.compressedBytes)). The original is in Recently Deleted.",
+                        detail: "Compressed to \(StorageEstimator.approx(outcome.compressedBytes)). The original is in Recently Deleted.",
                         accessibilityIdentifier: "compress-done-label",
                         sectionIdentifier: "compress-done-section"
                     )

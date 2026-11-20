@@ -59,8 +59,15 @@ public enum StorageEstimator {
         }
     }
 
+    /// Approximate form of `formatted`, with the tilde the UI puts
+    /// in front of every estimate: "~1.2 GB". One source so the
+    /// tilde cannot drift apart across the dozen labels that show it.
+    public static func approx(_ bytes: Int64) -> String {
+        "~\(formatted(bytes))"
+    }
+
     /// Short estimate label used on group rows: "Frees ~1.2 GB".
     public static func freesLabel(_ bytes: Int64) -> String {
-        "Frees ~\(formatted(bytes))"
+        "Frees \(approx(bytes))"
     }
 }

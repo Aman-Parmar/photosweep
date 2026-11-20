@@ -145,7 +145,7 @@ struct HomeView: View {
                     Text("Could free up")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text("~\(StorageEstimator.formatted(result.totalReclaimableBytes))")
+                    Text(StorageEstimator.approx(result.totalReclaimableBytes))
                         .font(.title.bold())
                         .accessibilityIdentifier("reclaimable-total")
                     Text("estimate: \(result.totalDeletableCount) photos across \(result.groups.count) groups")

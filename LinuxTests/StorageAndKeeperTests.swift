@@ -95,6 +95,11 @@ final class StorageAndKeeperTests: XCTestCase {
         XCTAssertEqual(StorageEstimator.freesLabel(1_250_000_000), "Frees ~1.2 GB")
     }
 
+    func testApprox() {
+        XCTAssertEqual(StorageEstimator.approx(1_250_000_000), "~1.2 GB")
+        XCTAssertEqual(StorageEstimator.approx(500), "~500 B")
+    }
+
     func testReclaimableBytesSums() {
         XCTAssertEqual(
             StorageEstimator.reclaimableBytes(for: [item(id: "a", size: 100), item(id: "b", size: 200)]),

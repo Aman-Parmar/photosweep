@@ -54,7 +54,7 @@ struct SettingsView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(record.scannedAt, style: .date)
                                     .font(.headline)
-                                Text("\(record.totalScanned) scanned · \(record.totalDeletableCount) photos in \(record.groupsCount) groups · ~\(StorageEstimator.formatted(record.totalReclaimableBytes)) reclaimable (estimate)")
+                                Text("\(record.totalScanned) scanned · \(record.totalDeletableCount) photos in \(record.groupsCount) groups · \(StorageEstimator.approx(record.totalReclaimableBytes)) reclaimable (estimate)")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -114,7 +114,7 @@ struct SettingsView: View {
         if total.livePhotos > 0 {
             parts.append("\(total.livePhotos) \(total.livePhotos == 1 ? "Live Photo converted to still" : "Live Photos converted to still")")
         }
-        return "~\(StorageEstimator.formatted(total.bytes)) freed from \(parts.joined(separator: " and ")) (estimate). Space is only actually freed once Recently Deleted is emptied."
+        return "\(StorageEstimator.approx(total.bytes)) freed from \(parts.joined(separator: " and ")) (estimate). Space is only actually freed once Recently Deleted is emptied."
     }
 
     private var privacyText: String {

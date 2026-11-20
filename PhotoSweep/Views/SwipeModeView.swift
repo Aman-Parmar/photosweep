@@ -304,7 +304,7 @@ struct SwipeModeView: View {
                     activeSheet = .summary
                 } label: {
                     HStack {
-                        Text("\(session.deleteDecisions.count) to delete, frees ~\(StorageEstimator.formatted(session.batchReclaimableBytes)), \(session.keptCount) kept")
+                        Text("\(session.deleteDecisions.count) to delete, frees \(StorageEstimator.approx(session.batchReclaimableBytes)), \(session.keptCount) kept")
                             .font(.subheadline)
                         Spacer()
                         Image(systemName: "chevron.up")
