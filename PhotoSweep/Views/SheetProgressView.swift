@@ -1,5 +1,17 @@
 import SwiftUI
 
+/// Shared run phase for the compress and convert sheets: picking a
+/// preset, running, done, or failed. The two sheets used to carry
+/// byte-identical private Phase enums differing only in the running
+/// case name (.compressing vs .converting); the verb stays per-sheet
+/// in the progress section, so one enum covers both.
+enum SheetPhase {
+    case pick
+    case running
+    case done
+    case failed
+}
+
 /// Shared progress section for the compress and convert sheets: a
 /// progress bar plus a percent label. The verb ("Compressing",
 /// "Converting") and the accessibility identifier stay per-sheet so
@@ -109,9 +121,8 @@ struct SheetDetailRow: View {
 /// Shared scroll-to for the compress and convert sheets: at the
 /// half-height detent the progress and done sections can sit below
 /// the fold, so scroll them into view when the run starts or
-/// finishes. The two sheets have different private Phase enums, so
-/// the call site passes booleans plus its own section ids; the
-/// DispatchQueue hop and the animated scrollTo are identical.
+/// finishes. The call site passes booleans plus its own section ids;
+/// the DispatchQueue hop and the animated scrollTo are identical.
 enum SheetScroll {
     static func scrollToResult(
         proxy: ScrollViewProxy,
@@ -139,10 +150,9 @@ enum SheetScroll {
 /// Shared bottom action bar for the compress and convert sheets: a
 /// primary start button while picking or after a failure ("Try again"
 /// when failed), nothing while the run is in progress, and a Done
-/// button once it finished. The two sheets have different private
-/// Phase enums, so the call site passes booleans plus its own start
-/// label, start action, and accessibility identifiers; the bar
-/// layout, padding, and background are identical.
+/// button once it finished. The call site passes booleans plus its
+/// own start label, start action, and accessibility identifiers; the
+/// bar layout, padding, and background are identical.
 struct SheetActionBar: View {
     @Environment(\.dismiss) private var dismiss
 

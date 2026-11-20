@@ -80,17 +80,10 @@ struct LivePhotoConvertView: View {
 
     let item: PhotoItem
 
-    @State private var phase: Phase = .pick
+    @State private var phase: SheetPhase = .pick
     @State private var progress: Double = 0
     @State private var outcome: AppState.ConversionOutcome?
     @State private var showingPaywall = false
-
-    private enum Phase {
-        case pick
-        case converting
-        case done
-        case failed
-    }
 
     /// In screenshot mode the simulated run is allowed without Pro:
     /// sample data only, no purchase, no real library.
@@ -128,7 +121,7 @@ struct LivePhotoConvertView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                if phase == .converting {
+                if phase == .running {
                     SheetProgressSection(
                         progress: progress,
                         verb: "Converting",
@@ -160,7 +153,7 @@ struct LivePhotoConvertView: View {
             .safeAreaInset(edge: .bottom) {
                 SheetActionBar(
                     isDone: phase == .done,
-                    isRunning: phase == .converting,
+                    isRunning: phase == .running,
                     hasFailed: phase == .failed,
                     startLabel: "Convert to still",
                     startAccessibilityIdentifier: "livephoto-convert-start-button",
@@ -171,7 +164,7 @@ struct LivePhotoConvertView: View {
             .onChange(of: phase) { _, _ in
                 SheetScroll.scrollToResult(
                     proxy: proxy,
-                    isRunning: phase == .converting,
+                    isRunning: phase == .running,
                     isDone: phase == .done,
                     runningSectionId: "livephoto-convert-progress-section",
                     doneSectionId: "livephoto-convert-done-section"
@@ -187,7 +180,7 @@ struct LivePhotoConvertView: View {
             showingPaywall = true
             return
         }
-        phase = .converting
+        phase = .running
         progress = 0
         Task {
             let result = await appState.convertLivePhoto(
