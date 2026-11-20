@@ -353,8 +353,7 @@ final class AppState: ObservableObject {
                 progress(Double(step) / 6.0)
             }
             removeItems([item])
-            recordCleanup?(CleanupEvent(
-                date: Date(), photosDeleted: 0, videosCompressed: 1, bytesFreed: estimate.bytesSaved))
+            recordVideoCompression(bytesSaved: estimate.bytesSaved)
             return CompressionOutcome(bytesSaved: estimate.bytesSaved, compressedBytes: estimate.estimatedBytes)
         }
         guard let asset = fetchAssets(ids: [item.id]).first else {
@@ -375,8 +374,7 @@ final class AppState: ObservableObject {
             try await scanner.delete(request, assets: [asset])
             let bytesSaved = max(0, item.fileSize - exported.fileSize)
             removeItems([item])
-            recordCleanup?(CleanupEvent(
-                date: Date(), photosDeleted: 0, videosCompressed: 1, bytesFreed: bytesSaved))
+            recordVideoCompression(bytesSaved: bytesSaved)
             return CompressionOutcome(bytesSaved: bytesSaved, compressedBytes: exported.fileSize)
         } catch {
             scanError = error.localizedDescription
@@ -417,9 +415,7 @@ final class AppState: ObservableObject {
                 progress(Double(step) / 6.0)
             }
             removeItems([item])
-            deletedCount += 1
-            recordCleanup?(CleanupEvent(
-                date: Date(), photosDeleted: 0, videosCompressed: 0, livePhotosConverted: 1, bytesFreed: estimate.bytesSaved))
+            recordLivePhotoConversion(bytesSaved: estimate.bytesSaved)
             return ConversionOutcome(bytesSaved: estimate.bytesSaved, stillBytes: estimate.estimatedStillBytes)
         }
         guard let asset = fetchAssets(ids: [item.id]).first else {
@@ -432,9 +428,7 @@ final class AppState: ObservableObject {
             try await scanner.delete(request, assets: [asset])
             let bytesSaved = max(0, item.fileSize - converted.stillFileSize)
             removeItems([item])
-            deletedCount += 1
-            recordCleanup?(CleanupEvent(
-                date: Date(), photosDeleted: 0, videosCompressed: 0, livePhotosConverted: 1, bytesFreed: bytesSaved))
+            recordLivePhotoConversion(bytesSaved: bytesSaved)
             return ConversionOutcome(bytesSaved: bytesSaved, stillBytes: converted.stillFileSize)
         } catch {
             scanError = error.localizedDescription
@@ -460,6 +454,25 @@ final class AppState: ObservableObject {
     private func recordDeletion(items: [PhotoItem]) {
         deletedCount += items.count
         noteCleanup(items: items)
+    }
+
+    /// Records one completed video compression for the "freed this
+    /// month" figure. Screenshot mode and the real flow record the
+    /// same event shape; sharing the construction keeps them from
+    /// drifting apart.
+    private func recordVideoCompression(bytesSaved: Int64) {
+        recordCleanup?(CleanupEvent(
+            date: Date(), photosDeleted: 0, videosCompressed: 1, bytesFreed: bytesSaved))
+    }
+
+    /// Records one completed Live Photo conversion: it costs one free
+    /// delete (the original goes to Recently Deleted) and records the
+    /// conversion for the "freed this month" figure. The two always go
+    /// together, like recordDeletion.
+    private func recordLivePhotoConversion(bytesSaved: Int64) {
+        deletedCount += 1
+        recordCleanup?(CleanupEvent(
+            date: Date(), photosDeleted: 0, videosCompressed: 0, livePhotosConverted: 1, bytesFreed: bytesSaved))
     }
 
     // MARK: - Private
