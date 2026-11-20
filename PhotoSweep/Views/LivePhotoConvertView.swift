@@ -176,25 +176,19 @@ struct LivePhotoConvertView: View {
     }
 
     private func startConversion() {
-        guard canConvert else {
-            showingPaywall = true
-            return
-        }
-        phase = .running
-        progress = 0
-        Task {
-            let result = await appState.convertLivePhoto(
-                item: item,
-                isPro: store.isPro
-            ) { value in
-                progress = value
+        SheetRun.start(
+            phase: $phase,
+            progress: $progress,
+            outcome: $outcome,
+            showingPaywall: $showingPaywall,
+            canRun: canConvert,
+            operation: { update in
+                await appState.convertLivePhoto(
+                    item: item,
+                    isPro: store.isPro,
+                    progress: update
+                )
             }
-            if let result {
-                outcome = result
-                phase = .done
-            } else {
-                phase = .failed
-            }
-        }
+        )
     }
 }

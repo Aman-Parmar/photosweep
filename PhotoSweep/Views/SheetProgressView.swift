@@ -12,6 +12,41 @@ enum SheetPhase {
     case failed
 }
 
+/// Shared run driver for the compress and convert sheets: guard on the
+/// sheet's Pro/free gate (showing the paywall when it fails), then run
+/// the operation with progress, then done with the outcome or failed.
+/// The two sheets used to carry byte-identical Task bodies differing
+/// only in the AppState operation they awaited; the operation, the
+/// outcome type, and the gate stay per-sheet, passed in by the caller.
+enum SheetRun {
+    static func start<Outcome>(
+        phase: Binding<SheetPhase>,
+        progress: Binding<Double>,
+        outcome: Binding<Outcome?>,
+        showingPaywall: Binding<Bool>,
+        canRun: Bool,
+        operation: @escaping (@escaping (Double) -> Void) async -> Outcome?
+    ) {
+        guard canRun else {
+            showingPaywall.wrappedValue = true
+            return
+        }
+        phase.wrappedValue = .running
+        progress.wrappedValue = 0
+        Task {
+            let result = await operation { value in
+                progress.wrappedValue = value
+            }
+            if let result {
+                outcome.wrappedValue = result
+                phase.wrappedValue = .done
+            } else {
+                phase.wrappedValue = .failed
+            }
+        }
+    }
+}
+
 /// Shared progress section for the compress and convert sheets: a
 /// progress bar plus a percent label. The verb ("Compressing",
 /// "Converting") and the accessibility identifier stay per-sheet so
