@@ -154,6 +154,25 @@ extension View {
             .controlSize(.large)
     }
 
+    /// Delete-failure caption shared by the group review and the swipe
+    /// batch review: caption red text on the shared AppCopy.deleteFailed
+    /// wording. One source so the banner cannot drift apart; each banner
+    /// keeps its own placement and condition.
+    func deleteFailedCaption() -> some View {
+        font(.caption)
+            .foregroundStyle(.red)
+    }
+
+    /// Screenshot-warning caption shared by the screenshots bulk-review
+    /// list and the swipe-mode screenshot cards: caption secondary text
+    /// on the shared AppCopy.screenshotWarning wording. One source so
+    /// the warning cannot drift apart; each warning keeps its own
+    /// placement.
+    func screenshotWarningCaption() -> some View {
+        font(.caption)
+            .foregroundStyle(.secondary)
+    }
+
     /// Cancellation-action toolbar button shared by the paywall, the
     /// compress and convert sheets, and the Settings privacy sheet: a
     /// Close/Cancel button in the cancellation slot. One source so the

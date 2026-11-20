@@ -278,8 +278,7 @@ struct SwipeModeView: View {
                 .foregroundStyle(.secondary)
             if case .screenshot = card {
                 Text(AppCopy.screenshotWarning)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .screenshotWarningCaption()
             }
         }
         .padding()
@@ -394,8 +393,7 @@ struct SwipeModeView: View {
                     .accessibilityIdentifier("swipe-commit-button")
                     if commitFailed {
                         Text(AppCopy.deleteFailed)
-                            .font(.caption)
-                            .foregroundStyle(.red)
+                            .deleteFailedCaption()
                     }
                 }
                 Spacer()

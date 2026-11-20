@@ -259,8 +259,7 @@ struct GroupReviewView: View {
                 }
                 if deleteFailed {
                     Text(AppCopy.deleteFailed)
-                        .font(.caption)
-                        .foregroundStyle(.red)
+                        .deleteFailedCaption()
                 }
             }
             .padding()

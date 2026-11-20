@@ -27,8 +27,7 @@ struct ScreenshotsView: View {
                     List {
                         Section {
                             Text(AppCopy.screenshotWarning)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .screenshotWarningCaption()
                         }
                         ForEach(screenshots) { item in
                             HStack(spacing: 12) {
