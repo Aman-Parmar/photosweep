@@ -39,6 +39,14 @@ struct ListThumbnailView: View {
     /// Synthetic hue used only in screenshot mode (derived from the item id).
     let sampleHue: Double
 
+    /// The hue is always derived from the item id at every call site,
+    /// so it defaults here instead of being repeated at each one; an
+    /// explicit hue can still be passed when a caller needs it.
+    init(item: PhotoItem, sampleHue: Double? = nil) {
+        self.item = item
+        self.sampleHue = sampleHue ?? SampleImageGenerator.hue(for: item.id)
+    }
+
     var body: some View {
         PhotoThumbnailView(item: item, sampleHue: sampleHue)
             .frame(width: 56, height: 56)
@@ -52,6 +60,14 @@ struct PhotoThumbnailView: View {
     let item: PhotoItem
     /// Synthetic hue used only in screenshot mode (derived from the item id).
     let sampleHue: Double
+
+    /// The hue is always derived from the item id at every call site,
+    /// so it defaults here instead of being repeated at each one; an
+    /// explicit hue can still be passed when a caller needs it.
+    init(item: PhotoItem, sampleHue: Double? = nil) {
+        self.item = item
+        self.sampleHue = sampleHue ?? SampleImageGenerator.hue(for: item.id)
+    }
 
     @StateObject private var loader = ThumbnailLoader()
 

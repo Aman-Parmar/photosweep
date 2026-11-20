@@ -247,7 +247,7 @@ struct SwipeModeView: View {
         VStack(alignment: .leading, spacing: 10) {
             if let keeper = card.keeper {
                 ZStack(alignment: .topLeading) {
-                    PhotoThumbnailView(item: keeper, sampleHue: SampleImageGenerator.hue(for: keeper.id))
+                    PhotoThumbnailView(item: keeper)
                         .frame(height: 300)
                         .cornerRadius(16)
                     Text(AppCopy.keep)
@@ -262,7 +262,7 @@ struct SwipeModeView: View {
             // thumbnails for one card.
             HStack(spacing: 8) {
                 ForEach(card.thumbnailItems.dropFirst(), id: \.id) { item in
-                    ListThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
+                    ListThumbnailView(item: item)
                 }
             }
             Text(card.kindLabel)

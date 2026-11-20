@@ -98,7 +98,7 @@ struct GroupRow: View {
         HStack(spacing: 12) {
             // First item's thumbnail (or the keeper's).
             if let first = group.keeper {
-                ListThumbnailView(item: first, sampleHue: SampleImageGenerator.hue(for: first.id))
+                ListThumbnailView(item: first)
             }
             VStack(alignment: .leading, spacing: 2) {
                 Text(group.countLabel)
@@ -191,7 +191,7 @@ struct GroupReviewView: View {
                                 keeperID = item.id
                             } label: {
                                 ZStack(alignment: .topLeading) {
-                                    PhotoThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
+                                    PhotoThumbnailView(item: item)
                                         .frame(height: 110)
                                         .cornerRadius(10)
                                     if item.id == keeperID {
@@ -368,7 +368,7 @@ private struct CompareColumn: View {
             // (contentMode .fit): a fixed 220pt-tall fill frame used
             // to crop the square image left and right, slicing the
             // "SAMPLE" tag in the 08 capture from run 44330202685.
-            PhotoThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
+            PhotoThumbnailView(item: item)
                 .aspectRatio(1, contentMode: .fit)
                 .frame(minWidth: 0, maxWidth: .infinity)
                 .cornerRadius(10)

@@ -37,7 +37,7 @@ struct LivePhotosView: View {
                         ForEach(livePhotos) { item in
                             let estimate = LivePhotoConversion.estimate(originalBytes: item.fileSize)
                             HStack(spacing: 12) {
-                                ListThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
+                                ListThumbnailView(item: item)
                                 VStack(alignment: .leading) {
                                     Text("Live Photo")
                                         .font(.headline)

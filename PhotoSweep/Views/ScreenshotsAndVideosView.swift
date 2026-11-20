@@ -32,7 +32,7 @@ struct ScreenshotsView: View {
                         }
                         ForEach(screenshots) { item in
                             HStack(spacing: 12) {
-                                ListThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
+                                ListThumbnailView(item: item)
                                 VStack(alignment: .leading) {
                                     Text(SwipeCard.screenshotLabel)
                                         .font(.headline)
@@ -117,7 +117,7 @@ struct LargeVideosView: View {
                         }
                         ForEach(videos) { item in
                             HStack(spacing: 12) {
-                                PhotoThumbnailView(item: item, sampleHue: SampleImageGenerator.hue(for: item.id))
+                                PhotoThumbnailView(item: item)
                                     .frame(width: 84, height: 56)
                                     .cornerRadius(8)
                                 VStack(alignment: .leading) {
