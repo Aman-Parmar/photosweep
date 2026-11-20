@@ -1,6 +1,11 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
+/// Corner radius shared by the photo thumbnails in the results flow
+/// (group grid and compare columns), so the two presentations stay in
+/// sync instead of drifting as separate magic numbers.
+private let thumbnailCornerRadius: CGFloat = 10
+
 /// Results tab: every group, in sections by kind, largest reclaim
 /// first. Tapping a group opens GroupReviewView. The row identifiers
 /// are what the screenshot lane taps:
@@ -193,7 +198,7 @@ struct GroupReviewView: View {
                                 ZStack(alignment: .topLeading) {
                                     PhotoThumbnailView(item: item)
                                         .frame(height: 110)
-                                        .cornerRadius(10)
+                                        .cornerRadius(thumbnailCornerRadius)
                                     if item.id == keeperID {
                                         KeepBadgeLabel(horizontal: 6, vertical: 3, outer: 6)
                                     } else {
@@ -360,7 +365,7 @@ private struct CompareColumn: View {
             PhotoThumbnailView(item: item)
                 .aspectRatio(1, contentMode: .fit)
                 .frame(minWidth: 0, maxWidth: .infinity)
-                .cornerRadius(10)
+                .cornerRadius(thumbnailCornerRadius)
             Text(StorageEstimator.formatted(item.fileSize))
                 .font(.subheadline)
             Text("\(item.width) x \(item.height) px")
