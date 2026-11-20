@@ -128,15 +128,12 @@ struct VideoCompressView: View {
                     onStart: startCompression
                 )
             }
-            .onChange(of: phase) { _, _ in
-                SheetScroll.scrollToResult(
-                    proxy: proxy,
-                    isRunning: phase == .running,
-                    isDone: phase == .done,
-                    runningSectionId: "compress-progress-section",
-                    doneSectionId: "compress-done-section"
-                )
-            }
+            .sheetScrollOnPhaseChange(
+                proxy: proxy,
+                phase: phase,
+                runningSectionId: "compress-progress-section",
+                doneSectionId: "compress-done-section"
+            )
             .paywallSheet(isPresented: $showingPaywall)
             } // ScrollViewReader
         }

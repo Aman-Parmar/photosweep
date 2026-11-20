@@ -161,15 +161,12 @@ struct LivePhotoConvertView: View {
                     onStart: startConversion
                 )
             }
-            .onChange(of: phase) { _, _ in
-                SheetScroll.scrollToResult(
-                    proxy: proxy,
-                    isRunning: phase == .running,
-                    isDone: phase == .done,
-                    runningSectionId: "livephoto-convert-progress-section",
-                    doneSectionId: "livephoto-convert-done-section"
-                )
-            }
+            .sheetScrollOnPhaseChange(
+                proxy: proxy,
+                phase: phase,
+                runningSectionId: "livephoto-convert-progress-section",
+                doneSectionId: "livephoto-convert-done-section"
+            )
             .paywallSheet(isPresented: $showingPaywall)
             } // ScrollViewReader
         }

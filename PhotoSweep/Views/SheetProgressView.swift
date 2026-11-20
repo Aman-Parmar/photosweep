@@ -182,6 +182,31 @@ enum SheetScroll {
     }
 }
 
+extension View {
+    /// Shared phase-change scroll for the compress and convert sheets:
+    /// when the run starts or finishes, scroll the progress or done
+    /// section into view. The two sheets carried byte-identical
+    /// `.onChange(of: phase)` blocks differing only in their section
+    /// ids; the ids stay per-sheet so each sheet keeps its own
+    /// scroll targets.
+    func sheetScrollOnPhaseChange(
+        proxy: ScrollViewProxy,
+        phase: SheetPhase,
+        runningSectionId: String,
+        doneSectionId: String
+    ) -> some View {
+        onChange(of: phase) { _, _ in
+            SheetScroll.scrollToResult(
+                proxy: proxy,
+                isRunning: phase == .running,
+                isDone: phase == .done,
+                runningSectionId: runningSectionId,
+                doneSectionId: doneSectionId
+            )
+        }
+    }
+}
+
 /// Shared bottom action bar for the compress and convert sheets: a
 /// primary start button while picking or after a failure ("Try again"
 /// when failed), nothing while the run is in progress, and a Done
