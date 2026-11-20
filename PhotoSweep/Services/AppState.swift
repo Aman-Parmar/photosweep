@@ -318,6 +318,14 @@ final class AppState: ObservableObject {
         return true
     }
 
+    /// Confirms deletion of the selected subset of `items` (Screenshots /
+    /// Videos bulk delete). Same rules as `confirmDelete(items:)`; the
+    /// caller clears its selection when this returns true.
+    @discardableResult
+    func confirmDeleteSelected(from items: [PhotoItem], selected: Set<String>, isPro: Bool) async -> Bool {
+        await confirmDelete(items: items.filter { selected.contains($0.id) }, isPro: isPro)
+    }
+
     /// Result of a completed compression: the real bytes saved and
     /// the compressed file's real size.
     struct CompressionOutcome {

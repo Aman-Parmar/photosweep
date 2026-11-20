@@ -45,11 +45,7 @@ struct ScreenshotsView: View {
                             }
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                if selected.contains(item.id) {
-                                    selected.remove(item.id)
-                                } else {
-                                    selected.insert(item.id)
-                                }
+                                selected.toggle(item.id)
                             }
                             .accessibilityIdentifier("screenshot-item-\(item.id)")
                         }
@@ -74,9 +70,9 @@ struct ScreenshotsView: View {
                 message: AppCopy.recentlyDeletedMessage(noun: "screenshots")
             ) {
                 Task {
-                    let items = screenshots.filter { selected.contains($0.id) }
-                    let ok = await appState.confirmDelete(items: items, isPro: store.isPro)
-                    if ok { selected.removeAll() }
+                    if await appState.confirmDeleteSelected(from: screenshots, selected: selected, isPro: store.isPro) {
+                        selected.removeAll()
+                    }
                 }
             }
             .paywallSheet(isPresented: $showingPaywall)
@@ -145,11 +141,7 @@ struct LargeVideosView: View {
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 if store.isPro {
-                                    if selected.contains(item.id) {
-                                        selected.remove(item.id)
-                                    } else {
-                                        selected.insert(item.id)
-                                    }
+                                    selected.toggle(item.id)
                                 } else {
                                     showingPaywall = true
                                 }
@@ -175,9 +167,9 @@ struct LargeVideosView: View {
                 message: AppCopy.recentlyDeletedMessage(noun: "videos")
             ) {
                 Task {
-                    let items = videos.filter { selected.contains($0.id) }
-                    let ok = await appState.confirmDelete(items: items, isPro: store.isPro)
-                    if ok { selected.removeAll() }
+                    if await appState.confirmDeleteSelected(from: videos, selected: selected, isPro: store.isPro) {
+                        selected.removeAll()
+                    }
                 }
             }
             .paywallSheet(isPresented: $showingPaywall)
@@ -195,6 +187,19 @@ struct SelectionCircle: View {
     var body: some View {
         Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
             .foregroundStyle(isSelected ? Color.accentColor : Color.secondary)
+    }
+}
+
+/// Toggles one id in a selection set: removes it when present,
+/// inserts it when absent. Shared by the screenshots and large-videos
+/// lists so both tap-to-select rows stay identical.
+extension Set where Element == String {
+    mutating func toggle(_ id: String) {
+        if contains(id) {
+            remove(id)
+        } else {
+            insert(id)
+        }
     }
 }
 
