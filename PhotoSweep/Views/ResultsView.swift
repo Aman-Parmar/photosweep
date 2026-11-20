@@ -1,5 +1,4 @@
 import SwiftUI
-import UniformTypeIdentifiers
 
 /// Corner radius shared by the photo thumbnails in the results flow
 /// (group grid and compare columns), so the two presentations stay in
