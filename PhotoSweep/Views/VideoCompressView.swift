@@ -96,10 +96,12 @@ struct VideoCompressView: View {
                 }
 
                 if phase == .compressing {
-                    Section {
-                        SheetProgressView(progress: progress, verb: "Compressing", accessibilityIdentifier: "compress-progress")
-                    }
-                    .id("compress-progress-section")
+                    SheetProgressSection(
+                        progress: progress,
+                        verb: "Compressing",
+                        accessibilityIdentifier: "compress-progress",
+                        sectionIdentifier: "compress-progress-section"
+                    )
                 }
 
                 if phase == .done, let outcome {

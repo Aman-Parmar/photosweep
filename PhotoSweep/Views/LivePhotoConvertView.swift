@@ -129,10 +129,12 @@ struct LivePhotoConvertView: View {
                 }
 
                 if phase == .converting {
-                    Section {
-                        SheetProgressView(progress: progress, verb: "Converting", accessibilityIdentifier: "livephoto-convert-progress")
-                    }
-                    .id("livephoto-convert-progress-section")
+                    SheetProgressSection(
+                        progress: progress,
+                        verb: "Converting",
+                        accessibilityIdentifier: "livephoto-convert-progress",
+                        sectionIdentifier: "livephoto-convert-progress-section"
+                    )
                 }
 
                 if phase == .done, let outcome {

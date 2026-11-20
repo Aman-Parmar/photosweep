@@ -20,6 +20,29 @@ struct SheetProgressView: View {
     }
 }
 
+/// Shared progress section for the compress and convert sheets: the
+/// progress bar plus percent label wrapped in a Section carrying the
+/// section id the half-height scroll-to targets. The verb, the
+/// accessibility identifier, and the section id stay per-sheet so the
+/// screenshot lane keeps capturing the same elements.
+struct SheetProgressSection: View {
+    let progress: Double
+    let verb: String
+    let accessibilityIdentifier: String
+    let sectionIdentifier: String
+
+    var body: some View {
+        Section {
+            SheetProgressView(
+                progress: progress,
+                verb: verb,
+                accessibilityIdentifier: accessibilityIdentifier
+            )
+        }
+        .id(sectionIdentifier)
+    }
+}
+
 /// Shared done section for the compress and convert sheets: the
 /// "Saved ~X" headline plus one detail line. The detail copy, the
 /// accessibility identifier, and the section id stay per-sheet so the
