@@ -268,8 +268,7 @@ final class AppState: ObservableObject {
         }
         if ScreenshotMode.isEnabled {
             removeGroup(group)
-            deletedCount += items.count
-            noteCleanup(items: items)
+            recordDeletion(items: items)
             return true
         }
         let request = DeletionRequest(groupID: group.id, itemIDs: items.map(\.id), confirmedByUser: true)
@@ -281,8 +280,7 @@ final class AppState: ObservableObject {
             return false
         }
         removeGroup(group)
-        deletedCount += items.count
-        noteCleanup(items: items)
+        recordDeletion(items: items)
         return true
     }
 
@@ -296,8 +294,7 @@ final class AppState: ObservableObject {
         }
         if ScreenshotMode.isEnabled {
             removeItems(items)
-            deletedCount += items.count
-            noteCleanup(items: items)
+            recordDeletion(items: items)
             return true
         }
         let request = DeletionRequest(groupID: "manual", itemIDs: items.map(\.id), confirmedByUser: true)
@@ -309,8 +306,7 @@ final class AppState: ObservableObject {
             return false
         }
         removeItems(items)
-        deletedCount += items.count
-        noteCleanup(items: items)
+        recordDeletion(items: items)
         return true
     }
 
@@ -455,6 +451,15 @@ final class AppState: ObservableObject {
             photosDeleted: items.count,
             bytesFreed: StorageEstimator.reclaimableBytes(for: items)
         ))
+    }
+
+    /// Charges one free delete per item and records the cleanup for the
+    /// "freed this month" figure. The two always go together: a path that
+    /// charged the budget but forgot the history (or vice versa) would let
+    /// the two figures drift apart.
+    private func recordDeletion(items: [PhotoItem]) {
+        deletedCount += items.count
+        noteCleanup(items: items)
     }
 
     // MARK: - Private
