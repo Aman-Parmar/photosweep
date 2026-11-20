@@ -188,3 +188,21 @@ extension View {
         }
     }
 }
+
+/// KEEP badge label shared by the group-review tiles and the swipe-mode
+/// cards: the same "KEEP" text in the accent capsule. One source so the
+/// badge cannot drift apart; each badge keeps its own padding for its
+/// thumbnail size (small grid tile vs large swipe card).
+struct KeepBadgeLabel: View {
+    var horizontal: CGFloat
+    var vertical: CGFloat
+    var outer: CGFloat
+
+    var body: some View {
+        Text(AppCopy.keep)
+            .padding(.horizontal, horizontal)
+            .padding(.vertical, vertical)
+            .keeperBadge()
+            .padding(outer)
+    }
+}

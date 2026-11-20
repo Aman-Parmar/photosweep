@@ -195,11 +195,7 @@ struct GroupReviewView: View {
                                         .frame(height: 110)
                                         .cornerRadius(10)
                                     if item.id == keeperID {
-                                        Text(AppCopy.keep)
-                                            .padding(.horizontal, 6)
-                                            .padding(.vertical, 3)
-                                            .keeperBadge()
-                                            .padding(6)
+                                        KeepBadgeLabel(horizontal: 6, vertical: 3, outer: 6)
                                     } else {
                                         Image(systemName: "trash")
                                             .thumbnailOverlayIcon()

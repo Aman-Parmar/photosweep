@@ -250,11 +250,7 @@ struct SwipeModeView: View {
                     PhotoThumbnailView(item: keeper)
                         .frame(height: 300)
                         .cornerRadius(16)
-                    Text(AppCopy.keep)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .keeperBadge()
-                        .padding(10)
+                    KeepBadgeLabel(horizontal: 8, vertical: 4, outer: 10)
                 }
             }
             // The keeper first, then up to two more members. Never
