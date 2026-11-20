@@ -33,6 +33,10 @@ struct SwipeModeView: View {
     @State private var reviewingCardID: String?
     @State private var dragOffset: CGSize = .zero
 
+    /// Drag distance (points) that counts as a keep/delete swipe.
+    /// ROADMAP documents the 120pt threshold; keep the two in sync.
+    private static let swipeThreshold: CGFloat = 120
+
     private enum ActiveSheet: Identifiable {
         case summary
         case paywall
@@ -218,9 +222,9 @@ struct SwipeModeView: View {
                         DragGesture()
                             .onChanged { value in dragOffset = value.translation }
                             .onEnded { value in
-                                if value.translation.width > 120 {
+                                if value.translation.width > Self.swipeThreshold {
                                     decide(.keep)
-                                } else if value.translation.width < -120 {
+                                } else if value.translation.width < -Self.swipeThreshold {
                                     decide(.delete)
                                 } else {
                                     withAnimation(.spring()) { dragOffset = .zero }
