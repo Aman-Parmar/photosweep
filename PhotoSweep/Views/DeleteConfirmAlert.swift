@@ -262,9 +262,9 @@ struct KeepBadgeLabel: View {
 }
 
 /// Shared SF Symbol names for the icons that must stay in sync across
-/// their sites: the Results stack, the Screenshots tab, and the
-/// all-clear checkmark. One source so a rename changes every site;
-/// each caller keeps its own label, placement, and styling.
+/// their sites: the Results stack, the Screenshots tab, the Videos
+/// symbol, and the all-clear checkmark. One source so a rename changes
+/// every site; each caller keeps its own label, placement, and styling.
 enum AppIcons {
     /// Results stack: tab bar, Results empty state, swipe toolbar
     /// button, Home swipe entry card.
@@ -273,6 +273,10 @@ enum AppIcons {
     /// Screenshots tab: tab bar, Screenshots empty state, and the
     /// Screenshots category row icon on Home.
     static let screenshotsTab = "camera.viewfinder"
+
+    /// Videos section: tab bar, the Large Videos empty state, and
+    /// the Large Videos category row icon on Home.
+    static let videos = "video"
 
     /// All-clear checkmark: category empty state, the
     /// moved-to-Recently-Deleted banner in ResultsView, and the

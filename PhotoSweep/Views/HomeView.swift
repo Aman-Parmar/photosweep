@@ -266,7 +266,7 @@ struct CategoryCardRow: View {
         case .similar: return "square.stack.3d.up"
         case .blurry: return "eye.slash"
         case .screenshots: return AppIcons.screenshotsTab
-        case .largeVideos: return "video"
+        case .largeVideos: return AppIcons.videos
         }
     }
 

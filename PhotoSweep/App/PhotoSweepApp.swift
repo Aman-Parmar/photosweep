@@ -42,7 +42,7 @@ struct ContentView: View {
                 }
             LargeVideosView()
                 .tabItem {
-                    Label("Videos", systemImage: "video")
+                    Label("Videos", systemImage: AppIcons.videos)
                 }
             SettingsView()
                 .tabItem {

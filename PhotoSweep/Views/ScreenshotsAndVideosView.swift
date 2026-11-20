@@ -103,7 +103,7 @@ struct LargeVideosView: View {
                 if videos.isEmpty {
                     ContentUnavailableView(
                         "No large videos",
-                        systemImage: "video",
+                        systemImage: AppIcons.videos,
                         description: Text("Scan your photos first. Videos of 100 MB or more will appear here, largest first.")
                     )
                 } else {
