@@ -290,6 +290,10 @@ enum AppIcons {
     /// the Large Videos category row icon on Home.
     static let videos = "video"
 
+    /// Live Photos icon: the Live Photos category row icon on Home
+    /// and the Live Photos list empty state.
+    static let livePhoto = "livephoto"
+
     /// All-clear checkmark: category empty state, the
     /// moved-to-Recently-Deleted banner in ResultsView, and the
     /// swipe month-complete prompt.

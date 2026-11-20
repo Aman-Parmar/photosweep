@@ -24,7 +24,7 @@ struct LivePhotosView: View {
                 if livePhotos.isEmpty {
                     ContentUnavailableView(
                         "No Live Photos",
-                        systemImage: "livephoto",
+                        systemImage: AppIcons.livePhoto,
                         description: Text("Scan your photos first. Live Photos will appear here: each one is a still photo plus a short video clip, so converting one to a still frees about half its size.")
                     )
                 } else {

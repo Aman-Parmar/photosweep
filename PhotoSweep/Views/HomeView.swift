@@ -294,7 +294,7 @@ struct LivePhotosCardRow: View {
 
     var body: some View {
         HomeRow(
-            icon: "livephoto",
+            icon: AppIcons.livePhoto,
             title: AppCopy.livePhotos,
             subtitle: count == 0 ? "No Live Photos found" : "\(count) Live Photos to convert",
             frees: frees
