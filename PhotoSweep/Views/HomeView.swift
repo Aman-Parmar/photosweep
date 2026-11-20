@@ -1,5 +1,10 @@
 import SwiftUI
 
+/// Large state icon size shared by the Home no-scan-yet empty state and
+/// the swipe-mode month-done state. One source so both 56pt hero icons
+/// stay the same size.
+let largeStateIconSize: CGFloat = 56
+
 /// Home / Scan tab: the scan button, the summary of the last scan, and
 /// one card per category. In screenshot mode the sample result is
 /// already loaded, so this screen is the 01 screenshot.
@@ -61,7 +66,7 @@ struct HomeView: View {
     private var noScanYet: some View {
         VStack(spacing: 16) {
             Image(systemName: "photo.stack")
-                .font(.system(size: 56))
+                .font(.system(size: largeStateIconSize))
                 .foregroundStyle(.secondary)
             Text("Your library hasn't been scanned yet.")
                 .font(.headline)

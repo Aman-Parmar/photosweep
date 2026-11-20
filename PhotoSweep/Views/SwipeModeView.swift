@@ -472,7 +472,7 @@ struct SwipeModeView: View {
             // ~1600px blank below the content).
             Spacer()
             Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 56))
+                .font(.system(size: largeStateIconSize))
                 .foregroundStyle(.green)
             Text("\(monthLabel(totals.month)) done: \(totals.deleted) deleted, \(totals.kept) kept")
                 .font(.headline)
