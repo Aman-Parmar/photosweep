@@ -66,7 +66,10 @@ public enum CompressionPreset: String, CaseIterable, Equatable {
 }
 
 /// The before/after size estimate for one video at one preset.
-public struct CompressionEstimate: Equatable {
+/// Conforms to `SizeSavingEstimate`: the result size is the
+/// estimated compressed size, and `bytesSaved` / `savingsPercent` /
+/// `isWorthwhile` come from the shared defaults.
+public struct CompressionEstimate: Equatable, SizeSavingEstimate {
     public let preset: CompressionPreset
     /// The original file size, in bytes.
     public let originalBytes: Int64
@@ -81,20 +84,8 @@ public struct CompressionEstimate: Equatable {
         self.estimatedBytes = estimatedBytes
     }
 
-    /// Estimated bytes saved. Zero when compression is not expected
-    /// to shrink this clip.
-    public var bytesSaved: Int64 { max(0, originalBytes - estimatedBytes) }
-
-    /// Estimated saving as a whole percent of the original, 0...100.
-    public var savingsPercent: Int {
-        SizeSaving.percentSaved(originalBytes: originalBytes, bytesSaved: bytesSaved)
-    }
-
-    /// True when the estimate says compression is worth doing for
-    /// this clip (saves at least 10%).
-    public var isWorthwhile: Bool {
-        SizeSaving.isWorthwhile(originalBytes: originalBytes, bytesSaved: bytesSaved)
-    }
+    /// The size after compression, for the shared estimate math.
+    public var resultBytes: Int64 { estimatedBytes }
 }
 
 public enum VideoCompression {

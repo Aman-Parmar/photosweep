@@ -12,7 +12,10 @@ import Foundation
 /// the saving is about half. Real files vary with the clip length; the
 /// sheet shows the estimate before converting and the real saving
 /// after.
-public struct LivePhotoEstimate: Equatable {
+/// Conforms to `SizeSavingEstimate`: the result size is the
+/// estimated still size, and `bytesSaved` / `savingsPercent` /
+/// `isWorthwhile` come from the shared defaults.
+public struct LivePhotoEstimate: Equatable, SizeSavingEstimate {
     /// The Live Photo file size, in bytes.
     public let originalBytes: Int64
     /// The estimated still-photo size, in bytes.
@@ -23,20 +26,8 @@ public struct LivePhotoEstimate: Equatable {
         self.estimatedStillBytes = estimatedStillBytes
     }
 
-    /// Estimated bytes saved. Zero when conversion is not expected
-    /// to shrink this photo.
-    public var bytesSaved: Int64 { max(0, originalBytes - estimatedStillBytes) }
-
-    /// Estimated saving as a whole percent of the original, 0...100.
-    public var savingsPercent: Int {
-        SizeSaving.percentSaved(originalBytes: originalBytes, bytesSaved: bytesSaved)
-    }
-
-    /// True when the estimate says conversion is worth doing for
-    /// this photo (saves at least 10%).
-    public var isWorthwhile: Bool {
-        SizeSaving.isWorthwhile(originalBytes: originalBytes, bytesSaved: bytesSaved)
-    }
+    /// The size after conversion, for the shared estimate math.
+    public var resultBytes: Int64 { estimatedStillBytes }
 }
 
 public enum LivePhotoConversion {
