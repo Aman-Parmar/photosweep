@@ -16,7 +16,9 @@ A native iOS photo cleaner. It finds duplicates, similar/burst shots, blurry pho
 - Review before delete: every group shows its photos, the keeper is pre-picked (sharpest, then highest resolution), and you can tap any photo to keep it instead
 - Delete only when you confirm: deletion goes through `PHAssetChangeRequest` to Recently Deleted — undoable for 30 days
 - Storage estimates, always labelled "estimate": Photos reports slightly different sizes, and space is only freed once Recently Deleted is emptied
-- Free scan and review forever; Pro is depth only (unlimited deletes, large-video cleanup, export)
+- Shrink a large video to HEVC instead of deleting it, with a before/after size estimate. The original goes to Recently Deleted
+- Convert a Live Photo to a still photo, keeping the photo and dropping the video clip (about half the size); one conversion costs one free delete, Pro unlimited
+- Free scan and review forever; Pro is depth only (unlimited deletes, large-video cleanup and compression, Live Photo conversion, export)
 
 ## What it deliberately does not do
 
@@ -39,7 +41,7 @@ Notes on pricing (see `SUBSCRIPTION_PLAN.md` and `VALIDATION.md`):
 
 - No weekly plan, no monthly tier: the wedge is honest pricing against the category's weekly traps. Yearly at $29.99 with a 7-day free trial, lifetime at $39.99 (about 16 months of yearly). One Pro entitlement, not two feature sets.
 - The 7-day trial on yearly is configured in App Store Connect per product (like Clear Days) — the `.storekit` file carries prices only, not the trial.
-- Free tier: scan + review unlimited, 20 deletes total. Pro: unlimited deletes, large-video cleanup, export.
+- Free tier: scan + review unlimited, 20 deletes total. Pro: unlimited deletes, large-video cleanup, video compression, Live Photo conversion, export.
 - Test in Xcode with the StoreKit Configuration file `Resources/PhotoSweep.storekit` (already wired into the Run scheme in `project.yml`). Test with the sandbox, never with a real Apple ID in a debug build.
 
 ## Data and honesty
