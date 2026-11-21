@@ -119,7 +119,7 @@ struct SettingsView: View {
 
         Storage estimates are estimates. Photos may report slightly different sizes, and space is only actually freed once Recently Deleted is emptied.
 
-        Questions: support@photosweep.singhsec.com.
+        Questions: support@singhsec.com.
         """
     }
 }
