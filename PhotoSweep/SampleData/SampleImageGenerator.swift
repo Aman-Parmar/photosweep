@@ -20,12 +20,13 @@ enum SampleImageGenerator {
             let top = UIColor(hue: hue, saturation: 0.55, brightness: 0.85, alpha: 1).cgColor
             let bottomHue = (hue + 0.12).truncatingRemainder(dividingBy: 1.0)
             let bottom = UIColor(hue: bottomHue, saturation: 0.45, brightness: 0.45, alpha: 1).cgColor
-            let gradient = CGGradient(
+            if let gradient = CGGradient(
                 colorsSpace: CGColorSpaceCreateDeviceRGB(),
                 colors: [top, bottom] as CFArray,
                 locations: [0, 1]
-            )!
-            cg.drawLinearGradient(gradient, start: .zero, end: CGPoint(x: 0, y: size.height), options: [])
+            ) {
+                cg.drawLinearGradient(gradient, start: .zero, end: CGPoint(x: 0, y: size.height), options: [])
+            }
             // Sun.
             let sunCenter = CGPoint(x: size.width * 0.7, y: size.height * 0.28)
             cg.setFillColor(UIColor(white: 1, alpha: 0.9).cgColor)
