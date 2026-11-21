@@ -15,13 +15,15 @@ import Foundation
 public enum KeeperPicker {
 
     public static func pickKeeper(from items: [PhotoItem]) -> PhotoItem {
-        precondition(!items.isEmpty, "KeeperPicker needs at least one item")
-        return items.sorted { a, b in
+        guard let keeper = items.sorted { a, b in
             if a.sharpness != b.sharpness { return a.sharpness > b.sharpness }
             if a.pixelCount != b.pixelCount { return a.pixelCount > b.pixelCount }
             if a.fileSize != b.fileSize { return a.fileSize > b.fileSize }
             return a.creationDate < b.creationDate
-        }.first!
+        }.first else {
+            preconditionFailure("KeeperPicker needs at least one item")
+        }
+        return keeper
     }
 
     /// True when `item` is the keeper of `group`.
